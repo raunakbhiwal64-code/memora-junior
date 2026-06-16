@@ -19,14 +19,23 @@ A memory palace web app for kids (and curious adults). Build a visual memory pal
 | 🐠 Aquarium | Big Tank · Glass Tunnel | 18 |
 | 🏡 Dummy House | Living Room · Kitchen · Bedroom | 24 |
 
-**Your own house** — upload room photos, tap to pin numbered spots (parent-gated, EXIF stripped).
+**Your own house** — add room photos and tap to pin numbered spots (parent-gated, EXIF stripped). Photos come from either:
+- 📷 **In-app camera** — live capture via `getUserMedia`, works on laptop webcams and phone cameras (prefers the rear camera, flip front/back, snap → keep/retake)
+- 🖼️ **Device picker** — choose existing photos
 
 **What to memorise:**
 - Built-in: the eight planets demo list
 - Import any list — up to 100 items, from .txt/.csv or paste
 - Learn a text — paste a poem, notes, passage, or vocab list; the system pulls keywords for fill-in-the-blank recall
+- 🔢 **Memorise a number** (Pro) — key in a date, phone number, or π; it splits into two-digit chunks and shows the **Major System** sounds so you can turn each pair into a vivid image
 
-**Live tweaks** (⚙️ panel): theme (parchment / dusk / meadow), font style, dyslexia-friendly type, motion speed, audio narration (real browser TTS).
+**Spaced repetition** — every session schedules a review on a Leitner ladder (strong recall → longer gap before the next review). Home shows what's *due*, your **daily streak**, and session count; the Picker has a "Due for review" shelf. Reusable by design: any palace pairs with any list, and your whole library lives in the Picker with best scores.
+
+**Junior / Pro mode** — Junior keeps the guided, encouraging experience for kids. Pro surfaces advanced tools (number memorisation), a **live recall timer**, and pure recall (hides the decode hint so you read the image at each locus yourself) — the way memory athletes train.
+
+**Live tweaks** (⚙️ panel): Junior/Pro mode, theme (parchment / dusk / meadow), font style, dyslexia-friendly type, motion speed, audio narration (real browser TTS).
+
+> **Camera note:** `getUserMedia` requires a secure context — it works on the deployed HTTPS site (GitHub Pages) and on `localhost`, but not over plain `file://`. If the camera is blocked or unavailable, the builder falls back to the OS photo picker.
 
 ## Tech
 
@@ -36,15 +45,16 @@ Plain HTML + CSS + JavaScript. React 18 and Babel are loaded via CDN — no buil
 index.html          ← entry point
 app/
   styles.css        ← design system tokens + all component styles
-  data.jsx          ← palace data, list parsing, localStorage store
-  components.jsx    ← shared UI (buttons, coach bubble, progress ribbon)
+  data.jsx          ← palace data, list parsing, Major System, spaced repetition, localStorage store
+  components.jsx    ← shared UI (buttons, coach bubble, progress ribbon, recall timer)
   art.jsx           ← SVG illustrations for all ready-made rooms
   scene.jsx         ← PalaceScene (SVG art + loci overlay)
-  builder.jsx       ← photo palace builder + list importer + parental gate
-  screens-a.jsx     ← Home, Picker, Preview, List picker, Meet
+  builder.jsx       ← photo palace builder + in-app camera + list importer + parental gate
+  screens-a.jsx     ← Home (streak/review), Picker (library + due shelf), Preview, List picker, Meet
   screens-b.jsx     ← Place, Walk, Recall, Done
   text.jsx          ← Learn-a-text builder + cloze recall
-  tweaks-panel.jsx  ← floating tweaks panel (theme, font, etc.)
+  numbers.jsx       ← "Memorise a number" builder (Major System)
+  tweaks-panel.jsx  ← floating tweaks panel (Junior/Pro, theme, font, etc.)
   main.jsx          ← app state machine
 ```
 
