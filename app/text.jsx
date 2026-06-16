@@ -146,7 +146,9 @@ function TextLearnScreen({ palace, onSave, onCancel, audio }) {
 // ---- TEXT RECALL (fill in the blank) ----------------------------------------
 function normalize(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9'’]/g, ''); }
 
-function TextRecallScreen({ palace, list, flat, onDone, audio }) {
+function TextRecallScreen({ palace, list, flat, onDone, audio, pro }) {
+  const isNumber = list.system === 'number';
+  const hideClue = isNumber && pro; // pure recall: decode the image yourself
   const n = Math.min(flat.length, list.items.length);
   const [idx, setIdx] = useTx(0);
   const [val, setVal] = useTx('');
@@ -205,24 +207,27 @@ function TextRecallScreen({ palace, list, flat, onDone, audio }) {
         <div className="scene-caption">Spot {spot.globalN} · {spot.name}</div>
       </div>
       <div className="split-panel">
-        <div className="place-step">Your turn · {idx + 1} of {n}</div>
-        <h3 className="recall-q">What goes at <em>{spot.name}</em>?</h3>
+        <div className="place-step">Your turn · {idx + 1} of {n}<RecallTimer show={pro} /></div>
+        <h3 className="recall-q">{isNumber ? <>Which digits are at <em>{spot.name}</em>?</> : <>What goes at <em>{spot.name}</em>?</>}</h3>
 
-        <div className="cloze-card">
-          {item.isVocab
-            ? <p className="cloze-text"><span className="cloze-label">Clue:</span> {item.context}</p>
-            : showBlank
-              ? <p className="cloze-text">{parts[0]}<span className="cloze-blank">{reveal ? item.answer : '?'}</span>{parts.slice(1).join('—————')}</p>
-              : <p className="cloze-text">{item.context}</p>}
-        </div>
+        {!hideClue && (
+          <div className="cloze-card">
+            {item.isVocab
+              ? <p className="cloze-text"><span className="cloze-label">{isNumber ? 'Sounds' : 'Clue'}:</span> {item.context}</p>
+              : showBlank
+                ? <p className="cloze-text">{parts[0]}<span className="cloze-blank">{reveal ? item.answer : '?'}</span>{parts.slice(1).join('—————')}</p>
+                : <p className="cloze-text">{item.context}</p>}
+          </div>
+        )}
 
         <CoachBubble mood={feedback && feedback.tone === 'soft' ? 'think' : 'happy'} compact>
-          {feedback ? feedback.text : (item.isVocab ? 'Type the word this clue describes.' : 'Type the missing word — picture it sitting at the spot.')}
+          {feedback ? feedback.text : (isNumber ? 'Recall the picture you hid here, then type its digits.' : item.isVocab ? 'Type the word this clue describes.' : 'Type the missing word — picture it sitting at the spot.')}
         </CoachBubble>
 
         <form className="cloze-form" onSubmit={(e) => { e.preventDefault(); submit(); }}>
           <input ref={inputRef} className="cloze-input" value={val} autoFocus
-            placeholder="Type your answer…"
+            inputMode={isNumber ? 'numeric' : 'text'}
+            placeholder={isNumber ? 'Type the digits…' : 'Type your answer…'}
             onChange={(e) => setVal(e.target.value)} aria-label="Your answer" />
           <BigButton onClick={submit} disabled={!val.trim()}>Check →</BigButton>
         </form>

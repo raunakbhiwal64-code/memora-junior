@@ -7,7 +7,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "font": "editorial",
   "dyslexia": false,
   "motion": "calm",
-  "audio": true
+  "audio": true,
+  "mode": "junior"
 }/*EDITMODE-END*/;
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   const [preview, setPreview] = useMS(null);
 
   const audio = t.audio;
+  const pro = t.mode === 'pro';
   const flat = useMM(() => flattenSpots(palace), [palace]);
   // saved sets whose spaced-repetition review has come due
   const dueSets = useMM(() => savedSets.filter((s) => s.srs && s.srs.due != null && s.srs.due <= Date.now()), [savedSets]);
@@ -73,8 +75,8 @@ function App() {
   };
 
   const total = Math.min(flat.length, list.items.length);
-  const ribbonKey = ({ home: 'pick', pick: 'pick', preview: 'pick', gate: 'pick', build: 'pick', list: 'meet', import: 'meet', text: 'meet', meet: 'meet', place: 'place', walk: 'walk', recall: 'recall', done: 'done' })[step];
-  const showRibbon = !['home', 'done', 'gate', 'build', 'import', 'text', 'preview'].includes(step);
+  const ribbonKey = ({ home: 'pick', pick: 'pick', preview: 'pick', gate: 'pick', build: 'pick', list: 'meet', import: 'meet', text: 'meet', numbers: 'meet', meet: 'meet', place: 'place', walk: 'walk', recall: 'recall', done: 'done' })[step];
+  const showRibbon = !['home', 'done', 'gate', 'build', 'import', 'text', 'numbers', 'preview'].includes(step);
 
   return (
     <div className="app-root" data-theme={t.theme} data-font={t.font} data-dys={t.dyslexia ? 'true' : 'false'} data-motion={t.motion}>
@@ -122,11 +124,18 @@ function App() {
           )}
 
           {step === 'list' && (
-            <ListPickScreen audio={audio} palace={palace} lists={customLists}
+            <ListPickScreen audio={audio} palace={palace} lists={customLists} pro={pro}
               onChoose={(l) => { setList(l); go('meet'); }}
               onImport={() => go('import')}
               onLearnText={() => go('text')}
+              onNumbers={() => go('numbers')}
               onDeleteList={(l) => { Store.removeList(l.id); setCustomLists(Store.lists()); }} />
+          )}
+
+          {step === 'numbers' && (
+            <NumberLearnScreen palace={palace} audio={audio}
+              onCancel={() => go('list')}
+              onSave={(l) => { Store.upsertList(l); setCustomLists(Store.lists()); setList(l); setPlaceIndex(0); go('meet'); }} />
           )}
 
           {step === 'text' && (
@@ -156,9 +165,9 @@ function App() {
           )}
 
           {step === 'recall' && (list.kind === 'text'
-            ? <TextRecallScreen palace={palace} list={list} flat={flat} audio={audio}
+            ? <TextRecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro}
                 onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
-            : <RecallScreen palace={palace} list={list} flat={flat} audio={audio}
+            : <RecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro}
                 onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
           )}
 
@@ -179,6 +188,7 @@ function App() {
         <TweakToggle label="Dyslexia-friendly type" value={t.dyslexia} onChange={(v) => setTweak('dyslexia', v)} />
 
         <TweakSection label="Experience" />
+        <TweakRadio label="Mode" value={t.mode} options={['junior', 'pro']} onChange={(v) => setTweak('mode', v)} />
         <TweakRadio label="Motion" value={t.motion} options={['calm', 'lively']} onChange={(v) => setTweak('motion', v)} />
         <TweakToggle label="Audio narration" value={t.audio} onChange={(v) => setTweak('audio', v)} />
 

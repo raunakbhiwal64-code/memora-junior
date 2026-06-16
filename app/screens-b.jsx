@@ -124,7 +124,7 @@ function WalkScreen({ palace, list, flat, onReady, audio }) {
 }
 
 // ---- RECALL TEST ------------------------------------------------------------
-function RecallScreen({ palace, list, flat, onDone, audio }) {
+function RecallScreen({ palace, list, flat, onDone, audio, pro }) {
   const n = Math.min(flat.length, list.items.length);
   const [idx, setIdx] = useS(0);
   const [results, setResults] = useS([]);
@@ -178,7 +178,7 @@ function RecallScreen({ palace, list, flat, onDone, audio }) {
         <div className="scene-caption">Spot {spot.globalN} &middot; {spot.name}</div>
       </div>
       <div className="split-panel">
-        <div className="place-step">Your turn &middot; {idx + 1} of {n}</div>
+        <div className="place-step">Your turn &middot; {idx + 1} of {n}<RecallTimer show={pro} /></div>
         <h3 className="recall-q">What did you hide at <em>{spot.name}</em>?</h3>
         <CoachBubble mood={feedback && feedback.tone === 'soft' ? 'think' : 'happy'} compact>
           {feedback ? feedback.text : 'Take your time. Picture the spot, then tap what you hid there.'}

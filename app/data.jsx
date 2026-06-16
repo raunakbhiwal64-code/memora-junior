@@ -289,6 +289,10 @@ const PROMPT_TEMPLATES = [
   (item, spot) => `Imagine ${item} is alive and waving at you from ${spot}!`,
 ];
 function promptFor(item, spot, index) {
+  if (item && item.system === 'number') {
+    const pegBit = item.peg ? ` Many people picture “${item.peg}”.` : '';
+    return `Turn ${item.answer} into a picture using its sounds (${item.sounds}) and place it at ${spot.name}.${pegBit}`;
+  }
   if (item && item.context) {
     if (item.isVocab) return `Picture “${item.answer}” sitting at ${spot.name}. It means: ${item.context}.`;
     return `See the word “${item.answer}” come alive at ${spot.name} — it’s from your line: “${item.context}”.`;
@@ -435,6 +439,62 @@ function dueLabel(due) {
   return weeks <= 1 ? 'in a week' : 'in ' + weeks + ' weeks';
 }
 
+// ============================================================
+// NUMBER MEMORY — the Major System. Each digit maps to a consonant sound;
+// you turn a number into a word (and a vivid image) by stringing the sounds
+// together and adding vowels. This is the backbone technique competitive
+// memorisers use for digits, phone numbers, dates and π. We expose it as a
+// content type that feeds the same place / walk / recall engine.
+// ============================================================
+const MAJOR = [
+  { d: '0', cons: 's / z', },
+  { d: '1', cons: 't / d' },
+  { d: '2', cons: 'n' },
+  { d: '3', cons: 'm' },
+  { d: '4', cons: 'r' },
+  { d: '5', cons: 'l' },
+  { d: '6', cons: 'j / sh / ch' },
+  { d: '7', cons: 'k / g' },
+  { d: '8', cons: 'f / v' },
+  { d: '9', cons: 'p / b' },
+];
+// Beginner-friendly single-digit "number-rhyme" pegs (a gentle on-ramp before
+// the full Major System).
+const RHYME_PEGS = ['hero', 'bun', 'shoe', 'tree', 'door', 'hive', 'sticks', 'heaven', 'gate', 'wine'];
+// A few worked two-digit examples to show the Major System pays off.
+const MAJOR_EXAMPLES = { '42': 'rain', '31': 'mat', '90': 'bus', '15': 'towel', '74': 'car', '52': 'lion' };
+
+function majorSounds(chunk) {
+  return String(chunk).split('').map((d) => (MAJOR[+d] ? MAJOR[+d].cons : '?')).join(' · ');
+}
+// turn a raw digit string into an ordered list of 2-digit (Major) chunks
+function chunkDigits(raw) {
+  const digits = String(raw || '').replace(/\D/g, '');
+  const out = [];
+  for (let i = 0; i < digits.length; i += 2) out.push(digits.slice(i, i + 2));
+  return out;
+}
+// build a number list for the generic engine (typed recall: you key the digits)
+function buildNumberList({ raw, title, palace }) {
+  const cap = palace ? Math.max(1, totalSpots(palace)) : MAX_ITEMS;
+  const chunks = chunkDigits(raw).slice(0, cap);
+  const items = chunks.map((c, i) => {
+    const sounds = majorSounds(c);
+    const peg = MAJOR_EXAMPLES[c] || (c.length === 1 ? RHYME_PEGS[+c] : null);
+    return {
+      id: 'num' + i, label: c, answer: c, color: colorFor(i),
+      system: 'number', sounds, peg,
+      context: 'Major sounds: ' + sounds + (peg ? ' → e.g. “' + peg + '”' : ''),
+      isVocab: true, prompt: sounds,
+    };
+  });
+  return {
+    id: 'num-' + Date.now(), kind: 'text', mode: 'number', system: 'number',
+    title: title || 'A number', subtitle: items.length + ' chunks to remember',
+    digits: chunkDigits(raw).join(''), items,
+  };
+}
+
 // ---- localStorage (saved ON THIS DEVICE only) -------------------------------
 const STORE = { PAL: 'memora.palaces.v1', LIST: 'memora.lists.v1', SAVED: 'memora.saved.v1', STATS: 'memora.stats.v1' };
 function loadJSON(k, fb) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch (e) { return fb; } }
@@ -511,4 +571,10 @@ Object.assign(window, {
   dueLabel,
   startOfDay,
   DAY_MS,
+  MAJOR,
+  RHYME_PEGS,
+  MAJOR_EXAMPLES,
+  majorSounds,
+  chunkDigits,
+  buildNumberList,
 });

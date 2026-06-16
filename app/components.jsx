@@ -115,6 +115,20 @@ function CoachBubble({ children, mood = 'happy', compact }) {
   );
 }
 
+// ---- Recall timer (Pro mode) ------------------------------------------------
+function RecallTimer({ show }) {
+  const [s, setS] = useState(0);
+  useEffect(() => {
+    if (!show) return;
+    const id = setInterval(() => setS((x) => x + 1), 1000);
+    return () => clearInterval(id);
+  }, [show]);
+  if (!show) return null;
+  const mm = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return <span className="recall-timer" aria-label="Time elapsed">⏱ {mm}:{ss}</span>;
+}
+
 // ---- Item chip --------------------------------------------------------------
 function ItemChip({ item, onClick, state = 'idle', big }) {
   return (
@@ -135,5 +149,5 @@ function ItemChip({ item, onClick, state = 'idle', big }) {
 }
 
 Object.assign(window, {
-  useNarrate, BigButton, SpeakerButton, ProgressRibbon, BrandMark, CoachBubble, ItemChip, JOURNEY,
+  useNarrate, BigButton, SpeakerButton, ProgressRibbon, BrandMark, CoachBubble, ItemChip, JOURNEY, RecallTimer,
 });

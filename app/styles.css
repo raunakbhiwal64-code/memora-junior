@@ -652,6 +652,26 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .walk-progress-bar { flex: 1; height: 10px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--line); overflow: hidden; }
 .walk-progress-bar > div { height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
 .saved-pill { font-size: 13.5px; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; align-self: flex-start; margin: 0; }
+.recall-timer { float: right; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ember); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
+
+/* ---- number / Major System ---- */
+.number-card .list-emoji { filter: none; }
+.number-grid .import-area.number-area { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; font-size: 17px; }
+.number-samples { flex-wrap: wrap; }
+.number-samples .btn { font-size: 13px; padding: 8px 12px; }
+.major-key { margin-top: 4px; font-size: 13px; color: var(--ink-soft); }
+.major-key summary { cursor: pointer; font-weight: 700; color: var(--ember); }
+.major-key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 4px 10px; margin: 8px 0; }
+.major-key-row b { color: var(--ember); display: inline-block; width: 14px; }
+.major-key p em { color: var(--ink); font-style: italic; }
+.number-chunks { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+.number-chunk { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.number-chunk.is-dropped { opacity: 0.4; }
+.number-chunk-n { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--ember); color: #fff; font-size: 12px; font-weight: 800; }
+.number-chunk-d { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--ink); font-variant-numeric: tabular-nums; min-width: 38px; }
+.number-chunk-s { font-size: 14px; color: var(--ink-soft); }
+.number-chunk-s em { color: var(--ember-deep); font-style: italic; }
+
 .done-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0; }
 .done-chip { font-size: 13px; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
 .done-chip strong { color: var(--ember); font-weight: 800; }
