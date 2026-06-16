@@ -221,6 +221,12 @@ function PalaceBuilderScreen({ initial, onSave, onCancel }) {
       : r);
     setPalace({ ...palace, rooms: next });
   };
+  const nameSpot = (spId, name) => {
+    const next = rooms.map((r, i) => i === roomIdx
+      ? { ...r, spots: r.spots.map((s) => (s.id === spId ? { ...s, name } : s)) }
+      : r);
+    setPalace({ ...palace, rooms: next });
+  };
   const removeRoom = (idx) => {
     const next = rooms.filter((_, i) => i !== idx);
     setPalace({ ...palace, rooms: next });
@@ -281,6 +287,20 @@ function PalaceBuilderScreen({ initial, onSave, onCancel }) {
 
         {room && (
           <input className="builder-room-name" value={room.name} onChange={(e) => renameRoom(roomIdx, e.target.value)} maxLength={24} aria-label="Room name" />
+        )}
+
+        {room && room.spots.length > 0 && (
+          <div className="spot-namer">
+            <div className="spot-namer-head">Name your spots <small>· helps you recall the journey</small></div>
+            {room.spots.map((s) => (
+              <label key={s.id} className="spot-namer-row">
+                <span className="spot-namer-n">{s.localN}</span>
+                <input className="spot-namer-input" value={s.name || ''} placeholder={'e.g. the bed, a lamp…'}
+                  onChange={(e) => nameSpot(s.id, e.target.value.slice(0, 32))} aria-label={'Name for spot ' + s.localN} />
+                <button type="button" className="spot-namer-del" onClick={() => removeSpot(s)} aria-label={'Remove spot ' + s.localN}>×</button>
+              </label>
+            ))}
+          </div>
         )}
 
         <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}

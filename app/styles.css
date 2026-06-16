@@ -547,6 +547,15 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .room-add { width: 62px; height: 50px; border-radius: 10px; border: 2px dashed var(--line); background: var(--paper-2); font-size: 22px; color: var(--ink-soft); cursor: pointer; }
 .builder-room-name { font-family: var(--font-body); font-weight: 700; font-size: 15px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; background: var(--paper); outline: none; }
 .builder-room-name:focus { border-color: var(--ember); }
+.spot-namer { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 30vh; padding-right: 2px; }
+.spot-namer-head { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.spot-namer-head small { font-weight: 600; color: var(--ink-faint); }
+.spot-namer-row { display: flex; align-items: center; gap: 8px; }
+.spot-namer-n { flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--ember); color: #fff; font-size: 12px; font-weight: 800; }
+.spot-namer-input { flex: 1; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--paper); color: var(--ink); outline: none; }
+.spot-namer-input:focus { border-color: var(--ember); }
+.spot-namer-del { flex: none; width: 24px; height: 24px; border-radius: 50%; border: none; background: var(--paper-2); color: var(--ink-faint); font-size: 15px; cursor: pointer; }
+.spot-namer-del:hover { background: var(--ember); color: #fff; }
 .builder-actions { display: flex; gap: 10px; margin-top: auto; }
 .builder-empty-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .room-cam { font-size: 18px; border-style: solid; }
