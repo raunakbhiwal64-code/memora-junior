@@ -219,6 +219,20 @@ function ListPickScreen({ palace, lists, onChoose, onImport, onLearnText, onNumb
             <span className="palace-go">Use this →</span>
           </button>
 
+          <button type="button" className="list-card" onClick={() => onChoose(ANIMAL_LIST)}>
+            <span className="list-emoji" aria-hidden="true">🦁</span>
+            <span className="list-name">Ten Animals</span>
+            <span className="list-sub">Demo list · 10 items, in order</span>
+            <span className="palace-go">Use this →</span>
+          </button>
+
+          <button type="button" className="list-card" onClick={() => onChoose(SPELLING_LIST)}>
+            <span className="list-emoji" aria-hidden="true">✏️</span>
+            <span className="list-name">Tricky Spellings</span>
+            <span className="list-sub">Demo list · 8 words, in order</span>
+            <span className="palace-go">Use this →</span>
+          </button>
+
           {lists.map((l) => (
             <div key={l.id} className="list-card">
               <span className="list-emoji" aria-hidden="true">{l.kind === 'text' ? '📖' : '📝'}</span>
@@ -269,11 +283,14 @@ function ListPickScreen({ palace, lists, onChoose, onImport, onLearnText, onNumb
 }
 
 // ---- MEET THE LIST (preview) ------------------------------------------------
-function MeetScreen({ list, palace, onNext, audio }) {
+function MeetScreen({ list, palace, onNext, onPickBigger, audio }) {
   const spots = totalSpots(palace);
   const using = Math.min(spots, list.items.length);
   const shown = list.items.slice(0, 12);
   const more = list.items.length - shown.length;
+  // One item per spot — never silently stack. If the list is too big, the child
+  // picks a roomier palace rather than lose items off the end.
+  const overcrowded = list.items.length > spots;
   useNarrate('Here\u2019s what we\u2019ll hide. On their own these are slippery — so let\u2019s tuck each one into a spot in your palace.', audio);
   return (
     <div className="screen meet">
@@ -295,15 +312,22 @@ function MeetScreen({ list, palace, onNext, audio }) {
         {more > 0 && <div className="meet-item meet-more">+{more} more</div>}
       </div>
 
-      {list.items.length > spots && (
-        <p className="meet-warn">Your palace has {spots} spots, so we&rsquo;ll use the first {spots}. Add more spots to fit them all!</p>
+      {overcrowded ? (
+        <>
+          <p className="meet-warn">One spot holds one thing &mdash; so we won&rsquo;t squash two together. Pick a palace with at least <strong>{list.items.length} spots</strong> and they&rsquo;ll all fit.</p>
+          <CoachBubble mood="think">
+            Your {palace.name.toLowerCase()} is a bit small for this list. Let&rsquo;s find a roomier palace!
+          </CoachBubble>
+          <BigButton onClick={onPickBigger} full>&larr; Pick a bigger palace</BigButton>
+        </>
+      ) : (
+        <>
+          <CoachBubble mood="think">
+            Watch &mdash; we&rsquo;ll hide each one at a special spot in your {palace.name.toLowerCase()}, so they stick like glue.
+          </CoachBubble>
+          <BigButton onClick={onNext} full>Let&rsquo;s hide them →</BigButton>
+        </>
       )}
-
-      <CoachBubble mood="think">
-        Watch &mdash; we&rsquo;ll hide each one at a special spot in your {palace.name.toLowerCase()}, so they stick like glue.
-      </CoachBubble>
-
-      <BigButton onClick={onNext} full>Let&rsquo;s hide them →</BigButton>
     </div>
   );
 }

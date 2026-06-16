@@ -21,8 +21,12 @@ function PlaceScreen({ palace, list, flat, index, onPlace, audio }) {
   const spot = flat[index];
   const item = list.items[index];
   const room = palace.rooms[spot.roomIndex];
-  const prompt = promptFor(item, spot, index);
-  useNarrate(prompt, audio);
+  const action = actionPrompt(item, spot);   // THE prompt — an action question
+  const idea = promptFor(item, spot, index); // optional nudge, hidden by default
+  const isSystem = item.system === 'number' || item.system === 'card';
+  const [showIdea, setShowIdea] = useS(false);
+  useNarrate(action, audio);
+  useE(() => setShowIdea(false), [index]);
   const placed = placedMap(flat, list.items, index);
 
   return (
@@ -43,11 +47,16 @@ function PlaceScreen({ palace, list, flat, index, onPlace, audio }) {
           </div>
         </div>
         <CoachBubble mood="happy">
-          {prompt}
-          <SpeakerButton on={audio} text={prompt} />
+          {action}
+          <SpeakerButton on={audio} text={action} />
         </CoachBubble>
         {item.context && (
           <p className="place-source"><span className="place-source-tag">{item.isVocab ? 'Means' : 'From your text'}</span> {item.context}</p>
+        )}
+        {!isSystem && (
+          showIdea
+            ? <p className="place-idea">💡 {idea}</p>
+            : <button type="button" className="idea-toggle" onClick={() => setShowIdea(true)}>Stuck? Peek at an idea</button>
         )}
         <p className="place-hint">Close your eyes for a second and really <em>see</em> it. Got the picture?</p>
         <BigButton onClick={onPlace} full>
@@ -115,16 +124,21 @@ function WalkScreen({ palace, list, flat, onReady, audio }) {
           {(finished || step >= 0) && <BigButton kind="ghost" onClick={replay}>↺ Walk again</BigButton>}
         </div>
 
-        <BigButton onClick={onReady} full kind={finished ? 'primary' : 'soft'}>
+        <BigButton onClick={() => onReady('forward')} full kind={finished ? 'primary' : 'soft'}>
           {finished ? 'I\u2019m ready to remember! →' : 'Skip ahead →'}
         </BigButton>
+        {finished && (
+          <BigButton onClick={() => onReady('back')} full kind="ghost">
+            ↩ Try it backwards (extra challenge)
+          </BigButton>
+        )}
       </div>
     </div>
   );
 }
 
 // ---- RECALL TEST ------------------------------------------------------------
-function RecallScreen({ palace, list, flat, onDone, audio, pro }) {
+function RecallScreen({ palace, list, flat, onDone, audio, pro, dir = 'forward' }) {
   const n = Math.min(flat.length, list.items.length);
   const [idx, setIdx] = useS(0);
   const [results, setResults] = useS([]);
@@ -141,8 +155,16 @@ function RecallScreen({ palace, list, flat, onDone, audio, pro }) {
     return a;
   }, []);
 
-  const spot = flat[idx];
-  const answer = list.items[idx];
+  // pair each spot with the item placed there, then reverse for a backward walk
+  const pairs = useM(() => {
+    const ps = [];
+    for (let i = 0; i < n; i++) ps.push({ spot: flat[i], item: list.items[i] });
+    if (dir === 'back') ps.reverse();
+    return ps;
+  }, [dir, n]);
+
+  const spot = pairs[idx].spot;
+  const answer = pairs[idx].item;
   const room = palace.rooms[spot.roomIndex];
   const placedIds = new Set(Object.values(placed).map((x) => x.id));
   const pool = order.map((id) => list.items.find((x) => x.id === id)).filter((x) => x && !placedIds.has(x.id));
@@ -178,7 +200,7 @@ function RecallScreen({ palace, list, flat, onDone, audio, pro }) {
         <div className="scene-caption">Spot {spot.globalN} &middot; {spot.name}</div>
       </div>
       <div className="split-panel">
-        <div className="place-step">Your turn &middot; {idx + 1} of {n}<RecallTimer show={pro} /></div>
+        <div className="place-step">Your turn &middot; {idx + 1} of {n}{dir === 'back' && <span className="dir-badge">↩ backwards</span>}<RecallTimer show={pro} /></div>
         <h3 className="recall-q">What did you hide at <em>{spot.name}</em>?</h3>
         <CoachBubble mood={feedback && feedback.tone === 'soft' ? 'think' : 'happy'} compact>
           {feedback ? feedback.text : 'Take your time. Picture the spot, then tap what you hid there.'}
@@ -196,7 +218,7 @@ function RecallScreen({ palace, list, flat, onDone, audio, pro }) {
 }
 
 // ---- CELEBRATION ------------------------------------------------------------
-function DoneScreen({ palace, list, flat, score, total, placed, saved, seconds, due, streak, onWalkAgain, onNewList, onHome, audio }) {
+function DoneScreen({ palace, list, flat, score, total, placed, saved, seconds, due, streak, dir, onWalkAgain, onNewList, onTryBack, onHome, audio }) {
   const pct = Math.round((score / total) * 100);
   const allRight = score === total;
   const baseline = Math.max(1, Math.round(total * 0.25));
@@ -237,6 +259,7 @@ function DoneScreen({ palace, list, flat, score, total, placed, saved, seconds, 
           <div className="done-actions">
             <BigButton onClick={onWalkAgain} kind="ghost">↺ Walk it again</BigButton>
             <BigButton onClick={onNewList} kind="ghost">Try the recall again</BigButton>
+            {onTryBack && dir !== 'back' && <BigButton onClick={onTryBack} kind="ghost">↩ Recall backwards</BigButton>}
             <BigButton onClick={onHome}>Finish ✓</BigButton>
           </div>
           <div className="parent-strip">

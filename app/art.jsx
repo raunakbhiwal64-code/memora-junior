@@ -586,6 +586,104 @@ function HouseBedroomArt() {
   </>);
 }
 
+// ============================================================ SPACE STATION
+function SpaceStationArt() {
+  return svgWrap(<>
+    <defs>
+      <linearGradient id="ss-wall" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#3A3B62" /><stop offset="100%" stopColor="#23243F" />
+      </linearGradient>
+      <radialGradient id="ss-space" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stopColor="#1B2A55" /><stop offset="100%" stopColor="#05060F" />
+      </radialGradient>
+    </defs>
+    {/* interior wall */}
+    <rect x="0" y="0" width="100" height="100" fill="url(#ss-wall)" />
+    {/* floor strip */}
+    <rect x="0" y="80" width="100" height="20" fill="#2C2D4A" />
+    <line x1="0" y1="80" x2="100" y2="80" stroke="#4A4B73" strokeWidth="0.6" />
+    {/* faint panel seams */}
+    <g stroke="#4A4B73" strokeWidth="0.4" opacity="0.5">
+      <line x1="0" y1="40" x2="100" y2="40" /><line x1="33" y1="0" x2="33" y2="80" /><line x1="66" y1="0" x2="66" y2="80" />
+    </g>
+
+    {/* solar panel (40,12) — up high */}
+    <g transform="translate(40 12)">
+      <rect x="-14" y="-5" width="28" height="10" rx="0.6" fill="#2B3A6E" stroke="#5C76C4" strokeWidth="0.5" />
+      <g stroke="#5C76C4" strokeWidth="0.4" opacity="0.8">
+        <line x1="-7" y1="-5" x2="-7" y2="5" /><line x1="0" y1="-5" x2="0" y2="5" /><line x1="7" y1="-5" x2="7" y2="5" />
+        <line x1="-14" y1="0" x2="14" y2="0" />
+      </g>
+    </g>
+
+    {/* big round window (50,24) with stars + earth */}
+    <g transform="translate(50 24)">
+      <circle r="11" fill="url(#ss-space)" stroke="#6E6FA0" strokeWidth="1.4" />
+      <circle r="11" fill="none" stroke="#9FA0D6" strokeWidth="0.5" />
+      <g fill="#FFFFFF"><circle cx="-5" cy="-4" r="0.5" /><circle cx="3" cy="-6" r="0.4" /><circle cx="6" cy="2" r="0.5" /><circle cx="-6" cy="3" r="0.4" /><circle cx="0" cy="5" r="0.3" /></g>
+      <circle cx="3" cy="3" r="3.4" fill="#3E7CB1" /><path d="M1 2 q2 -1 4 0 q-1 2 -3 2 z" fill="#5CA15C" />
+    </g>
+
+    {/* robot arm (70,30) */}
+    <g stroke="#C9CBE6" strokeWidth="1.6" fill="none" strokeLinecap="round">
+      <path d="M64 22 L70 28 L66 34" />
+    </g>
+    <circle cx="64" cy="22" r="1.4" fill="#9FA0D6" /><circle cx="70" cy="28" r="1.4" fill="#9FA0D6" /><circle cx="66" cy="34" r="2" fill="#E2A33E" />
+
+    {/* airlock door (12,40) — left wall */}
+    <g transform="translate(12 40)">
+      <rect x="-8" y="-13" width="16" height="26" rx="3" fill="#34355A" stroke="#6E6FA0" strokeWidth="1" />
+      <circle r="5" fill="#23243F" stroke="#6E6FA0" strokeWidth="0.8" />
+      <g stroke="#6E6FA0" strokeWidth="0.7"><line x1="-3.5" y1="0" x2="3.5" y2="0" /><line x1="0" y1="-3.5" x2="0" y2="3.5" /><line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" /><line x1="-2.5" y1="2.5" x2="2.5" y2="-2.5" /></g>
+    </g>
+
+    {/* sleep pod (86,44) — right */}
+    <g transform="translate(86 44)">
+      <rect x="-9" y="-6" width="18" height="12" rx="6" fill="#3A3B62" stroke="#6E6FA0" strokeWidth="1" />
+      <rect x="-6" y="-4" width="11" height="8" rx="4" fill="#5C76C4" opacity="0.5" />
+    </g>
+
+    {/* control panel (30,66) */}
+    <g transform="translate(30 66)">
+      <path d="M-12 8 L12 8 L9 -4 L-9 -4 Z" fill="#34355A" stroke="#6E6FA0" strokeWidth="0.8" />
+      <rect x="-7" y="-2" width="14" height="5" rx="0.6" fill="#1B2A55" />
+      <g fill="#7FE0A0"><circle cx="-4" cy="0.5" r="0.7" /><circle cx="0" cy="0.5" r="0.7" /></g>
+      <g fill="#E2A33E"><circle cx="4" cy="0.5" r="0.7" /></g>
+      <g fill="#CE6A8E"><circle cx="-6" cy="5" r="0.8" /><circle cx="-2" cy="5" r="0.8" /><circle cx="2" cy="5" r="0.8" /><circle cx="6" cy="5" r="0.8" /></g>
+    </g>
+
+    {/* treadmill (52,76) */}
+    <g transform="translate(52 76)">
+      <ellipse cx="0" cy="3" rx="11" ry="2.4" fill="#1F2038" />
+      <rect x="-9" y="-1" width="18" height="4" rx="1.4" fill="#34355A" stroke="#6E6FA0" strokeWidth="0.6" />
+      <line x1="-9" y1="1" x2="9" y2="1" stroke="#6E6FA0" strokeWidth="0.4" opacity="0.7" />
+    </g>
+
+    {/* food station (76,70) */}
+    <g transform="translate(76 70)">
+      <rect x="-8" y="-8" width="16" height="16" rx="1.6" fill="#3A3B62" stroke="#6E6FA0" strokeWidth="0.8" />
+      <rect x="-5" y="-5" width="10" height="5" rx="0.6" fill="#23243F" />
+      <circle cx="0" cy="3.5" r="2.2" fill="#E2A33E" />
+    </g>
+
+    {/* storage lockers (22,84) */}
+    <g transform="translate(22 84)">
+      <rect x="-10" y="-7" width="20" height="14" rx="1" fill="#34355A" stroke="#6E6FA0" strokeWidth="0.8" />
+      <g stroke="#6E6FA0" strokeWidth="0.5"><line x1="0" y1="-7" x2="0" y2="7" /><line x1="-10" y1="0" x2="10" y2="0" /></g>
+      <g fill="#9FA0D6"><circle cx="-3" cy="-3.5" r="0.7" /><circle cx="3" cy="-3.5" r="0.7" /><circle cx="-3" cy="3.5" r="0.7" /><circle cx="3" cy="3.5" r="0.7" /></g>
+    </g>
+
+    {/* escape capsule (88,82) */}
+    <g transform="translate(88 82)">
+      <path d="M-8 6 Q-8 -8 0 -8 Q8 -8 8 6 Z" fill="#4A4B73" stroke="#9FA0D6" strokeWidth="0.9" />
+      <circle cx="0" cy="-2" r="3" fill="#1B2A55" stroke="#9FA0D6" strokeWidth="0.6" />
+    </g>
+
+    {/* a few interior stars / rivets */}
+    <g fill="#5C5D8A" opacity="0.6"><circle cx="46" cy="46" r="0.5" /><circle cx="58" cy="52" r="0.5" /><circle cx="18" cy="60" r="0.5" /></g>
+  </>);
+}
+
 // ---- registry ----
 const ART = {
   'treehouse-out': (typeof TreehouseArt !== 'undefined' ? TreehouseArt : null),
@@ -596,10 +694,11 @@ const ART = {
   'house-living': HouseLivingArt,
   'house-kitchen': HouseKitchenArt,
   'house-bedroom': HouseBedroomArt,
+  'space-deck': SpaceStationArt,
 };
 
 Object.assign(window, {
   ART,
   PlayhouseInsideArt, GardenArt, AquariumTankArt, AquariumTunnelArt,
-  HouseLivingArt, HouseKitchenArt, HouseBedroomArt,
+  HouseLivingArt, HouseKitchenArt, HouseBedroomArt, SpaceStationArt,
 });

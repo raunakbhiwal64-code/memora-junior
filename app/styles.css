@@ -661,6 +661,10 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .walk-progress-bar { flex: 1; height: 10px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--line); overflow: hidden; }
 .walk-progress-bar > div { height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
 .saved-pill { font-size: 13.5px; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; align-self: flex-start; margin: 0; }
+.idea-toggle { align-self: flex-start; background: none; border: none; color: var(--ember); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 2px 0; }
+.idea-toggle:hover { color: var(--ember-deep); }
+.place-idea { font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); margin: 0; background: var(--paper-2); border-radius: 12px; padding: 11px 14px; }
+.dir-badge { margin-left: 8px; font-size: 12px; font-weight: 800; color: var(--ember-deep); background: color-mix(in oklab, var(--ember) 14%, var(--paper)); border-radius: 999px; padding: 2px 9px; vertical-align: middle; }
 .recall-timer { float: right; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ember); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
 
 /* ---- number / Major System ---- */

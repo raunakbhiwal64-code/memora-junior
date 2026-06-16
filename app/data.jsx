@@ -33,7 +33,7 @@ const PALACES = [
     name: 'Space Station',
     tagline: 'Floating pods among the stars',
     emoji: '🛰️',
-    ready: false,
+    ready: true,
     swatch: ['#5B5C8A', '#2A2A4A', '#E4E2F2'],
   },
   {
@@ -61,6 +61,43 @@ const PLANET_LIST = {
     { id: 'saturn', label: 'Saturn', emoji: '🪐', color: '#D9C089' },
     { id: 'uranus', label: 'Uranus', emoji: '🔵', color: '#7FC4D1' },
     { id: 'neptune', label: 'Neptune', emoji: '🌀', color: '#3C5BC4' },
+  ],
+};
+
+// Ten animals — a built-in demo list (ordered, with friendly emoji).
+const ANIMAL_LIST = {
+  id: 'animals',
+  title: 'Ten Animals',
+  subtitle: 'A little zoo to remember, in order',
+  items: [
+    { id: 'lion', label: 'Lion', emoji: '🦁', color: '#D08A4E' },
+    { id: 'tiger', label: 'Tiger', emoji: '🐯', color: '#C5552F' },
+    { id: 'elephant', label: 'Elephant', emoji: '🐘', color: '#8A93A6' },
+    { id: 'giraffe', label: 'Giraffe', emoji: '🦒', color: '#D9C089' },
+    { id: 'zebra', label: 'Zebra', emoji: '🦓', color: '#B7B0A6' },
+    { id: 'monkey', label: 'Monkey', emoji: '🐵', color: '#A8602F' },
+    { id: 'panda', label: 'Panda', emoji: '🐼', color: '#5C6B73' },
+    { id: 'kangaroo', label: 'Kangaroo', emoji: '🦘', color: '#C8732F' },
+    { id: 'penguin', label: 'Penguin', emoji: '🐧', color: '#3C5BC4' },
+    { id: 'dolphin', label: 'Dolphin', emoji: '🐬', color: '#3E8E9E' },
+  ],
+};
+
+// Eight age-appropriate spelling words — a built-in demo list (no emoji,
+// so the colour cycle gives each a friendly tag).
+const SPELLING_LIST = {
+  id: 'spelling',
+  title: 'Tricky Spellings',
+  subtitle: 'Eight words that are easy to muddle',
+  items: [
+    { id: 'because', label: 'because', color: '#C8612C' },
+    { id: 'friend', label: 'friend', color: '#5C8A6E' },
+    { id: 'beautiful', label: 'beautiful', color: '#C9A24B' },
+    { id: 'people', label: 'people', color: '#4C8FBF' },
+    { id: 'school', label: 'school', color: '#A8602F' },
+    { id: 'animal', label: 'animal', color: '#7B6CB0' },
+    { id: 'water', label: 'water', color: '#CE6A8E' },
+    { id: 'family', label: 'family', color: '#3E8E9E' },
   ],
 };
 
@@ -233,6 +270,27 @@ const READY = {
       },
     ],
   },
+
+  space: {
+    name: 'Space Station', emoji: '🛰️', swatch: ['#5B5C8A', '#2A2A4A', '#E4E2F2'],
+    rooms: [
+      {
+        id: 'deck', name: 'The Space Station', art: 'space-deck',
+        spots: [
+          { key: 'airlock', name: 'the airlock door', x: 12, y: 40 },
+          { key: 'controls', name: 'the control panel', x: 30, y: 66 },
+          { key: 'window', name: 'the big round window', x: 50, y: 24 },
+          { key: 'arm', name: 'the robot arm', x: 70, y: 30 },
+          { key: 'pod', name: 'the sleep pod', x: 86, y: 44 },
+          { key: 'food', name: 'the food station', x: 76, y: 70 },
+          { key: 'treadmill', name: 'the treadmill', x: 52, y: 76 },
+          { key: 'lockers', name: 'the storage lockers', x: 22, y: 84 },
+          { key: 'solar', name: 'the solar panel', x: 40, y: 12 },
+          { key: 'capsule', name: 'the escape capsule', x: 88, y: 82 },
+        ],
+      },
+    ],
+  },
 };
 
 // Build a ready-made palace into the generic palace model used everywhere.
@@ -288,6 +346,15 @@ const PROMPT_TEMPLATES = [
   (item, spot) => `Picture ${item} bright and sparkly at ${spot}, making a funny noise.`,
   (item, spot) => `Imagine ${item} is alive and waving at you from ${spot}!`,
 ];
+// THE primary coaching prompt. It must make the CHILD do the imagining, so it
+// is always phrased as an action question — never a finished picture. Number
+// and card systems keep their technique-specific instruction instead.
+function actionPrompt(item, spot) {
+  if (item && (item.system === 'number' || item.system === 'card')) return promptFor(item, spot, 0);
+  const thing = item.isVocab ? `the word “${item.answer || item.label}”` : item.label;
+  return `What is ${thing} doing to ${spot.name}? Make it huge. Make it move. Make it silly!`;
+}
+
 function promptFor(item, spot, index) {
   if (item && item.system === 'number') {
     const pegBit = item.peg ? ` Many people picture “${item.peg}”.` : '';
@@ -596,6 +663,9 @@ Object.assign(window, {
   PALACES,
   READY,
   PLANET_LIST,
+  ANIMAL_LIST,
+  SPELLING_LIST,
+  actionPrompt,
   TREEHOUSE_SPOTS,
   PLACEMENT_PROMPTS,
   SPOT_OF,

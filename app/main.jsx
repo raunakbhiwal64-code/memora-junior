@@ -23,6 +23,7 @@ function App() {
   const [customPalaces, setCustomPalaces] = useMS(() => Store.palaces());
   const [stats, setStats] = useMS(() => Store.stats());
   const [preview, setPreview] = useMS(null);
+  const [recallDir, setRecallDir] = useMS('forward');
 
   const audio = t.audio;
   const pro = t.mode === 'pro';
@@ -159,7 +160,8 @@ function App() {
 
           {step === 'meet' && (
             <MeetScreen list={list} palace={palace} audio={audio}
-              onNext={() => { setPlaceIndex(0); go('place'); }} />
+              onNext={() => { setPlaceIndex(0); go('place'); }}
+              onPickBigger={() => go('pick')} />
           )}
 
           {step === 'place' && (
@@ -168,21 +170,24 @@ function App() {
           )}
 
           {step === 'walk' && (
-            <WalkScreen palace={palace} list={list} flat={flat} audio={audio} onReady={() => go('recall')} />
+            <WalkScreen palace={palace} list={list} flat={flat} audio={audio}
+              onReady={(d) => { setRecallDir(d || 'forward'); go('recall'); }} />
           )}
 
           {step === 'recall' && (list.kind === 'text'
-            ? <TextRecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro}
+            ? <TextRecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro} dir={recallDir}
                 onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
-            : <RecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro}
+            : <RecallScreen palace={palace} list={list} flat={flat} audio={audio} pro={pro} dir={recallDir}
                 onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
           )}
 
           {step === 'done' && (
             <DoneScreen palace={palace} list={list} flat={flat} saved
               score={result.score} total={result.total} placed={result.placed} audio={audio}
-              seconds={result.seconds} due={result.due} streak={result.streak}
-              onWalkAgain={() => go('walk')} onNewList={() => go('recall')}
+              seconds={result.seconds} due={result.due} streak={result.streak} dir={recallDir}
+              onWalkAgain={() => go('walk')}
+              onNewList={() => { setRecallDir('forward'); go('recall'); }}
+              onTryBack={() => { setRecallDir('back'); go('recall'); }}
               onHome={() => { setPlaceIndex(0); go('home'); }} />
           )}
         </main>

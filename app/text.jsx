@@ -146,7 +146,7 @@ function TextLearnScreen({ palace, onSave, onCancel, audio }) {
 // ---- TEXT RECALL (fill in the blank) ----------------------------------------
 function normalize(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9'’]/g, ''); }
 
-function TextRecallScreen({ palace, list, flat, onDone, audio, pro }) {
+function TextRecallScreen({ palace, list, flat, onDone, audio, pro, dir = 'forward' }) {
   const isNumber = list.system === 'number';
   const hideClue = isNumber && pro; // pure recall: decode the image yourself
   const n = Math.min(flat.length, list.items.length);
@@ -160,8 +160,14 @@ function TextRecallScreen({ palace, list, flat, onDone, audio, pro }) {
   const inputRef = useTxRef(null);
   const startRef = useTxRef(Date.now());
 
-  const spot = flat[idx];
-  const item = list.items[idx];
+  const pairs = useTxMemo(() => {
+    const ps = [];
+    for (let i = 0; i < n; i++) ps.push({ spot: flat[i], item: list.items[i] });
+    if (dir === 'back') ps.reverse();
+    return ps;
+  }, [dir, n]);
+  const spot = pairs[idx].spot;
+  const item = pairs[idx].item;
   const room = palace.rooms[spot.roomIndex];
 
   useTxEffect(() => {
