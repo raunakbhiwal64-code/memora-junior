@@ -670,11 +670,21 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .help-actions { display: flex; gap: 16px; }
 .silly-scene { width: 100%; height: auto; display: block; background: var(--paper); border-radius: 10px; }
 .silly-scene .ss-word { font-family: var(--font-display); font-weight: 700; fill: var(--ink); }
-@keyframes ss-wobble { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-@keyframes ss-pop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
-.silly-scene .ss-wobble { transform-box: fill-box; transform-origin: center; animation: ss-wobble 0.9s ease-in-out infinite; }
-.silly-scene .ss-pop { transform-box: fill-box; transform-origin: center; animation: ss-pop 0.8s ease-in-out infinite; }
-[data-motion="calm"] .silly-scene .ss-wobble, [data-motion="calm"] .silly-scene .ss-pop { animation: none; }
+.silly-scene text { transform-box: fill-box; transform-origin: center; }
+.silly-scene g { transform-box: fill-box; transform-origin: center; }
+@keyframes ss-item { 0%,100% { transform: translate(0,0) rotate(-6deg); } 30% { transform: translate(8px,-3px) rotate(7deg); } 60% { transform: translate(2px,2px) rotate(-3deg); } }
+@keyframes ss-pop { 0%,100% { transform: scale(1) rotate(-8deg); } 50% { transform: scale(1.25) rotate(8deg); } }
+@keyframes ss-spot { 0%,100% { transform: translate(0,0) rotate(0); } 12% { transform: translate(-2px,1px) rotate(-5deg); } 24% { transform: translate(2px,-1px) rotate(5deg); } 36% { transform: translate(0,0) rotate(0); } }
+@keyframes ss-burst { 0%,100% { transform: scale(0.85); opacity: 0.35; } 50% { transform: scale(1.12); opacity: 0.7; } }
+@keyframes ss-arcs { 0% { stroke-dashoffset: 18; opacity: 0.15; } 50% { opacity: 0.7; } 100% { stroke-dashoffset: 0; opacity: 0.15; } }
+@keyframes ss-spark { 0%,100% { transform: scale(0.2); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } }
+.silly-scene .ss-item { animation: ss-item 1.1s ease-in-out infinite; }
+.silly-scene .ss-pop { animation: ss-pop 0.8s ease-in-out infinite; }
+.silly-scene .ss-spot { animation: ss-spot 1.1s ease-in-out infinite; }
+.silly-scene .ss-burst { animation: ss-burst 0.9s ease-in-out infinite; }
+.silly-scene .ss-arcs path { stroke-dasharray: 18; animation: ss-arcs 1s linear infinite; }
+.silly-scene .ss-sparks text { animation: ss-spark 1.4s ease-in-out infinite; }
+[data-motion="calm"] .silly-scene * { animation: none !important; }
 .ai-fields { display: flex; flex-direction: column; gap: 6px; padding: 0 2px 4px; }
 .ai-input { font-family: var(--font-body); font-size: 13px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: var(--paper); color: var(--ink); outline: none; }
 .ai-input:focus { border-color: var(--ember); }

@@ -112,27 +112,34 @@ const AI = {
 // ---- the little SVG "silly scene" ------------------------------------------
 function SillyScene({ scene }) {
   if (!scene) return null;
+  const sparks = [[24, 22], [96, 70], [150, 24], [180, 68], [118, 16]];
   return (
     <svg className="silly-scene" viewBox="0 0 200 96" role="img" aria-label={scene.caption}>
-      {/* burst behind */}
-      <g opacity="0.5">
+      {/* pulsing burst behind the action */}
+      <g className="ss-burst" opacity="0.5">
         {[0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => {
           const r = a * Math.PI / 180;
           return <line key={i} x1={100 + Math.cos(r) * 16} y1={44 + Math.sin(r) * 16} x2={100 + Math.cos(r) * 30} y2={44 + Math.sin(r) * 30} stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" />;
         })}
       </g>
-      {/* item (left) */}
+      {/* item (left) — lunges + wobbles toward the spot */}
       {scene.itemGlyph
-        ? <text x="46" y="58" fontSize="44" textAnchor="middle" className="ss-wobble">{scene.itemGlyph}</text>
-        : <text x="46" y="52" fontSize="17" textAnchor="middle" className="ss-wobble ss-word">{scene.itemWord}</text>}
-      {/* action (middle, up high) */}
+        ? <text x="46" y="58" fontSize="44" textAnchor="middle" className="ss-item">{scene.itemGlyph}</text>
+        : <text x="46" y="52" fontSize="17" textAnchor="middle" className="ss-item ss-word">{scene.itemWord}</text>}
+      {/* action (middle, up high) — pops + spins a touch */}
       <text x="100" y="40" fontSize="30" textAnchor="middle" className="ss-pop">{scene.actionEmoji}</text>
-      {/* motion arcs toward the spot */}
-      <g fill="none" stroke="var(--ember)" strokeWidth="2" strokeLinecap="round" opacity="0.6">
+      {/* motion arcs streaming toward the spot */}
+      <g className="ss-arcs" fill="none" stroke="var(--ember)" strokeWidth="2" strokeLinecap="round" opacity="0.6">
         <path d="M120 56 q14 -6 26 0" /><path d="M122 64 q14 -6 26 0" />
       </g>
-      {/* spot (right) */}
-      <text x="162" y="60" fontSize="36" textAnchor="middle">{scene.spotGlyph}</text>
+      {/* spot (right) — jiggles as if being acted upon */}
+      <text x="162" y="60" fontSize="36" textAnchor="middle" className="ss-spot">{scene.spotGlyph}</text>
+      {/* twinkling sparkles */}
+      <g className="ss-sparks" fill="var(--gold)">
+        {sparks.map(([x, y], i) => (
+          <text key={i} x={x} y={y} fontSize="11" textAnchor="middle" style={{ animationDelay: `${i * 0.35}s` }}>✦</text>
+        ))}
+      </g>
     </svg>
   );
 }
