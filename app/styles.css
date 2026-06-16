@@ -663,7 +663,22 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .saved-pill { font-size: 13.5px; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; align-self: flex-start; margin: 0; }
 .idea-toggle { align-self: flex-start; background: none; border: none; color: var(--ember); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 2px 0; }
 .idea-toggle:hover { color: var(--ember-deep); }
+.idea-toggle:disabled { color: var(--ink-faint); cursor: default; text-decoration: none; }
 .place-idea { font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); margin: 0; background: var(--paper-2); border-radius: 12px; padding: 11px 14px; }
+.help-card { display: flex; flex-direction: column; gap: 8px; background: var(--paper-2); border: 1.5px solid var(--ember-soft); border-radius: 14px; padding: 12px; }
+.help-card .place-idea { background: none; padding: 0; }
+.help-actions { display: flex; gap: 16px; }
+.silly-scene { width: 100%; height: auto; display: block; background: var(--paper); border-radius: 10px; }
+.silly-scene .ss-word { font-family: var(--font-display); font-weight: 700; fill: var(--ink); }
+@keyframes ss-wobble { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes ss-pop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+.silly-scene .ss-wobble { transform-box: fill-box; transform-origin: center; animation: ss-wobble 0.9s ease-in-out infinite; }
+.silly-scene .ss-pop { transform-box: fill-box; transform-origin: center; animation: ss-pop 0.8s ease-in-out infinite; }
+[data-motion="calm"] .silly-scene .ss-wobble, [data-motion="calm"] .silly-scene .ss-pop { animation: none; }
+.ai-fields { display: flex; flex-direction: column; gap: 6px; padding: 0 2px 4px; }
+.ai-input { font-family: var(--font-body); font-size: 13px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: var(--paper); color: var(--ink); outline: none; }
+.ai-input:focus { border-color: var(--ember); }
+.ai-note { font-size: 11.5px; line-height: 1.45; color: var(--ink-faint); margin: 0; }
 .dir-badge { margin-left: 8px; font-size: 12px; font-weight: 800; color: var(--ember-deep); background: color-mix(in oklab, var(--ember) 14%, var(--paper)); border-radius: 999px; padding: 2px 9px; vertical-align: middle; }
 .recall-timer { float: right; font-family: var(--font-body); font-weight: 700; font-size: 14px; color: var(--ember); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
 

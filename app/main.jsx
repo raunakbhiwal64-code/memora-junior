@@ -24,6 +24,8 @@ function App() {
   const [stats, setStats] = useMS(() => Store.stats());
   const [preview, setPreview] = useMS(null);
   const [recallDir, setRecallDir] = useMS('forward');
+  const [aiCfg, setAiCfg] = useMS(() => AI.config());
+  const updateAi = (patch) => { const next = { ...aiCfg, ...patch }; AI.setConfig(next); setAiCfg(next); };
 
   const audio = t.audio;
   const pro = t.mode === 'pro';
@@ -203,6 +205,18 @@ function App() {
         <TweakRadio label="Mode" value={t.mode} options={['junior', 'pro']} onChange={(v) => setTweak('mode', v)} />
         <TweakRadio label="Motion" value={t.motion} options={['calm', 'lively']} onChange={(v) => setTweak('motion', v)} />
         <TweakToggle label="Audio narration" value={t.audio} onChange={(v) => setTweak('audio', v)} />
+
+        <TweakSection label="Idea helper (optional AI)" />
+        <TweakToggle label="Use a local AI for silly ideas" value={aiCfg.enabled} onChange={(v) => updateAi({ enabled: v })} />
+        {aiCfg.enabled && (
+          <div className="ai-fields">
+            <input className="ai-input" placeholder="Endpoint, e.g. http://localhost:11434" value={aiCfg.url}
+              onChange={(e) => updateAi({ url: e.target.value })} aria-label="AI endpoint URL" />
+            <input className="ai-input" placeholder="Model, e.g. llama3.2" value={aiCfg.model}
+              onChange={(e) => updateAi({ model: e.target.value })} aria-label="AI model name" />
+            <p className="ai-note">OpenAI-compatible (Ollama, LM Studio, …). When off or unreachable, free offline ideas are used instead. Settings stay on this device.</p>
+          </div>
+        )}
 
         <TweakSection label="Jump to a step" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

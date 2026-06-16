@@ -22,12 +22,21 @@ function PlaceScreen({ palace, list, flat, index, onPlace, audio }) {
   const item = list.items[index];
   const room = palace.rooms[spot.roomIndex];
   const action = actionPrompt(item, spot);   // THE prompt — an action question
-  const idea = promptFor(item, spot, index); // optional nudge, hidden by default
   const isSystem = item.system === 'number' || item.system === 'card';
-  const [showIdea, setShowIdea] = useS(false);
+  const [help, setHelp] = useS(null);        // { text, scene } — opt-in only
+  const [busy, setBusy] = useS(false);
   useNarrate(action, audio);
-  useE(() => setShowIdea(false), [index]);
+  useE(() => { setHelp(null); setBusy(false); }, [index]);
   const placed = placedMap(flat, list.items, index);
+
+  // Only ever runs when the child taps for help — the imagining stays theirs.
+  const getHelp = async () => {
+    setBusy(true);
+    const scene = sceneFor(item, spot);
+    const text = await AI.idea(item, spot);
+    setHelp({ text, scene });
+    setBusy(false);
+  };
 
   return (
     <div className="screen split">
@@ -54,9 +63,18 @@ function PlaceScreen({ palace, list, flat, index, onPlace, audio }) {
           <p className="place-source"><span className="place-source-tag">{item.isVocab ? 'Means' : 'From your text'}</span> {item.context}</p>
         )}
         {!isSystem && (
-          showIdea
-            ? <p className="place-idea">💡 {idea}</p>
-            : <button type="button" className="idea-toggle" onClick={() => setShowIdea(true)}>Stuck? Peek at an idea</button>
+          help
+            ? <div className="help-card">
+                <SillyScene scene={help.scene} />
+                <p className="place-idea">💡 {help.text}</p>
+                <div className="help-actions">
+                  <button type="button" className="idea-toggle" onClick={getHelp} disabled={busy}>🎲 Another idea</button>
+                  <button type="button" className="idea-toggle" onClick={() => setHelp(null)}>Hide</button>
+                </div>
+              </div>
+            : <button type="button" className="idea-toggle" onClick={getHelp} disabled={busy}>
+                {busy ? 'Thinking up something silly…' : '🪄 I’m stuck — show me a silly idea'}
+              </button>
         )}
         <p className="place-hint">Close your eyes for a second and really <em>see</em> it. Got the picture?</p>
         <BigButton onClick={onPlace} full>
