@@ -1,7 +1,20 @@
 // builder.jsx — Palace Builder (upload house photos + tap to place spots)
 // and List Importer (paste or upload your own data). Both persist locally.
 
-const { useState: useB, useRef: useBR } = React;
+const { useState: useB, useRef: useBR, useEffect: useBE } = React;
+
+// Capture the current video frame, downscaled, as a JPEG data URL.
+// Drawing through a fresh canvas means the result carries NO EXIF / GPS.
+function frameToDataURL(video, maxDim = 1280, quality = 0.82) {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw || !vh) return null;
+  const sc = Math.min(1, maxDim / Math.max(vw, vh));
+  const w = Math.round(vw * sc), h = Math.round(vh * sc);
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  c.getContext('2d').drawImage(video, 0, 0, w, h);
+  try { return c.toDataURL('image/jpeg', quality); } catch (e) { return null; }
+}
 
 // downscale an uploaded image so many rooms still fit in localStorage.
 // Re-encoding through a canvas also DROPS all EXIF / GPS metadata (PRD §7.5):
@@ -55,16 +68,129 @@ function ParentGate({ onPass, onCancel }) {
   );
 }
 
+// ============================================================ CAMERA CAPTURE
+// Live in-app camera, works on laptop webcams and phones alike via
+// getUserMedia. Prefers the rear ("environment") camera on phones, lets you
+// flip cameras, snap → preview → keep/retake. Returns a downscaled, EXIF-free
+// data URL. getUserMedia needs HTTPS (GitHub Pages is fine) or localhost; if it
+// is unavailable we fall back to the OS camera/file picker.
+function CameraCapture({ onCapture, onCancel }) {
+  const videoRef = useBR(null);
+  const streamRef = useBR(null);
+  const [facing, setFacing] = useB('environment');
+  const [canFlip, setCanFlip] = useB(false);
+  const [shot, setShot] = useB(null);   // captured data URL (preview)
+  const [error, setError] = useB(null);
+  const [ready, setReady] = useB(false);
+
+  const stop = () => {
+    const s = streamRef.current;
+    if (s) { s.getTracks().forEach((t) => t.stop()); streamRef.current = null; }
+  };
+
+  // (re)start the stream whenever the chosen camera changes
+  useBE(() => {
+    let cancelled = false;
+    if (shot) return;            // paused while previewing a still
+    setReady(false); setError(null);
+    const md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) { setError('nocam'); return; }
+    md.getUserMedia({ video: { facingMode: facing }, audio: false })
+      .then((stream) => {
+        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+        streamRef.current = stream;
+        if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play().catch(() => {}); }
+        md.enumerateDevices && md.enumerateDevices()
+          .then((ds) => { if (!cancelled) setCanFlip(ds.filter((d) => d.kind === 'videoinput').length > 1); })
+          .catch(() => {});
+        setReady(true);
+      })
+      .catch((e) => { if (!cancelled) setError(e && e.name === 'NotAllowedError' ? 'denied' : 'fail'); });
+    return () => { cancelled = true; stop(); };
+  }, [facing, shot]);
+
+  useBE(() => stop, []); // stop camera on unmount
+
+  const snap = () => {
+    const url = frameToDataURL(videoRef.current);
+    if (url) { setShot(url); stop(); }
+  };
+  const retake = () => setShot(null);
+  const use = () => { stop(); onCapture(shot); };
+  const flip = () => setFacing((f) => (f === 'environment' ? 'user' : 'environment'));
+
+  return (
+    <div className="cam-overlay" role="dialog" aria-label="Take a photo">
+      <div className="cam-frame">
+        {shot ? (
+          <img className="cam-view" src={shot} alt="Captured photo preview" />
+        ) : (
+          <video ref={videoRef} className={'cam-view' + (facing === 'user' ? ' is-mirror' : '')} playsInline muted />
+        )}
+
+        {error && (
+          <div className="cam-error">
+            <span className="cam-error-emoji" aria-hidden="true">📷</span>
+            <p>{error === 'denied'
+              ? 'Camera access was blocked. Allow the camera in your browser, or pick a photo instead.'
+              : 'No camera available here. You can pick a photo instead.'}</p>
+            <CamFallbackButton onPick={(url) => onCapture(url)} />
+          </div>
+        )}
+
+        {!shot && !error && !ready && <div className="cam-loading">Starting camera…</div>}
+      </div>
+
+      <div className="cam-bar">
+        {shot ? (
+          <>
+            <BigButton kind="ghost" onClick={retake}>↺ Retake</BigButton>
+            <BigButton onClick={use}>Use photo ✓</BigButton>
+          </>
+        ) : (
+          <>
+            <BigButton kind="ghost" onClick={() => { stop(); onCancel(); }}>Cancel</BigButton>
+            <button type="button" className="cam-shutter" onClick={snap} disabled={!ready} aria-label="Take photo" />
+            <button type="button" className="cam-flip" onClick={flip} disabled={!ready || !canFlip} aria-label="Flip camera">🔄</button>
+          </>
+        )}
+      </div>
+      <p className="store-note center">🔒 Photos stay on this device. Location info is removed automatically.</p>
+    </div>
+  );
+}
+
+// Fallback when getUserMedia is unavailable/blocked: the OS picker, which on
+// phones still offers "Take Photo" directly.
+function CamFallbackButton({ onPick }) {
+  const ref = useBR(null);
+  return (
+    <>
+      <BigButton onClick={() => ref.current && ref.current.click()}>📁 Choose / take a photo</BigButton>
+      <input ref={ref} type="file" accept="image/*" capture="environment" style={{ display: 'none' }}
+        onChange={async (e) => { const f = e.target.files[0]; e.target.value = ''; if (f) { try { onPick(await downscaleImage(f)); } catch (err) {} } }} />
+    </>
+  );
+}
+
 // ============================================================ PALACE BUILDER
 function PalaceBuilderScreen({ initial, onSave, onCancel }) {
   const [palace, setPalace] = useB(initial || { id: 'pal-' + Date.now(), name: '', kind: 'custom', rooms: [] });
   const [roomIdx, setRoomIdx] = useB(0);
   const [busy, setBusy] = useB(false);
+  const [camOpen, setCamOpen] = useB(false);
   const fileRef = useBR(null);
 
   const rooms = palace.rooms;
   const room = rooms[roomIdx] || null;
   const total = totalSpots(palace);
+
+  // append a room from an already-encoded (downscaled, EXIF-free) data URL
+  const addRoomFromURL = (img) => {
+    const next = [...rooms, { id: 'r' + Date.now() + Math.random().toString(36).slice(2, 6), name: 'Room ' + (rooms.length + 1), type: 'photo', img, spots: [] }];
+    setPalace({ ...palace, rooms: next });
+    setRoomIdx(next.length - 1);
+  };
 
   const addPhotos = async (files) => {
     if (!files || !files.length) return;
@@ -115,7 +241,10 @@ function PalaceBuilderScreen({ initial, onSave, onCancel }) {
           <div className="builder-empty">
             <span className="builder-empty-emoji" aria-hidden="true">🏠📸</span>
             <p>Add photos of rooms in your home.<br />A bedroom, the kitchen, the hallway&hellip;</p>
-            <BigButton onClick={() => fileRef.current && fileRef.current.click()}>＋ Add room photos</BigButton>
+            <div className="builder-empty-actions">
+              <BigButton onClick={() => setCamOpen(true)}>📷 Take a photo</BigButton>
+              <BigButton kind="ghost" onClick={() => fileRef.current && fileRef.current.click()}>🖼️ Choose photos</BigButton>
+            </div>
           </div>
         )}
         {room && <div className="scene-caption">Tap the photo to drop a spot &middot; {room.spots.length} here</div>}
@@ -144,7 +273,8 @@ function PalaceBuilderScreen({ initial, onSave, onCancel }) {
               <button type="button" className="room-thumb-del" onClick={(e) => { e.stopPropagation(); removeRoom(i); }} aria-label="Remove room">×</button>
             </div>
           ))}
-          <button type="button" className="room-add" onClick={() => fileRef.current && fileRef.current.click()} disabled={busy}>
+          <button type="button" className="room-add room-cam" onClick={() => setCamOpen(true)} disabled={busy} aria-label="Take a photo">📷</button>
+          <button type="button" className="room-add" onClick={() => fileRef.current && fileRef.current.click()} disabled={busy} aria-label="Add photos from device">
             {busy ? '…' : '＋'}
           </button>
         </div>
@@ -164,6 +294,12 @@ function PalaceBuilderScreen({ initial, onSave, onCancel }) {
         </div>
         <p className="store-note">🔒 Saved only on this device. Photo location info is removed automatically &mdash; nothing is uploaded.</p>
       </div>
+
+      {camOpen && (
+        <CameraCapture
+          onCancel={() => setCamOpen(false)}
+          onCapture={(img) => { setCamOpen(false); if (img) addRoomFromURL(img); }} />
+      )}
     </div>
   );
 }
@@ -232,4 +368,4 @@ function ListImportScreen({ onSave, onCancel }) {
   );
 }
 
-Object.assign(window, { ParentGate, PalaceBuilderScreen, ListImportScreen, downscaleImage });
+Object.assign(window, { ParentGate, PalaceBuilderScreen, ListImportScreen, downscaleImage, CameraCapture, frameToDataURL });
