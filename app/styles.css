@@ -672,6 +672,21 @@ button.list-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -2
 .number-chunk-s { font-size: 14px; color: var(--ink-soft); }
 .number-chunk-s em { color: var(--ember-deep); font-style: italic; }
 
+/* ---- cards ---- */
+.card-face { display: inline-flex; align-items: baseline; font-family: var(--font-display); font-weight: 700; line-height: 1; }
+.card-face .card-rank { font-size: 1em; }
+.card-face .card-suit { font-size: 0.9em; margin-left: 0.05em; }
+.card-face-big { font-size: 30px; }
+.card-toolbar { display: flex; gap: 12px; align-items: center; padding: 0 clamp(20px,4vw,52px); }
+.card-toolbar .builder-name { flex: 1; }
+.card-toolbar .btn { white-space: nowrap; }
+.card-hand { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; overflow-y: auto; padding: clamp(12px,2vw,20px) clamp(20px,4vw,52px); flex: 1; min-height: 0; }
+.card-tile { position: relative; width: 88px; height: 116px; border-radius: 12px; background: #fff; border: 1.5px solid var(--line); box-shadow: 0 3px 9px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 6px; }
+.card-tile-n { position: absolute; top: 4px; left: 6px; font-size: 11px; font-weight: 800; color: var(--ink-faint); }
+.card-tile-cue { font-size: 10.5px; line-height: 1.25; color: var(--ink-soft); text-align: center; }
+.card-key { padding: 0 clamp(20px,4vw,52px); }
+.card-deck-card .list-emoji { font-size: 40px; }
+
 .done-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0; }
 .done-chip { font-size: 13px; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
 .done-chip strong { color: var(--ember); font-weight: 800; }

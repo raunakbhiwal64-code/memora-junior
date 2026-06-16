@@ -293,6 +293,9 @@ function promptFor(item, spot, index) {
     const pegBit = item.peg ? ` Many people picture “${item.peg}”.` : '';
     return `Turn ${item.answer} into a picture using its sounds (${item.sounds}) and place it at ${spot.name}.${pegBit}`;
   }
+  if (item && item.system === 'card') {
+    return `Make the ${item.rank} of ${item.suitName} into a vivid character — try ${item.rankWord} with ${item.suitWord} — and stand it at ${spot.name}.`;
+  }
   if (item && item.context) {
     if (item.isVocab) return `Picture “${item.answer}” sitting at ${spot.name}. It means: ${item.context}.`;
     return `See the word “${item.answer}” come alive at ${spot.name} — it’s from your line: “${item.context}”.`;
@@ -495,6 +498,53 @@ function buildNumberList({ raw, title, palace }) {
   };
 }
 
+// ============================================================
+// CARD MEMORY — a beginner-friendly PAO scaffold. Each card becomes an image
+// by combining a rank cue with a suit cue (e.g. King of Hearts → a KING who is
+// LOVING). Advanced users ignore the suggestion and use their own system; the
+// scaffold just gets newcomers placing cards fast. Recall is recognition from
+// the cards you placed (pure speed comes from Pro mode's timer).
+// ============================================================
+const SUITS = [
+  { s: '♠', name: 'Spades', color: '#23201C', word: 'a spade/sword' },
+  { s: '♥', name: 'Hearts', color: '#C03A2B', word: 'love/a heart' },
+  { s: '♦', name: 'Diamonds', color: '#C03A2B', word: 'a diamond/ring' },
+  { s: '♣', name: 'Clubs', color: '#23201C', word: 'a clover/club' },
+];
+const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+// concrete, number-shape-flavoured cue per rank (the "person/object" seed)
+const RANK_WORD = {
+  A: 'an ace pilot', '2': 'a swan', '3': 'a butterfly', '4': 'a sailboat', '5': 'a hand',
+  '6': 'a snake', '7': 'a cliff', '8': 'a snowman', '9': 'a balloon', '10': 'a bat & ball',
+  J: 'a joker', Q: 'a queen', K: 'a king',
+};
+
+function makeDeck() {
+  const d = [];
+  SUITS.forEach((su) => RANKS.forEach((r) => d.push({ rank: r, suit: su.s, suitName: su.name, color: su.color })));
+  return d;
+}
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+// build a card list for the generic engine (recognition recall from a pool)
+function buildCardList({ cards, title, palace }) {
+  const cap = palace ? Math.max(1, totalSpots(palace)) : 52;
+  const deck = (cards && cards.length ? cards : shuffled(makeDeck())).slice(0, cap);
+  const items = deck.map((c, i) => ({
+    id: 'card' + i + '-' + c.rank + c.suit,
+    label: c.rank, emoji: c.suit, color: c.color,
+    system: 'card', rank: c.rank, suit: c.suit, suitName: c.suitName,
+    rankWord: RANK_WORD[c.rank], suitWord: (SUITS.find((s) => s.s === c.suit) || {}).word,
+  }));
+  return {
+    id: 'cards-' + Date.now(), kind: 'cards', system: 'card',
+    title: title || 'A deck of cards', subtitle: items.length + ' cards to remember', items,
+  };
+}
+
 // ---- localStorage (saved ON THIS DEVICE only) -------------------------------
 const STORE = { PAL: 'memora.palaces.v1', LIST: 'memora.lists.v1', SAVED: 'memora.saved.v1', STATS: 'memora.stats.v1' };
 function loadJSON(k, fb) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch (e) { return fb; } }
@@ -577,4 +627,10 @@ Object.assign(window, {
   majorSounds,
   chunkDigits,
   buildNumberList,
+  SUITS,
+  RANKS,
+  RANK_WORD,
+  makeDeck,
+  shuffled,
+  buildCardList,
 });

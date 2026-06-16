@@ -201,7 +201,7 @@ function PalacePreviewScreen({ palace, onUse, onBack, audio }) {
 }
 
 // ---- LIST PICKER ------------------------------------------------------------
-function ListPickScreen({ palace, lists, onChoose, onImport, onLearnText, onNumbers, onDeleteList, pro, audio }) {
+function ListPickScreen({ palace, lists, onChoose, onImport, onLearnText, onNumbers, onCards, onDeleteList, pro, audio }) {
   const spots = totalSpots(palace);
   useNarrate('What should we hide in your palace? Pick our planets, one of your saved lists, or bring your own.', audio);
   return (
@@ -243,6 +243,15 @@ function ListPickScreen({ palace, lists, onChoose, onImport, onLearnText, onNumb
               <span className="list-emoji" aria-hidden="true">🔢</span>
               <span className="list-name">Memorise a number</span>
               <span className="list-sub">Digits, dates, π — encoded with the Major System</span>
+              <span className="palace-go">Pro · Start →</span>
+            </button>
+          )}
+
+          {pro && (
+            <button type="button" className="list-card card-deck-card" onClick={onCards}>
+              <span className="list-emoji" aria-hidden="true">🂡</span>
+              <span className="list-name">Memorise cards</span>
+              <span className="list-sub">A shuffled deck — the classic speed-cards discipline</span>
               <span className="palace-go">Pro · Start →</span>
             </button>
           )}
