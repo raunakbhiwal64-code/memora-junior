@@ -156,6 +156,7 @@ function TextRecallScreen({ palace, list, flat, onDone, audio }) {
   const [feedback, setFeedback] = useTx(null);
   const [reveal, setReveal] = useTx(false);
   const inputRef = useTxRef(null);
+  const startRef = useTxRef(Date.now());
 
   const spot = flat[idx];
   const item = list.items[idx];
@@ -171,7 +172,7 @@ function TextRecallScreen({ palace, list, flat, onDone, audio }) {
     const next = idx + 1;
     setTimeout(() => {
       setFeedback(null); setAttempts(0);
-      if (next >= n) { const final = [...results, firstTry]; onDone(final.filter(Boolean).length, final.length, np); }
+      if (next >= n) { const final = [...results, firstTry]; onDone(final.filter(Boolean).length, final.length, np, Math.round((Date.now() - startRef.current) / 1000)); }
       else setIdx(next);
     }, 950);
   };

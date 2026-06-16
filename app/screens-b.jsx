@@ -133,6 +133,7 @@ function RecallScreen({ palace, list, flat, onDone, audio }) {
   const [feedback, setFeedback] = useS(null);
   const [wobbleId, setWobbleId] = useS(null);
   const [revealHint, setRevealHint] = useS(false);
+  const startRef = useR(Date.now());
 
   const order = useM(() => {
     const a = list.items.slice(0, n).map((x) => x.id);
@@ -158,7 +159,7 @@ function RecallScreen({ palace, list, flat, onDone, audio }) {
       const next = idx + 1;
       setTimeout(() => {
         setFeedback(null); setAttempts(0);
-        if (next >= n) { const final = [...results, firstTry]; onDone(final.filter(Boolean).length, final.length, np); }
+        if (next >= n) { const final = [...results, firstTry]; onDone(final.filter(Boolean).length, final.length, np, Math.round((Date.now() - startRef.current) / 1000)); }
         else setIdx(next);
       }, 950);
     } else {
@@ -195,11 +196,14 @@ function RecallScreen({ palace, list, flat, onDone, audio }) {
 }
 
 // ---- CELEBRATION ------------------------------------------------------------
-function DoneScreen({ palace, list, flat, score, total, placed, saved, onWalkAgain, onNewList, onHome, audio }) {
+function DoneScreen({ palace, list, flat, score, total, placed, saved, seconds, due, streak, onWalkAgain, onNewList, onHome, audio }) {
   const pct = Math.round((score / total) * 100);
   const allRight = score === total;
   const baseline = Math.max(1, Math.round(total * 0.25));
   const [viewRoom, setViewRoom] = useS(0);
+  const reviewWhen = due != null ? dueLabel(due) : null;
+  const mins = seconds ? Math.floor(seconds / 60) : 0;
+  const timeStr = seconds ? (mins ? mins + 'm ' + (seconds % 60) + 's' : seconds + 's') : null;
   useNarrate(
     allRight ? 'Amazing! You remembered every single one. Your palace really works!'
       : 'Great job! You remembered ' + score + ' out of ' + total + '. The palace is working — walk it again to lock in the rest!',
@@ -225,6 +229,11 @@ function DoneScreen({ palace, list, flat, score, total, placed, saved, onWalkAga
             <span className="masterbar-num">{pct}%</span>
           </div>
           {saved && <p className="saved-pill">💾 Saved to <strong>Your palaces</strong> on this device</p>}
+          <div className="done-meta">
+            {reviewWhen && <span className="done-chip">🔁 Next review <strong>{reviewWhen}</strong></span>}
+            {streak > 0 && <span className="done-chip">🔥 <strong>{streak}</strong> day streak</span>}
+            {timeStr && <span className="done-chip">⏱ <strong>{timeStr}</strong></span>}
+          </div>
           <div className="done-actions">
             <BigButton onClick={onWalkAgain} kind="ghost">↺ Walk it again</BigButton>
             <BigButton onClick={onNewList} kind="ghost">Try the recall again</BigButton>

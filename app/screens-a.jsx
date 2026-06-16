@@ -3,8 +3,10 @@
 const { useState: useStateA } = React;
 
 // ---- HOME -------------------------------------------------------------------
-function HomeScreen({ onStart, onContinue, hasSaved, audio }) {
+function HomeScreen({ onStart, onContinue, onReview, hasSaved, stats, dueCount, audio }) {
   useNarrate('Let\'s build a memory palace! I\'ll show you a trick that makes things really easy to remember.', audio);
+  const streak = stats && stats.streak ? stats.streak : 0;
+  const sessions = stats && stats.sessions ? stats.sessions : 0;
   return (
     <div className="screen home">
       <div className="home-art" aria-hidden="true">
@@ -17,19 +19,39 @@ function HomeScreen({ onStart, onContinue, hasSaved, audio }) {
           A memory palace is a secret trick for remembering almost anything &mdash;
           by hiding it in a place you know. Ready to try one?
         </p>
-        <BigButton onClick={onStart} full>Start the tour →</BigButton>
+
+        {(streak > 0 || sessions > 0) && (
+          <div className="home-stats" role="group" aria-label="Your practice stats">
+            <span className="stat-pill"><strong>{streak}</strong> day streak{streak > 0 ? ' 🔥' : ''}</span>
+            <span className="stat-pill"><strong>{sessions}</strong> session{sessions === 1 ? '' : 's'}</span>
+          </div>
+        )}
+
+        {dueCount > 0 && (
+          <button type="button" className="home-review" onClick={onReview}>
+            <span className="home-review-badge">{dueCount}</span>
+            <span className="home-review-text">
+              <strong>Time to review!</strong>
+              {dueCount === 1 ? ' 1 palace is due' : ` ${dueCount} palaces are due`} — keep your memories strong.
+            </span>
+            <span className="home-review-go">Review →</span>
+          </button>
+        )}
+
+        <BigButton onClick={onStart} full>{sessions > 0 ? 'New palace →' : 'Start the tour →'}</BigButton>
         {hasSaved && <BigButton onClick={onContinue} kind="soft" full>Open your palaces →</BigButton>}
-        <p className="home-foot">Takes about 10 minutes · No sign-in · Saved only on your device</p>
+        <p className="home-foot">No sign-in · Saved only on your device · Reviews remind you to come back</p>
       </div>
     </div>
   );
 }
 
 // ---- PALACE PICKER ----------------------------------------------------------
-function PickerScreen({ library, bestFor, onPickReady, onPreview, onBuild, onOpenPalace, onDeletePalace, audio }) {
+function PickerScreen({ library, bestFor, dueSets, onReview, onPickReady, onPreview, onBuild, onOpenPalace, onDeletePalace, audio }) {
   useNarrate('Pick a place you know really well. Use one of our ready-made palaces, or build one from photos of your own home!', audio);
   const ready = PALACES.filter((p) => p.ready);
   const comingSoon = PALACES.filter((p) => !p.ready);
+  const due = dueSets || [];
   return (
     <div className="screen picker">
       <header className="screen-head">
@@ -38,6 +60,28 @@ function PickerScreen({ library, bestFor, onPickReady, onPreview, onBuild, onOpe
       </header>
 
       <div className="picker-scroll">
+        {due.length > 0 && (
+          <section className="due-section">
+            <h3 className="saved-head">⏰ Due for review <span>· keep these fresh</span></h3>
+            <div className="saved-grid">
+              {due.map((s) => (
+                <div key={s.id} className="saved-card due-card">
+                  <div className="saved-thumb" style={{ backgroundImage: s.thumb ? `url(${s.thumb})` : 'none' }}>
+                    {!s.thumb && <span aria-hidden="true">🧠</span>}
+                  </div>
+                  <div className="saved-meta">
+                    <span className="saved-name">{s.name}</span>
+                    <span className="saved-sub">{s.listTitle} · best {s.score}/{s.total}</span>
+                    <div className="saved-cta">
+                      <button type="button" className="saved-play due-play" onClick={() => onReview(s)}>Review now →</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         <div className="palace-grid ready-grid">
           {ready.map((p) => {
             const spots = readySpotCount(p.id);

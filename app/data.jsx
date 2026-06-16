@@ -404,8 +404,39 @@ function parseList(raw, title) {
   return { id: 'list-' + Date.now(), title: title || 'My list', subtitle: items.length + ' things to remember', items };
 }
 
+// ============================================================
+// SPACED REPETITION — a light Leitner ladder. Each saved set carries an
+// `srs` stage; a strong recall bumps it up the ladder (longer gap before the
+// next review), a weak one knocks it back down. This is what turns a one-off
+// session into something users come back to — and what memory athletes lean
+// on to keep dozens of palaces fresh.
+// ============================================================
+const DAY_MS = 86400000;
+const SRS_INTERVALS = [1, 2, 4, 8, 16, 32]; // days until the next review, per stage
+function startOfDay(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function srsAdvance(stage, accuracy) {
+  const s = stage | 0;
+  if (accuracy >= 0.8) return Math.min(s + 1, SRS_INTERVALS.length - 1);
+  if (accuracy >= 0.5) return s;
+  return Math.max(0, s - 1);
+}
+function srsSchedule(prevStage, accuracy, now) {
+  const stage = srsAdvance(prevStage, accuracy);
+  return { stage, due: (now || Date.now()) + SRS_INTERVALS[stage] * DAY_MS };
+}
+// human-friendly "next review" phrase
+function dueLabel(due) {
+  if (due == null) return '';
+  const days = Math.round((startOfDay(due) - startOfDay(Date.now())) / DAY_MS);
+  if (days <= 0) return 'now';
+  if (days === 1) return 'tomorrow';
+  if (days < 7) return 'in ' + days + ' days';
+  const weeks = Math.round(days / 7);
+  return weeks <= 1 ? 'in a week' : 'in ' + weeks + ' weeks';
+}
+
 // ---- localStorage (saved ON THIS DEVICE only) -------------------------------
-const STORE = { PAL: 'memora.palaces.v1', LIST: 'memora.lists.v1', SAVED: 'memora.saved.v1' };
+const STORE = { PAL: 'memora.palaces.v1', LIST: 'memora.lists.v1', SAVED: 'memora.saved.v1', STATS: 'memora.stats.v1' };
 function loadJSON(k, fb) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch (e) { return fb; } }
 function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
@@ -420,6 +451,27 @@ const Store = {
   // a "saved set" = a palace + list + the items placed into it (resumable)
   upsertSaved(set) { const a = this.saved().filter((x) => x.id !== set.id); a.unshift(set); return saveJSON(STORE.SAVED, a); },
   removeSaved(id) { saveJSON(STORE.SAVED, this.saved().filter((x) => x.id !== id)); },
+  // practice stats + daily streak (drives the Home strip & celebration)
+  stats() { return loadJSON(STORE.STATS, { streak: 0, longest: 0, lastDay: 0, sessions: 0 }); },
+  recordPractice() {
+    const s = this.stats();
+    const today = startOfDay(Date.now());
+    if (s.lastDay !== today) {
+      s.streak = (today - s.lastDay === DAY_MS) ? (s.streak || 0) + 1 : 1;
+      s.longest = Math.max(s.longest || 0, s.streak);
+      s.lastDay = today;
+    }
+    s.sessions = (s.sessions || 0) + 1;
+    saveJSON(STORE.STATS, s);
+    return s;
+  },
+  // saved sets whose next review has come due, soonest first
+  dueSets(at) {
+    const now = at || Date.now();
+    return this.saved()
+      .filter((x) => x.srs && x.srs.due != null && x.srs.due <= now)
+      .sort((a, b) => (a.srs.due || 0) - (b.srs.due || 0));
+  },
   resolvePalace(ref) {
     if (ref && ref.kind === 'builtin') return buildTreehousePalace();
     return this.palaces().find((p) => p.id === (ref && ref.id ? ref.id : ref)) || null;
@@ -453,4 +505,10 @@ Object.assign(window, {
   parseList,
   MAX_ITEMS,
   Store,
+  SRS_INTERVALS,
+  srsAdvance,
+  srsSchedule,
+  dueLabel,
+  startOfDay,
+  DAY_MS,
 });

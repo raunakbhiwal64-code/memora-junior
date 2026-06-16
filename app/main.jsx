@@ -20,10 +20,13 @@ function App() {
   const [savedSets, setSavedSets] = useMS(() => Store.saved());
   const [customLists, setCustomLists] = useMS(() => Store.lists());
   const [customPalaces, setCustomPalaces] = useMS(() => Store.palaces());
+  const [stats, setStats] = useMS(() => Store.stats());
   const [preview, setPreview] = useMS(null);
 
   const audio = t.audio;
   const flat = useMM(() => flattenSpots(palace), [palace]);
+  // saved sets whose spaced-repetition review has come due
+  const dueSets = useMM(() => savedSets.filter((s) => s.srs && s.srs.due != null && s.srs.due <= Date.now()), [savedSets]);
 
   useME(() => { if (!audio) Narrator.stop(); }, [audio, step]);
   const go = (s) => { Narrator.stop(); setStep(s); };
@@ -31,20 +34,29 @@ function App() {
   // builtin treehouse + planets, used by the Tweaks "jump" shortcuts
   const loadDemo = () => { setPalace(buildTreehousePalace()); setList(PLANET_LIST); setPlaceIndex(0); };
 
-  const persistSet = (score, total) => {
+  const persistSet = (score, total, seconds) => {
     const id = (palace.kind === 'builtin' ? 'set-treehouse-' : 'set-' + palace.id + '-') + list.id;
     const prev = savedSets.find((x) => x.id === id);
     let bestScore = score, bestTotal = total;
     if (prev && prev.score != null && prev.score > score) { bestScore = prev.score; bestTotal = prev.total; }
+    const now = Date.now();
+    const accuracy = total > 0 ? score / total : 0;
+    const srs = srsSchedule(prev && prev.srs ? prev.srs.stage : 0, accuracy, now);
+    const attempt = { date: now, score, total, seconds: seconds || 0 };
+    const history = [...(prev && prev.history ? prev.history : []), attempt].slice(-30);
     const set = {
       id, name: palace.name || 'Treehouse',
       palaceRef: palace.kind === 'builtin' ? { kind: 'builtin', id: palace.id } : { kind: 'custom', id: palace.id },
       spots: totalSpots(palace), listTitle: list.title, list,
       score: bestScore, total: bestTotal,
+      lastScore: score, lastTotal: total, lastSeconds: seconds || 0,
+      srs, history, reviews: (prev && prev.reviews ? prev.reviews : 0) + 1,
       thumb: (palace.rooms.find((r) => r.type === 'photo') || {}).img || null,
-      date: Date.now(),
+      date: now,
     };
     Store.upsertSaved(set); setSavedSets(Store.saved());
+    setStats(Store.recordPractice());
+    return set;
   };
 
   const playSaved = (s) => {
@@ -78,11 +90,14 @@ function App() {
         <main className="app-stage">
           {step === 'home' && (
             <HomeScreen audio={audio} hasSaved={customPalaces.length > 0}
+              stats={stats} dueCount={dueSets.length}
+              onReview={() => { if (dueSets[0]) playSaved(dueSets[0]); }}
               onStart={() => go('pick')} onContinue={() => go('pick')} />
           )}
 
           {step === 'pick' && (
             <PickerScreen audio={audio} library={customPalaces} bestFor={bestFor}
+              dueSets={dueSets} onReview={playSaved}
               onPickReady={(id) => { setPalace(buildReadyPalace(id)); go('list'); }}
               onPreview={(id) => { setPreview(buildReadyPalace(id)); go('preview'); }}
               onBuild={() => go('gate')}
@@ -142,14 +157,15 @@ function App() {
 
           {step === 'recall' && (list.kind === 'text'
             ? <TextRecallScreen palace={palace} list={list} flat={flat} audio={audio}
-                onDone={(score, tot, placed) => { setResult({ score, total: tot, placed }); persistSet(score, tot); go('done'); }} />
+                onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
             : <RecallScreen palace={palace} list={list} flat={flat} audio={audio}
-                onDone={(score, tot, placed) => { setResult({ score, total: tot, placed }); persistSet(score, tot); go('done'); }} />
+                onDone={(score, tot, placed, secs) => { const set = persistSet(score, tot, secs); setResult({ score, total: tot, placed, seconds: secs || 0, due: set.srs.due, streak: set ? Store.stats().streak : 0 }); go('done'); }} />
           )}
 
           {step === 'done' && (
             <DoneScreen palace={palace} list={list} flat={flat} saved
               score={result.score} total={result.total} placed={result.placed} audio={audio}
+              seconds={result.seconds} due={result.due} streak={result.streak}
               onWalkAgain={() => go('walk')} onNewList={() => go('recall')}
               onHome={() => { setPlaceIndex(0); go('home'); }} />
           )}
