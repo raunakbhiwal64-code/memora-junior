@@ -315,7 +315,7 @@ function HouseLivingArt() {
 
     {/* CLOCK (50,16) back wall */}
     <circle cx="50" cy="16" r="3.9" fill="#252010"/><circle cx="50" cy="16" r="3.4" fill="#F8F2E8"/>
-    {[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>{const a=i*Math.PI/6-Math.PI/2;const r0=i%3===0?2.8:3.05;return<line key={i} x1={50+Math.cos(a)*r0} y1={16+Math.sin(a)*r0} x2={50+Math.cos(a)*3.2} y2={16+Math.sin(a)*3.2} stroke="#252010" strokeWidth={i%3===0?0.55:0.22}/>;});}
+    {[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>{const a=i*Math.PI/6-Math.PI/2;const r0=i%3===0?2.8:3.05;return<line key={i} x1={50+Math.cos(a)*r0} y1={16+Math.sin(a)*r0} x2={50+Math.cos(a)*3.2} y2={16+Math.sin(a)*3.2} stroke="#252010" strokeWidth={i%3===0?0.55:0.22}/>;})}
     <line x1="50" y1="16" x2="50" y2="13.4" stroke="#252010" strokeWidth="0.5"/>
     <line x1="50" y1="16" x2="51.8" y2="16.4" stroke="#252010" strokeWidth="0.35"/>
     <circle cx="50" cy="16" r="0.4" fill="#252010"/>
