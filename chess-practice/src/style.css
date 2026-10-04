@@ -1,0 +1,32 @@
+:root { --light: #f0d9b5; --dark: #b58863; font-family: system-ui, sans-serif; color: #1c1c1c; }
+body { margin: 0; background: #f6f5f1; }
+#app { max-width: 760px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.4rem; margin: 0 0 4px; }
+h2 { font-size: 1.1rem; margin: 18px 0 6px; }
+section { background: #fff; border-radius: 8px; padding: 12px 16px; margin: 12px 0; box-shadow: 0 1px 3px #0002; }
+button { font: inherit; cursor: pointer; }
+.btn { padding: 8px 14px; border: 1px solid #555; border-radius: 6px; background: #fff; margin: 2px 4px 2px 0; }
+.btn.primary { background: #2b6cb0; color: #fff; border-color: #2b6cb0; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+input[type=text], textarea, select { font: inherit; padding: 6px; }
+textarea { width: 100%; box-sizing: border-box; min-height: 90px; }
+.err { background: #fde8e8; border: 1px solid #e08080; padding: 8px; border-radius: 6px; }
+.note { color: #555; font-size: 0.9rem; }
+.fixture { background: #fff4c2; border: 1px dashed #b58a00; padding: 6px 8px; border-radius: 6px; font-size: 0.9rem; margin: 6px 0; }
+.good { color: #1b7a3a; font-weight: 600; } .bad { color: #b3261e; font-weight: 600; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; } td, th { text-align: left; padding: 4px 6px; border-bottom: 1px solid #eee; }
+progress { width: 100%; height: 18px; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: min(92vw, 480px); aspect-ratio: 1; margin: 8px 0; border: 2px solid #5b4636; user-select: none; }
+.sq { position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden; border: 0; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(24px, 8.4vw, 50px); line-height: 1; }
+.sq.light { background: var(--light); } .sq.dark { background: var(--dark); }
+.sq.last { box-shadow: inset 0 0 0 100px #f7ec6a88; }
+.sq.selected { box-shadow: inset 0 0 0 100px #4aa3ff99; }
+.sq.check { box-shadow: inset 0 0 0 100px #ff4d4d99; }
+.sq.dest::after { content: ''; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: #2b6cb066; }
+.piece.wp { color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 1px #000; }
+.piece.bp { color: #111; }
+.rk, .fl { position: absolute; font-size: 10px; font-style: normal; color: #5b4636; }
+.rk { top: 1px; left: 2px; } .fl { bottom: 1px; right: 3px; }
+.promo { background: #fff; border: 2px solid #2b6cb0; border-radius: 8px; padding: 8px; display: inline-block; }
+.status { font-weight: 600; margin: 4px 0; }
+ul.facts { margin: 4px 0 4px 18px; padding: 0; }

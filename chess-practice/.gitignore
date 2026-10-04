@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+# raw Lichess download used only by make-puzzles (large)
+*.csv
+*.csv.zst
