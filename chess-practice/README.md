@@ -47,8 +47,8 @@ app's puzzle player expects, it works offline afterwards, and it has no rate lim
 npm run make-puzzles
 ```
 
-This streams `lichess_db_puzzle.csv.zst` from https://database.lichess.org/, stops after
-it has enough puzzles (it does not download the whole file) and writes `public/puzzles.json`.
+This streams `lichess_db_puzzle.csv.zst` (about 300 MB in full) from https://database.lichess.org/, stops after
+it has enough puzzles (it only downloads the first part of the file) and writes `public/puzzles.json`.
 Run it once, then (re)start `npm run dev`. If the download is blocked, download the file
 yourself and run `node scripts/make-puzzles.mjs --file path\to\lichess_db_puzzle.csv.zst`.
 

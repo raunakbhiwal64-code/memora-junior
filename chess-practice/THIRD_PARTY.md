@@ -7,6 +7,7 @@
 | [Vite](https://vite.dev/) | Dev server and build | MIT |
 | [TypeScript](https://www.typescriptlang.org/) | Language / type checking | Apache-2.0 |
 | [Vitest](https://vitest.dev/) | Tests | MIT |
+| [fzstd](https://github.com/101arrowz/fzstd) | Pure-JavaScript zstd decoder, used only by `npm run make-puzzles` | MIT |
 | [Lichess puzzle database](https://database.lichess.org/#puzzles) | Subset in `public/puzzles.json` (built by `npm run make-puzzles`) | CC0 |
 | [Chess.com Published-Data API](https://www.chess.com/news/view/published-data-api) | Read-only game import, called from your browser | Chess.com terms of use |
 

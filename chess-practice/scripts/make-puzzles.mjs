@@ -1,18 +1,17 @@
 // Builds public/puzzles.json: a small beginner-friendly subset of the official
 // Lichess puzzle database (CC0). Run once on your computer:  npm run make-puzzles
 //
-// Source: https://database.lichess.org/#puzzles  (lichess_db_puzzle.csv.zst)
-// Needs Node 22.15+ (built-in zstd). Reads the download as a stream and stops
-// early, so it does NOT download the whole file.
+// Source: https://database.lichess.org/#puzzles  (lichess_db_puzzle.csv.zst, ~300 MB)
+// The file is read as a stream and reading STOPS as soon as enough puzzles are
+// found, so only the first part of the file is downloaded. Decompression uses the
+// pure-JavaScript `fzstd` package (works on any Node version, including Windows).
 //
 // Optional: node scripts/make-puzzles.mjs --file path/to/lichess_db_puzzle.csv[.zst]
 import { createReadStream, writeFileSync, mkdirSync } from 'node:fs';
-import { PassThrough, Readable, Transform, pipeline } from 'node:stream';
-import zlib from 'node:zlib';
-import { createInterface } from 'node:readline';
 import { pathToFileURL } from 'node:url';
+import { Decompress } from 'fzstd';
 
-const URL_DB = 'https://database.lichess.org/lichess_db_puzzle.csv.zst';
+const URL_DB = process.env.PUZZLE_URL || 'https://database.lichess.org/lichess_db_puzzle.csv.zst';
 const OUT = new URL('../public/puzzles.json', import.meta.url);
 const WANT = ['fork', 'pin', 'skewer', 'hangingPiece', 'mateIn1', 'mateIn2', 'backRankMate'];
 const PER_THEME = 300;
@@ -22,41 +21,9 @@ const MIN_POPULARITY = 80;
 
 const args = process.argv.slice(2);
 const fileArg = args.includes('--file') ? args[args.indexOf('--file') + 1] : null;
-
 const net = { status: '', type: '', length: '', bytes: 0 };
 
-async function openStream() {
-  const zstdOpts = zlib.constants.ZSTD_d_windowLogMax
-    ? { params: { [zlib.constants.ZSTD_d_windowLogMax]: 31 } }
-    : {};
-  const out = new PassThrough();
-  const fail = (e) => out.destroy(e);
-  if (fileArg) {
-    const raw = createReadStream(fileArg);
-    if (!fileArg.endsWith('.zst')) return raw;
-    pipeline(raw, zlib.createZstdDecompress(zstdOpts), out, (e) => e && fail(e));
-    return out;
-  }
-  if (typeof zlib.createZstdDecompress !== 'function') {
-    console.error('This Node version has no built-in zstd. Install Node 22.15 or newer, or pass --file with an unpacked .csv.');
-    process.exit(1);
-  }
-  const res = await fetch(process.env.PUZZLE_URL || URL_DB);
-  net.status = `${res.status} ${res.statusText}`;
-  net.type = res.headers.get('content-type') ?? '';
-  net.length = res.headers.get('content-length') ?? '';
-  if (!res.ok || !res.body) throw new Error(`Download failed: HTTP ${res.status}`);
-  const counter = new Transform({
-    transform(chunk, _enc, cb) {
-      net.bytes += chunk.length;
-      cb(null, chunk);
-    },
-  });
-  pipeline(Readable.fromWeb(res.body), counter, zlib.createZstdDecompress(zstdOpts), out, (e) => e && fail(e));
-  return out;
-}
-
-/** Pure row filter (exported for tests). Columns follow the official CSV header. */
+/** Pure row parser (exported for tests). Columns follow the official CSV header. */
 export function parseRow(line) {
   const c = line.split(',');
   if (c.length < 8 || c[0] === 'PuzzleId') return null;
@@ -70,31 +37,86 @@ export function accept(p) {
   return !!p && p.rating >= BAND[0] && p.rating <= BAND[1] && p.popularity >= MIN_POPULARITY && p.moves.length <= 6;
 }
 
+async function* sourceBytes(abort) {
+  if (fileArg) {
+    for await (const c of createReadStream(fileArg)) yield c;
+    return;
+  }
+  const res = await fetch(URL_DB, { signal: abort.signal });
+  net.status = `${res.status} ${res.statusText}`;
+  net.type = res.headers.get('content-type') ?? '';
+  net.length = res.headers.get('content-length') ?? '';
+  if (!res.ok || !res.body) throw new Error(`Download failed: HTTP ${res.status}`);
+  for await (const c of res.body) {
+    net.bytes += c.length;
+    yield c;
+  }
+}
+
+/** Feeds every decoded text line to `handle`; stops early when handle returns true. */
+async function readLines(handle) {
+  const abort = new AbortController();
+  const isZst = fileArg ? fileArg.endsWith('.zst') : true;
+  const td = new TextDecoder();
+  let tail = '';
+  let stop = false;
+  const onText = (u8) => {
+    tail += td.decode(u8, { stream: true });
+    const parts = tail.split('\n');
+    tail = parts.pop();
+    for (const p of parts) {
+      if (handle(p.endsWith('\r') ? p.slice(0, -1) : p)) {
+        stop = true;
+        return;
+      }
+    }
+  };
+  try {
+    if (isZst) {
+      const dec = new Decompress((chunk) => {
+        if (!stop) onText(chunk);
+      });
+      for await (const c of sourceBytes(abort)) {
+        dec.push(c);
+        if (stop) break;
+      }
+      if (!stop) dec.push(new Uint8Array(0), true);
+    } else {
+      for await (const c of sourceBytes(abort)) {
+        onText(c);
+        if (stop) break;
+      }
+    }
+    if (!stop && tail) handle(tail);
+  } finally {
+    abort.abort();
+  }
+}
+
 async function main() {
-  const stream = await openStream();
-  let streamErr = null;
-  const rl = createInterface({ input: stream, crlfDelay: Infinity });
-  stream.on('error', (e) => {
-    streamErr = e;
-    rl.close();
-  });
   const buckets = Object.fromEntries(WANT.map((t) => [t, []]));
   const seen = new Set();
   const stats = { rows: 0, parsed: 0, inBand: 0, popular: 0, short: 0, wantedTheme: 0 };
   let firstLine = '';
-  for await (const line of rl) {
+  let lastProgress = Date.now();
+  await readLines((line) => {
     if (!firstLine) firstLine = line;
-    if (++stats.rows > MAX_ROWS) break;
+    if (++stats.rows > MAX_ROWS) return true;
+    if (Date.now() - lastProgress > 3000) {
+      lastProgress = Date.now();
+      const got = Object.values(buckets).reduce((n, b) => n + b.length, 0);
+      console.log(`  ...read ${stats.rows.toLocaleString()} rows, kept ${got} puzzles`);
+    }
     const p = parseRow(line);
-    if (!p || Number.isNaN(p.rating)) continue;
+    if (!p || Number.isNaN(p.rating)) return false;
     stats.parsed++;
-    if (p.rating < BAND[0] || p.rating > BAND[1]) continue;
+    if (p.rating < BAND[0] || p.rating > BAND[1]) return false;
     stats.inBand++;
-    if (!(p.popularity >= MIN_POPULARITY)) continue;
+    if (!(p.popularity >= MIN_POPULARITY)) return false;
     stats.popular++;
-    if (p.moves.length > 6) continue;
+    if (p.moves.length > 6) return false;
     stats.short++;
-    if (!WANT.some((t) => p.themes.includes(t))) continue;
+    if (!WANT.some((t) => p.themes.includes(t))) return false;
     stats.wantedTheme++;
     for (const t of WANT) {
       if (buckets[t].length < PER_THEME && p.themes.includes(t) && !seen.has(p.id)) {
@@ -103,18 +125,15 @@ async function main() {
         break;
       }
     }
-    if (WANT.every((t) => buckets[t].length >= PER_THEME)) break;
-  }
-  rl.close();
-  stream.destroy?.();
-  if (streamErr) throw new Error(`Reading the data failed: ${streamErr.message}`);
-  if (!Object.values(buckets).some((b) => b.length)) {
+    return WANT.every((t) => buckets[t].length >= PER_THEME);
+  });
+  const puzzles = Object.values(buckets).flat();
+  if (puzzles.length === 0) {
     console.error('Diagnostics:', JSON.stringify(stats));
     console.error('First line read:', firstLine.slice(0, 200) || '(nothing was read)');
     if (!fileArg) console.error('Download:', JSON.stringify(net));
+    throw new Error('No puzzles matched. Is the input the official Lichess puzzle CSV?');
   }
-  const puzzles = Object.values(buckets).flat();
-  if (puzzles.length === 0) throw new Error('No puzzles matched. Is the input the official Lichess puzzle CSV?');
   mkdirSync(new URL('../public/', import.meta.url), { recursive: true });
   writeFileSync(
     OUT,
@@ -133,8 +152,10 @@ async function main() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((e) => {
-    console.error('Could not build the puzzle file:', e.message);
-    process.exit(1);
-  });
+  main()
+    .then(() => process.exit(0))
+    .catch((e) => {
+      console.error('Could not build the puzzle file:', e.message);
+      process.exit(1);
+    });
 }
