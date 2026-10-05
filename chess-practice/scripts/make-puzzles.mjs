@@ -54,14 +54,30 @@ export function accept(p) {
 
 async function main() {
   const stream = await openStream();
+  let streamErr = null;
   const rl = createInterface({ input: stream, crlfDelay: Infinity });
+  stream.on('error', (e) => {
+    streamErr = e;
+    rl.close();
+  });
   const buckets = Object.fromEntries(WANT.map((t) => [t, []]));
   const seen = new Set();
-  let rows = 0;
+  const stats = { rows: 0, parsed: 0, inBand: 0, popular: 0, short: 0, wantedTheme: 0 };
+  let firstLine = '';
   for await (const line of rl) {
-    if (++rows > MAX_ROWS) break;
+    if (!firstLine) firstLine = line;
+    if (++stats.rows > MAX_ROWS) break;
     const p = parseRow(line);
-    if (!accept(p)) continue;
+    if (!p || Number.isNaN(p.rating)) continue;
+    stats.parsed++;
+    if (p.rating < BAND[0] || p.rating > BAND[1]) continue;
+    stats.inBand++;
+    if (!(p.popularity >= MIN_POPULARITY)) continue;
+    stats.popular++;
+    if (p.moves.length > 6) continue;
+    stats.short++;
+    if (!WANT.some((t) => p.themes.includes(t))) continue;
+    stats.wantedTheme++;
     for (const t of WANT) {
       if (buckets[t].length < PER_THEME && p.themes.includes(t) && !seen.has(p.id)) {
         buckets[t].push({ id: p.id, fen: p.fen, moves: p.moves, rating: p.rating, themes: p.themes });
@@ -73,6 +89,11 @@ async function main() {
   }
   rl.close();
   stream.destroy?.();
+  if (streamErr) throw new Error(`Reading the data failed: ${streamErr.message}`);
+  if (!Object.values(buckets).some((b) => b.length)) {
+    console.error('Diagnostics:', JSON.stringify(stats));
+    console.error('First line read:', firstLine.slice(0, 200) || '(nothing was read)');
+  }
   const puzzles = Object.values(buckets).flat();
   if (puzzles.length === 0) throw new Error('No puzzles matched. Is the input the official Lichess puzzle CSV?');
   mkdirSync(new URL('../public/', import.meta.url), { recursive: true });
@@ -89,7 +110,7 @@ async function main() {
     }),
   );
   const counts = WANT.map((t) => `${t}: ${buckets[t].length}`).join(', ');
-  console.log(`Wrote ${puzzles.length} puzzles to public/puzzles.json (${counts}). Rows scanned: ${rows}.`);
+  console.log(`Wrote ${puzzles.length} puzzles to public/puzzles.json (${counts}). Rows scanned: ${stats.rows}.`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
