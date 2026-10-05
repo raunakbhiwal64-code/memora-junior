@@ -7,7 +7,7 @@
 //
 // Optional: node scripts/make-puzzles.mjs --file path/to/lichess_db_puzzle.csv[.zst]
 import { createReadStream, writeFileSync, mkdirSync } from 'node:fs';
-import { Readable } from 'node:stream';
+import { PassThrough, Readable, Transform, pipeline } from 'node:stream';
 import zlib from 'node:zlib';
 import { createInterface } from 'node:readline';
 import { pathToFileURL } from 'node:url';
@@ -23,19 +23,37 @@ const MIN_POPULARITY = 80;
 const args = process.argv.slice(2);
 const fileArg = args.includes('--file') ? args[args.indexOf('--file') + 1] : null;
 
-function openStream() {
+const net = { status: '', type: '', length: '', bytes: 0 };
+
+async function openStream() {
+  const zstdOpts = zlib.constants.ZSTD_d_windowLogMax
+    ? { params: { [zlib.constants.ZSTD_d_windowLogMax]: 31 } }
+    : {};
+  const out = new PassThrough();
+  const fail = (e) => out.destroy(e);
   if (fileArg) {
     const raw = createReadStream(fileArg);
-    return fileArg.endsWith('.zst') ? raw.pipe(zlib.createZstdDecompress()) : raw;
+    if (!fileArg.endsWith('.zst')) return raw;
+    pipeline(raw, zlib.createZstdDecompress(zstdOpts), out, (e) => e && fail(e));
+    return out;
   }
   if (typeof zlib.createZstdDecompress !== 'function') {
     console.error('This Node version has no built-in zstd. Install Node 22.15 or newer, or pass --file with an unpacked .csv.');
     process.exit(1);
   }
-  return fetch(URL_DB).then((res) => {
-    if (!res.ok || !res.body) throw new Error(`Download failed: HTTP ${res.status}`);
-    return Readable.fromWeb(res.body).pipe(zlib.createZstdDecompress());
+  const res = await fetch(process.env.PUZZLE_URL || URL_DB);
+  net.status = `${res.status} ${res.statusText}`;
+  net.type = res.headers.get('content-type') ?? '';
+  net.length = res.headers.get('content-length') ?? '';
+  if (!res.ok || !res.body) throw new Error(`Download failed: HTTP ${res.status}`);
+  const counter = new Transform({
+    transform(chunk, _enc, cb) {
+      net.bytes += chunk.length;
+      cb(null, chunk);
+    },
   });
+  pipeline(Readable.fromWeb(res.body), counter, zlib.createZstdDecompress(zstdOpts), out, (e) => e && fail(e));
+  return out;
 }
 
 /** Pure row filter (exported for tests). Columns follow the official CSV header. */
@@ -93,6 +111,7 @@ async function main() {
   if (!Object.values(buckets).some((b) => b.length)) {
     console.error('Diagnostics:', JSON.stringify(stats));
     console.error('First line read:', firstLine.slice(0, 200) || '(nothing was read)');
+    if (!fileArg) console.error('Download:', JSON.stringify(net));
   }
   const puzzles = Object.values(buckets).flat();
   if (puzzles.length === 0) throw new Error('No puzzles matched. Is the input the official Lichess puzzle CSV?');
