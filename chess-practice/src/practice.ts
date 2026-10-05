@@ -1,55 +1,94 @@
 import { Chess } from 'chess.js';
+import { RootGrader, type GradedMove } from './grading';
 import type { EngineLike } from './engine';
 import { moveFromUci } from './pgn';
-import { judgeMove, toMine } from './score';
-import type { Moment, Score } from './types';
+import type { Grade } from './score';
+import type { Moment } from './types';
 
-export const MY_MOVES = 3;
+/** Moves I play after the first (graded) move, with the engine answering. */
+export const CONTINUATION_MOVES = 2;
+
+export type Outcome = 'pending' | 'independent' | 'corrected' | 'shown' | 'miss';
 
 export interface Attempt {
   uci: string;
   san: string;
-  verdict: string;
-  good: boolean;
+  grade: Grade;
+  /** The first, graded move at the exact target position. */
+  isFirst: boolean;
   /** Same move that was played in the real game. */
   sameAsGame: boolean;
+  best: GradedMove['best'];
   engineReply?: { uci: string; san: string };
-  finished: boolean;
   gameOver?: string;
 }
 
-/** Practice at the critical position: my move, engine reply, up to MY_MOVES moves by me. */
+export interface LeadInStep {
+  fen: string;
+  san: string;
+  from: string;
+  to: string;
+}
+
+/** Replays the actual game moves leading into the target position. The last step's FEN equals `moment.fen`. */
+export function leadInSteps(m: Pick<Moment, 'leadIn'>): LeadInStep[] {
+  if (!m.leadIn) return [];
+  const c = new Chess(m.leadIn.startFen);
+  const out: LeadInStep[] = [];
+  for (const u of m.leadIn.moves) {
+    const mv = moveFromUci(c, u);
+    out.push({ fen: c.fen(), san: mv.san, from: mv.from, to: mv.to });
+  }
+  return out;
+}
+
+/**
+ * Practice at the exact target position: my first move is graded against the best root move (30cp tolerance),
+ * then the engine answers and I play up to CONTINUATION_MOVES more. Success is tracked as independent
+ * (right first time), corrected (right after a retry) or shown (answer revealed).
+ */
 export class PracticeSession {
   chess: Chess;
-  movesPlayed = 0;
-  history: Attempt[] = [];
   lastMove?: { from: string; to: string };
+  firstDone = false;
+  failures = 0;
+  shown = false;
+  continuationPlayed = 0;
+  attempts: Attempt[] = [];
+  private grader: RootGrader;
 
   constructor(
     public moment: Moment,
-    private engine: EngineLike,
-    private depth: number,
+    engine: EngineLike,
+    depth: number,
   ) {
+    this.grader = new RootGrader(engine, depth);
     this.chess = new Chess(moment.fen);
     this.lastMove = moment.lastMove;
   }
 
+  /** Back to the exact target position (the first move can be tried again). Counts as a retry only after a failed attempt. */
   reset() {
     this.chess = new Chess(this.moment.fen);
-    this.movesPlayed = 0;
-    this.history = [];
     this.lastMove = this.moment.lastMove;
+    this.continuationPlayed = 0;
+    if (!this.firstDone) return;
+  }
+
+  get outcome(): Outcome {
+    if (this.shown) return 'shown';
+    if (this.firstDone) return this.failures === 0 ? 'independent' : 'corrected';
+    return this.failures > 0 ? 'miss' : 'pending';
   }
 
   get finished() {
-    return this.movesPlayed >= MY_MOVES || this.chess.isGameOver();
+    return (this.firstDone && this.continuationPlayed >= CONTINUATION_MOVES) || this.chess.isGameOver();
   }
 
   get turnText() {
     return this.chess.turn() === 'w' ? 'White' : 'Black';
   }
 
-  /** Legal-move check only (no engine). */
   isLegal(from: string, to: string, promotion?: string): boolean {
     try {
       new Chess(this.chess.fen()).move({ from, to, promotion });
@@ -59,38 +98,49 @@ export class PracticeSession {
     }
   }
 
+  /** The learner gave up on the first move and asked to see the answer. */
+  showAnswer() {
+    this.shown = true;
+  }
+
+  /** After a failed first attempt: put the board back to the exact target position. */
+  retry() {
+    this.chess = new Chess(this.moment.fen);
+    this.lastMove = this.moment.lastMove;
+  }
+
   async play(from: string, to: string, promotion?: string): Promise<Attempt> {
     const mine = this.moment.myColor;
     const fenBefore = this.chess.fen();
-    const evBefore = await this.engine.analyse(fenBefore, this.depth);
-    const before: Score = toMine(evBefore.score, mine, mine);
+    const isFirst = !this.firstDone;
+    const uciMove = from + to + (promotion ?? '');
+    const graded = await this.grader.grade(fenBefore, uciMove, mine);
     const m = this.chess.move({ from, to, promotion });
     this.lastMove = { from: m.from, to: m.to };
-    this.movesPlayed++;
-    const uciMove = m.from + m.to + (m.promotion ?? '');
-    const over = this.chess.isGameOver();
-    const evAfter = await this.engine.analyse(this.chess.fen(), this.depth);
-    const opp = mine === 'w' ? 'b' : 'w';
-    const after: Score = this.chess.isCheckmate() ? { mate: 1 } : toMine(evAfter.score, opp, mine);
-    const j = judgeMove(before, after);
     const attempt: Attempt = {
       uci: uciMove,
       san: m.san,
-      verdict: this.chess.isCheckmate() ? 'Checkmate!' : j.word,
-      good: this.chess.isCheckmate() ? true : j.good,
-      sameAsGame: uciMove === this.moment.playedUci && this.movesPlayed === 1,
-      finished: false,
+      grade: this.chess.isCheckmate() ? { ok: true, kind: 'best', loss: 0, word: 'Checkmate' } : graded.grade,
+      isFirst,
+      sameAsGame: isFirst && uciMove === this.moment.playedUci,
+      best: graded.best,
     };
-    if (over) {
+    if (isFirst) {
+      if (attempt.grade.ok) this.firstDone = true;
+      else this.failures++;
+    } else this.continuationPlayed++;
+    if (this.chess.isGameOver()) {
       attempt.gameOver = this.chess.isCheckmate() ? 'Checkmate.' : 'The game is a draw.';
-    } else if (this.movesPlayed < MY_MOVES && evAfter.bestmove) {
-      const r = moveFromUci(this.chess, evAfter.bestmove);
-      this.lastMove = { from: r.from, to: r.to };
-      attempt.engineReply = { uci: evAfter.bestmove, san: r.san };
-      if (this.chess.isGameOver()) attempt.gameOver = this.chess.isCheckmate() ? 'Checkmate.' : 'The game is a draw.';
+    } else if (isFirst ? attempt.grade.ok : this.continuationPlayed < CONTINUATION_MOVES) {
+      const reply = await this.grader.bestMove(this.chess.fen());
+      if (reply) {
+        const r = moveFromUci(this.chess, reply);
+        this.lastMove = { from: r.from, to: r.to };
+        attempt.engineReply = { uci: reply, san: r.san };
+        if (this.chess.isGameOver()) attempt.gameOver = this.chess.isCheckmate() ? 'Checkmate.' : 'The game is a draw.';
+      }
     }
-    attempt.finished = this.finished;
-    this.history.push(attempt);
+    this.attempts.push(attempt);
     return attempt;
   }
 }

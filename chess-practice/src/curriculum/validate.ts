@@ -24,6 +24,7 @@ export function claimMoves(c: Claim): string[] {
     case 'inTop':
     case 'worseThanBestBy':
     case 'allowsMate':
+    case 'scoreAtLeast':
       return [c.move];
     case 'withinCp':
       return c.moves;

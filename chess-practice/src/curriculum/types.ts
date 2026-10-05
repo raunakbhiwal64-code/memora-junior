@@ -22,7 +22,8 @@ export type Claim =
   | { type: 'worseThanBestBy'; move: string; atLeastCp: number }
   | { type: 'allowsMate'; move: string; atMost: number }
   | { type: 'evalBetween'; minCp: number; maxCp: number }
-  | { type: 'betterThan'; move: string; than: string; byCp: number };
+  | { type: 'betterThan'; move: string; than: string; byCp: number }
+  | { type: 'scoreAtLeast'; move: string; cp: number };
 
 export interface Seed {
   id: string;

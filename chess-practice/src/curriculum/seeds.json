@@ -159,7 +159,9 @@
    {
     "type": "withinCp",
     "moves": [
-     "e4"
+     "e4",
+     "c4",
+     "Nc3"
     ],
     "cp": 30
    }
@@ -255,7 +257,8 @@
     "type": "withinCp",
     "moves": [
      "dxe5",
-     "Bg4"
+     "Bg4",
+     "Bf5"
     ],
     "cp": 30
    }
@@ -324,8 +327,10 @@
    {
     "type": "withinCp",
     "moves": [
+     "Nf6",
      "c6",
-     "Nf6"
+     "e6",
+     "g6"
     ],
     "cp": 30
    }
@@ -347,5 +352,328 @@
    }
   ],
   "note": "Do not teach ...c6 as an error, nor 'develop first' as an absolute law."
+ },
+ {
+  "id": "Q.L1.bf4",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5",
+  "declared": "illustrative",
+  "title": "Quiz: develop the bishop outside the chain",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Bf4"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "Q.L1.e3",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6",
+  "declared": "illustrative",
+  "title": "Quiz: build d4/e3 with the bishop already out",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "e3"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "Q.L1.c3",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5",
+  "declared": "illustrative",
+  "title": "Quiz: reinforce d4 against ...c5",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "c3"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "Q.L1.bd3",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 Bd6",
+  "declared": "illustrative",
+  "title": "Quiz: Bd3 when it is safe",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Bd3"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "Q.L1.castle",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O",
+  "declared": "illustrative",
+  "title": "Quiz: complete the setup by castling",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "O-O"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "O-O is sound here, but Bg3 is the engine's first choice (the setup, not each move, is the lesson)."
+ },
+ {
+  "id": "L1.bd3-note",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6",
+  "declared": "illustrative",
+  "title": "At move 7 the engine prefers Bg3 to Bd3",
+  "claims": [
+   {
+    "type": "best",
+    "move": "Bg3"
+   },
+   {
+    "type": "worseThanBestBy",
+    "move": "Bd3",
+    "atLeastCp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "Teaching honesty: the reference line is a shape, not the engine's choice at every move."
+ },
+ {
+  "id": "Q.L2.nh5",
+  "lessonId": "london-bishop-choices",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 Nh5",
+  "declared": "illustrative",
+  "title": "Quiz: ...Nh5 attacks the bishop: keep it",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Be5",
+     "Bg5"
+    ],
+    "cp": 30
+   },
+   {
+    "type": "worseThanBestBy",
+    "move": "Nbd2",
+    "atLeastCp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "Ignoring the attack with Nbd2 allows ...Nxf4 exf4."
+ },
+ {
+  "id": "Q.L2.mirror",
+  "lessonId": "london-bishop-choices",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Bf5 e3 e6 Nf3 Nf6",
+  "declared": "illustrative",
+  "title": "Quiz: challenge the mirrored bishop with Bd3",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Bd3"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "L4.qxb2",
+  "lessonId": "london-vs-qb6",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6 Nc3 Qxb2",
+  "declared": "illustrative",
+  "title": "After 5.Nc3 Qxb2: Nxd5 is even stronger than Nb5",
+  "claims": [
+   {
+    "type": "best",
+    "move": "Nxd5"
+   },
+   {
+    "type": "scoreAtLeast",
+    "move": "Nb5",
+    "cp": 250
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "Nb5 keeps a large advantage but Nxd5 is stronger."
+ },
+ {
+  "id": "B1.c6",
+  "lessonId": "black-foundation",
+  "color": "b",
+  "prefix": "e4 d6 Nf3",
+  "declared": "illustrative",
+  "title": "The shell move ...c6 is playable but not the engine's first choice",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "c6"
+    ],
+    "cp": 40
+   },
+   {
+    "type": "worseThanBestBy",
+    "move": "c6",
+    "atLeastCp": 20
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "Honest label: the engine prefers ...Nf6 here."
+ },
+ {
+  "id": "Q.B1.d6",
+  "lessonId": "black-foundation",
+  "color": "b",
+  "prefix": "e4",
+  "declared": "illustrative",
+  "title": "Quiz: the shell starts with ...d6",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "d6"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Lesson quiz board (position built from a legal move list; claims checked by the engine)",
+    "date": "2026-10-05"
+   }
+  ]
+ },
+ {
+  "id": "L2.nh5-early",
+  "lessonId": "london-bishop-choices",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 Nh5",
+  "declared": "illustrative",
+  "title": "...Nh5 before Nf3 simply hangs the knight",
+  "claims": [
+   {
+    "type": "best",
+    "move": "Qxh5"
+   },
+   {
+    "type": "scoreAtLeast",
+    "move": "Qxh5",
+    "cp": 400
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Bishop discussion; checked position",
+    "date": "2026-10-05"
+   }
+  ],
+  "note": "The queen on d1 sees h5 until Nf3 blocks the diagonal."
  }
 ]

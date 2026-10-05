@@ -19,7 +19,7 @@
   "seedIds": [
    "L1.ref"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "coaching",
@@ -49,7 +49,7 @@
   "seedIds": [
    "L2.recapture"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "coaching",
@@ -77,7 +77,7 @@
   "seedIds": [
    "L3.d5"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "coaching",
@@ -106,7 +106,7 @@
    "L4.qb6",
    "L4.trap"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "game",
@@ -135,7 +135,7 @@
    "L5.g6",
    "L5.b6"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "coaching",
@@ -187,7 +187,7 @@
    "black.conditional-breaks"
   ],
   "seedIds": [],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "coaching",
@@ -215,7 +215,7 @@
   "seedIds": [
    "B2.f7"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "game",
@@ -243,7 +243,7 @@
   "seedIds": [
    "B3.e5"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "game",
@@ -271,7 +271,7 @@
    "B4.locked",
    "B4.counter"
   ],
-  "contentStatus": "pending",
+  "contentStatus": "built",
   "source": [
    {
     "kind": "game",

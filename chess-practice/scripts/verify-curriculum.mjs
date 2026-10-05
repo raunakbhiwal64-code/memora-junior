@@ -142,6 +142,11 @@ function evalClaim(c, ctx) {
       const cp = stm === color ? best.cp : -best.cp; // learner's point of view
       return { pass: cp >= c.minCp && cp <= c.maxCp, measured: `learner's view ${fmt({ cp })}` };
     }
+    case 'scoreAtLeast': {
+      const r = root(c.move);
+      if (hasMate(r)) return { pass: false, measured: 'mate involved: not compared in centipawns' };
+      return { pass: r.cp >= c.cp, measured: `${c.move} ${fmt(r)} (needs at least ${(c.cp / 100).toFixed(2)})` };
+    }
     case 'betterThan': {
       const a = root(c.move);
       const b = root(c.than);

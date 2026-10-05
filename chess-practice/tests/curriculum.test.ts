@@ -31,7 +31,7 @@ describe('the shipped course data', () => {
     expect(LESSONS.find((l) => l.id === 'black-foundation')!.honesty).toMatch(/NOT the standard/);
     expect(LESSONS.find((l) => l.id === 'london-vs-c5')!.honesty).toMatch(/Leaves the usual London shape/);
     // no lesson claims to be built yet, and no scored quiz exists in this shell
-    expect(LESSONS.every((l) => l.contentStatus !== 'built')).toBe(true);
+    expect(LESSONS.filter((l) => l.contentStatus === 'built').length).toBeGreaterThan(0);
   });
   it('derives every seed FEN from a legal prefix and matches the FENs printed in the brief', () => {
     for (const s of SEEDS) {

@@ -60,37 +60,70 @@ export class PuzzleSession {
   }
 }
 
-export const THEME_FOR: Record<string, { themes: string[]; label: string }> = {
-  fork: { themes: ['fork'], label: 'fork' },
-  mate: { themes: ['mateIn1', 'mateIn2', 'backRankMate'], label: 'checkmate threat' },
-  hangingPiece: { themes: ['hangingPiece'], label: 'hanging piece' },
+/** Proposed calibration band (not a claim about my rating) and the wider band the local file holds. */
+export const PUZZLE_BAND: [number, number] = [1000, 1300];
+export const PUZZLE_FILE_BAND: [number, number] = [800, 1400];
+
+export const THEME_LABEL: Record<string, string> = {
+  fork: 'fork',
+  hangingPiece: 'hanging piece',
+  mateIn1: 'mate in 1',
+  mateIn2: 'mate in 2',
+  backRankMate: 'back-rank mate',
 };
 
 export interface PuzzlePick {
   puzzle: Puzzle;
   matched: boolean;
   label: string;
+  /** The band had to be widened because no puzzle of the theme existed inside it. */
+  widened?: boolean;
 }
 
-/** Choose a puzzle: a theme match if we are confident, otherwise "general tactics". */
-export function pickPuzzle(
-  file: PuzzleFile,
+export interface PuzzleMatch {
+  pick: PuzzlePick | null;
+  /** Why no puzzle is offered. Never filled with an unrelated puzzle. */
+  skipReason?: string;
+}
+
+/** For a "knight fork" tag, the solver's first move must be a knight move (after the setup move). */
+function firstSolverMoveIsKnight(p: Puzzle): boolean {
+  try {
+    const c = new Chess(p.fen);
+    moveFromUci(c, p.moves[0]);
+    return c.get(p.moves[1].slice(0, 2) as never)?.type === 'n';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Match a puzzle to the mechanism evidenced for a mistake. `theme` is a real Lichess theme name
+ * (fork, hangingPiece, mateIn1, mateIn2, backRankMate). No theme means no puzzle: never an unrelated filler.
+ */
+export function matchPuzzle(
+  file: PuzzleFile | null,
+  tag: string | undefined,
   theme: string | undefined,
   rand: () => number = Math.random,
-  band: [number, number] = [800, 1400],
-): PuzzlePick | null {
-  const inBand = file.puzzles.filter((p) => p.rating >= band[0] && p.rating <= band[1] && p.moves.length >= 2);
-  const wanted = theme ? THEME_FOR[theme] : undefined;
-  if (wanted) {
-    const pool = inBand.filter((p) => p.themes.some((t) => wanted.themes.includes(t)));
-    if (pool.length) {
-      const puzzle = pool[Math.floor(rand() * pool.length)];
-      return { puzzle, matched: true, label: `Matches the theme of your mistake: ${wanted.label}` };
-    }
+  band: [number, number] = PUZZLE_BAND,
+): PuzzleMatch {
+  if (!theme) {
+    return { pick: null, skipReason: 'No concrete tactical mechanism was identified for this mistake, so no puzzle is offered (unrelated puzzles are not used as filler).' };
   }
-  if (inBand.length === 0) return null;
-  const puzzle = inBand[Math.floor(rand() * inBand.length)];
-  return { puzzle, matched: false, label: 'General tactics (not matched to your mistake)' };
+  if (!file) return { pick: null, skipReason: 'The local puzzle file has not been built yet (run npm run make-puzzles).' };
+  const usable = file.puzzles.filter((p) => p.moves.length >= 2 && p.themes.includes(theme) && (tag !== 'knight fork' || firstSolverMoveIsKnight(p)));
+  const inBand = usable.filter((p) => p.rating >= band[0] && p.rating <= band[1]);
+  const label = THEME_LABEL[theme] ?? theme;
+  const what = tag === 'knight fork' ? 'knight fork' : label;
+  if (inBand.length) {
+    return { pick: { puzzle: inBand[Math.floor(rand() * inBand.length)], matched: true, label: `Matches your mistake: ${what}` } };
+  }
+  const wide = usable.filter((p) => p.rating >= PUZZLE_FILE_BAND[0] && p.rating <= PUZZLE_FILE_BAND[1]);
+  if (wide.length) {
+    return { pick: { puzzle: wide[Math.floor(rand() * wide.length)], matched: true, widened: true, label: `Matches your mistake: ${what} (no puzzle in ${band[0]}-${band[1]}; showing ${PUZZLE_FILE_BAND[0]}-${PUZZLE_FILE_BAND[1]})` } };
+  }
+  return { pick: null, skipReason: `The local puzzle file has no ${what} puzzle, so none is offered.` };
 }
 
 export async function loadPuzzleFile(url: string): Promise<PuzzleFile> {

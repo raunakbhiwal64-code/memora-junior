@@ -1,4 +1,5 @@
-import { PHASE_RULE } from './phase';
+import { DEFAULTS } from './moments';
+import { PHASE_LABEL, PHASE_RULE, type Phase } from './phase';
 import type { LessonState, PhasePath } from './progress';
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -10,30 +11,27 @@ const STATE: Record<LessonState, { icon: string; text: string }> = {
   revisit: { icon: '↻', text: 'Revisit' },
 };
 
-const EMPTY: Record<string, string> = {
-  opening: 'No move in the first 10 moves of these games lost a meaningful amount of advantage.',
-  middle: 'No middle-game move in these games lost a meaningful amount of advantage.',
-  end: 'No end-game move in these games lost a meaningful amount of advantage.',
-};
+const emptyText = (phase: Phase) =>
+  `No ${PHASE_LABEL[phase].toLowerCase()} move in these games was an eligible mistake (it needs to lose at least ${DEFAULTS.thresholds[phase] / 100} pawns by engine estimate, among the other rules above).`;
 
-/** HTML for the three learning paths. Pure: takes the already-built paths. */
-export function renderPaths(paths: PhasePath[], opts: { fixture: boolean; threshold: string }): string {
-  const cards = paths
+/** HTML for the learning paths of the learner's own mistakes. The original move and the answer are never shown here. */
+export function renderPaths(paths: PhasePath[], opts: { fixture: boolean; filter: Phase | 'all' }): string {
+  const shown = paths.filter((p) => opts.filter === 'all' || p.phase === opts.filter);
+  const cards = shown
     .map((p) => {
       const nodes = p.lessons
         .map((l, i) => {
           const st = STATE[l.state];
           return `<li class="node ${l.state}">
-            <button type="button" class="node-btn" data-i="${l.index}" aria-label="Lesson ${i + 1}: move ${l.moment.moveNumber} against ${esc(l.moment.opponent)}, ${st.text}">
+            <button type="button" class="node-btn" data-i="${l.index}" aria-label="Position ${i + 1}: move ${l.moment.moveNumber} against ${esc(l.moment.opponent)}, ${st.text}">
               <span class="node-dot" aria-hidden="true">${l.state === 'ready' || l.state === 'inProgress' ? i + 1 : st.icon}</span>
               <span class="node-text"><b>Move ${l.moment.moveNumber}</b> · ${l.moment.myColor === 'w' ? 'White' : 'Black'}<br><span class="note">vs ${esc(l.moment.opponent)}</span></span>
               <span class="pill ${l.state}"><span aria-hidden="true">${st.icon}</span> ${st.text}</span>
+              ${l.moment.needsReview ? '<span class="pill pendingpill">Phase: needs review</span>' : ''}
             </button></li>`;
         })
         .join('');
-      const body = p.total
-        ? `<ol class="path">${nodes}</ol>`
-        : `<p class="empty">${EMPTY[p.phase]} Nothing is invented to fill this path.</p>`;
+      const body = p.total ? `<ol class="path">${nodes}</ol>` : `<p class="empty">${esc(emptyText(p.phase))} Nothing is invented to fill this path.</p>`;
       const pct = p.total ? Math.round((p.practised / p.total) * 100) : 0;
       return `<section class="phase ${p.phase}" aria-labelledby="h-${p.phase}">
         <header><h2 id="h-${p.phase}">${p.label}</h2>
@@ -45,11 +43,11 @@ export function renderPaths(paths: PhasePath[], opts: { fixture: boolean; thresh
       </section>`;
     })
     .join('');
+  const d = DEFAULTS;
   return `<div class="paths-intro">
-      <h2>Your learning paths</h2>
       ${opts.fixture ? '<div class="fixture">TEST FIXTURE: these positions come from generated test games, not yours.</div>' : ''}
-      <p class="note">Every position is a real move from your games that the engine estimates lost at least ${esc(opts.threshold)} of advantage. Open any path in any order. Your original move and the answer stay hidden until you try. "Practised" means you tried it and read the explanation, not that you have mastered it. "Revisit" means you finished it without finding a good move yet.</p>
-      <p class="note">Positions where you were already clearly worse (more than 1.5 pawns behind) are skipped: those moves were damage control, and the real lesson is the earlier move that got you there. The first such move in each game is taught first.</p>
+      <p class="note">Each position is one of your own moves that the engine estimates was a real mistake. Original move, evaluation and answer stay hidden until you try. "Practised" means you tried it and read the explanation, not that you have mastered it.</p>
+      <p class="note"><b>Default rules (tunable):</b> engine depth ${d.depth}, re-checked at ${d.recheckDepth}; a mistake must lose at least ${d.thresholds.opening / 100} pawns in the opening, ${d.thresholds.middle / 100} in the middle game, ${d.thresholds.end / 100} in the end game (or a repertoire deviation costing ${d.repertoireDeviationCp / 100}+ in the opening, or a forced mate missed or allowed). Moves made when you were already worse than ${d.alreadyLostCp / 100} are skipped, and a move from a clearly winning position is skipped if it still wins. At most ${d.maxPerGame} positions per game; the biggest mistake and the earliest cause are included first.</p>
       <p class="note">${esc(PHASE_RULE)}</p>
     </div>
     <div class="paths">${cards}</div>`;

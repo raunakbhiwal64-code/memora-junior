@@ -1,49 +1,72 @@
-import { afterAll, describe, expect, it } from 'vitest';
-import { FIXTURE_GAME_LOSING } from '../src/fixtures';
-import { DEFAULTS, candidatesOf, findMoments, isTeachable, type Scan } from '../src/moments';
-import { createNodeEngine } from './nodeEngine';
+import { describe, expect, it } from 'vitest';
+import { DEFAULTS, eligibility, pickForGame, type Scan } from '../src/moments';
+import type { Phase } from '../src/phase';
+import type { Score } from '../src/types';
 
-/** Synthetic scans (logic only). Scores are in MY point of view. */
-const scan = (ply: number, before: number, after: number, over: Partial<Scan> = {}): Scan => ({
-  gameId: 'g', ply, fen: 'x', before: { cp: before }, after: { cp: after }, kind: 'cp', loss: before - after, ...over,
-});
+const s = (best: Score, played: Score, over: Partial<Scan> = {}) => {
+  const bc = best.cp ?? 0;
+  const pc = played.cp ?? 0;
+  return { best: { uci: 'a2a3', san: 'a3', score: best, pv: [] }, played: { score: played, pv: [], inTopLines: false }, kind: 'cp' as const, loss: Math.max(0, bc - pc), winningCollapse: bc >= 300 && pc <= 100, ...over };
+};
+const ok = (best: Score, played: Score, phase: Phase, rep: 'in-repertoire' | 'deviation' | 'unknown' = 'unknown') => eligibility(s(best, played), phase, DEFAULTS, rep).ok;
 
-describe('which mistakes are teachable', () => {
-  it('skips mistakes made when I was already clearly worse', () => {
-    expect(isTeachable(scan(30, -300, -900), DEFAULTS)).toBe(false);
-    expect(isTeachable(scan(30, -151, -600), DEFAULTS)).toBe(false);
-    expect(isTeachable(scan(30, -100, -500), DEFAULTS)).toBe(true);
+describe('phase thresholds', () => {
+  it('opening >= 100cp, middle game >= 150cp, end game >= 100cp', () => {
+    expect(ok({ cp: 20 }, { cp: -90 }, 'opening')).toBe(true); // 110
+    expect(ok({ cp: 20 }, { cp: -60 }, 'opening')).toBe(false); // 80
+    expect(ok({ cp: 20 }, { cp: -110 }, 'middle')).toBe(false); // 130 < 150
+    expect(ok({ cp: 20 }, { cp: -140 }, 'middle')).toBe(true); // 160
+    expect(ok({ cp: 20 }, { cp: -90 }, 'end')).toBe(true);
   });
-  it('keeps a meaningful loss from an equal or better position', () => {
-    expect(isTeachable(scan(10, 20, -150), DEFAULTS)).toBe(true);
-    expect(isTeachable(scan(10, 20, -30), DEFAULTS)).toBe(false); // 0.5 pawn: too small
+  it('a verified repertoire deviation counts from 60cp in the opening only', () => {
+    expect(ok({ cp: 20 }, { cp: -50 }, 'opening', 'deviation')).toBe(true); // 70
+    expect(ok({ cp: 20 }, { cp: -50 }, 'opening', 'unknown')).toBe(false);
+    expect(ok({ cp: 20 }, { cp: -50 }, 'middle', 'deviation')).toBe(false);
+    // a sound off-script move is not an error
+    expect(ok({ cp: 20 }, { cp: 0 }, 'opening', 'deviation')).toBe(false);
   });
-  it('keeps a smaller drop when it is the move that tipped me into a clearly worse position', () => {
-    expect(isTeachable(scan(10, -110, -160), DEFAULTS)).toBe(true); // 50cp drop, crosses the line
-    expect(isTeachable(scan(10, -60, -110), DEFAULTS)).toBe(false); // 50cp drop, stays above the line
-  });
-  it('never teaches a move that was fine', () => {
-    expect(isTeachable(scan(10, 20, 20, { kind: 'none', loss: 0 }), DEFAULTS)).toBe(false);
-  });
-  it('marks the earliest teachable mistake of a game as where the slide began', () => {
-    const c = candidatesOf([scan(40, 100, -300), scan(14, 30, -140), scan(60, -400, -900)], DEFAULTS);
-    expect(c.map((x) => x.ply)).toEqual([14, 40]); // the ply-60 blunder was already lost
-    expect(c[0].first).toBe(true);
-    expect(c[1].first).toBe(false);
-    expect(c[0].rank).toBeGreaterThan(c[1].rank - 1); // earlier cause outranks the bigger later loss
+  it('mate kinds are always eligible', () => {
+    expect(eligibility(s({ cp: 30 }, { mate: -1 }, { kind: 'allowedMate', loss: 0 }), 'middle', DEFAULTS).ok).toBe(true);
+    expect(eligibility(s({ mate: 2 }, { cp: 100 }, { kind: 'missedMate', loss: 0 }), 'end', DEFAULTS).ok).toBe(true);
   });
 });
 
-describe('a game with an early cause and a huge late blunder (real engine)', () => {
-  const { engine, close } = createNodeEngine();
-  afterAll(close);
-  it('teaches the earlier mistakes, not the late blunder made while already losing', async () => {
-    const ms = await findMoments([FIXTURE_GAME_LOSING], engine);
-    expect(ms.length).toBeGreaterThan(0);
-    const late = 32; // 17.a4 (ply index 32), before-score about -1.9
-    expect(ms.map((m) => m.ply)).not.toContain(late);
-    expect(Math.min(...ms.map((m) => m.ply))).toBeLessThan(late);
-    // every taught position was NOT already clearly worse
-    for (const m of ms) expect(m.before.cp ?? 1000).toBeGreaterThan(DEFAULTS.alreadyWorseCp);
-  }, 120000);
+describe('noise filter', () => {
+  it('skips moves played when already lost (pre-move eval below -300)', () => {
+    const r = eligibility(s({ cp: -350 }, { cp: -900 }), 'middle', DEFAULTS);
+    expect(r.ok).toBe(false);
+    expect(r.reason).toMatch(/already lost/);
+    expect(ok({ cp: -250 }, { cp: -600 }, 'middle')).toBe(true); // not yet below -300
+  });
+  it('skips a clearly winning position only if the played move still wins (above +300)', () => {
+    expect(ok({ cp: 700 }, { cp: 400 }, 'middle')).toBe(false);
+    expect(eligibility(s({ cp: 700 }, { cp: 50 }), 'middle', DEFAULTS).ok).toBe(true); // a decisive collapse is KEPT
+    expect(eligibility(s({ cp: 700 }, { cp: 50 }), 'middle', DEFAULTS).reason).toMatch(/winning collapse/);
+  });
+  it('never drops a mistake because a different move would also have been fine', () => {
+    expect(eligibility(s({ cp: 30 }, { cp: 30 }, { kind: 'none', loss: 0 }), 'middle', DEFAULTS).ok).toBe(false);
+  });
+});
+
+describe('picking 0-3 per game', () => {
+  const c = (ply: number, loss: number, tag?: string, urgency = loss) => ({ scan: { ply, loss, urgency }, tag });
+  it('never pads: no candidates means no picks, and fewer than 3 means fewer than 3', () => {
+    expect(pickForGame([], 3)).toEqual([]);
+    expect(pickForGame([c(10, 200, 'hung piece')], 3)).toHaveLength(1);
+  });
+  it('includes the biggest eligible loss and the earliest cause, then new themes', () => {
+    const picks = pickForGame([c(40, 500, 'hung piece'), c(12, 120, 'early queen move'), c(30, 300, 'hung piece'), c(60, 250, 'knight fork')], 3);
+    expect(picks.map((p) => p.scan.ply).sort((a, b) => a - b)).toEqual([12, 40, 60]);
+    expect(picks.some((p) => p.scan.ply === 40)).toBe(true); // biggest
+    expect(picks.some((p) => p.scan.ply === 12)).toBe(true); // earliest
+  });
+  it('is at most 3 per game and skips repeats of the same episode (within 4 plies)', () => {
+    const picks = pickForGame([c(20, 400), c(22, 390), c(40, 300), c(60, 200), c(80, 150)], 3);
+    expect(picks).toHaveLength(3);
+    expect(picks.filter((p) => Math.abs(p.scan.ply - 20) < 4)).toHaveLength(1);
+  });
+  it('ranks mate urgency above centipawn loss, shorter mates first', () => {
+    const picks = pickForGame([c(10, 900, undefined, 900), c(20, 0, undefined, 1_000_000 - 1), c(30, 0, undefined, 1_000_000 - 3)], 3);
+    expect(picks.map((p) => p.scan.ply)).toEqual([20, 30, 10]);
+  });
 });

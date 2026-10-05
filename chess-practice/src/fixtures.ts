@@ -58,11 +58,11 @@ export const FIXTURE_GAME_MIDDLE: GameInfo = {
   isFixture: true,
 };
 
-/** FIXTURE: I play White. Same self-play game, cut later: 23.Ne3 is an inserted blunder in an end-game position. */
+/** FIXTURE: I play White. Engine self-play with varied moves; 63.Rd7? is an inserted blunder in a balanced end-game position (no queens). */
 export const FIXTURE_GAME_END: GameInfo = {
   id: 'fixture-end',
   url: 'https://example.invalid/fixture-end',
-  pgn: selfPlayHdr('FixtureMe', 'FixtureOpponent2') + '1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Nf6 5. Nc3 Bb4 6. Nxc6 dxc6 7. Qxd8+ Kxd8 8. Bd2 a6 9. Bxa6 Rxa6 10. h3 Bxh3 11. Rxh3 Kc8 12. a3 Re8 13. f3 h6 14. O-O-O Bd6 15. Ne2 Nd7 16. Nd4 Be5 17. Bxh6 gxh6 18. Nf5 Bf4+ 19. Kb1 c5 20. g3 Bd6 21. Rxh6 Rxa3 22. bxa3 Ne5 23. Ne3 Nxf3 24. Nf5 Be5 25. Rh5 b6 26. Rd3 *',
+  pgn: selfPlayHdr('FixtureMe', 'FixtureOpponent2') + '1. e4 c5 2. Nc3 e6 3. Be2 Nc6 4. Nf3 Nf6 5. O-O e5 6. h3 Be7 7. Bc4 d6 8. a4 Bd7 9. Kh1 h6 10. b3 O-O 11. Re1 Nb4 12. Nh2 Bc6 13. Nf1 Nxe4 14. Nxe4 Bxe4 15. Rxe4 d5 16. Bxd5 Qxd5 17. Rc4 b6 18. Qf3 Qxf3 19. gxf3 f5 20. Ba3 Nc6 21. Re1 Bd6 22. Kg2 Rad8 23. Ne3 Ne7 24. d3 Rf6 25. Kf1 Kf7 26. Bb2 g5 27. Kg1 a5 28. Kf1 Bc7 29. Re2 Rd7 30. Re1 Rd8 31. h4 Ke6 32. Ng2 Kf7 33. f4 exf4 34. Bxf6 Kxf6 35. hxg5+ hxg5 36. b4 f3 37. bxc5 Rh8 38. Kg1 fxg2 39. Kxg2 Rd8 40. Rh1 Kg7 41. cxb6 Bxb6 42. Kg3 g4 43. Rb1 Rd6 44. f3 gxf3 45. Kxf3 Kf6 46. Rb3 Ng6 47. Ke2 Ne5 48. Rc8 Kg5 49. Rb8 Nd7 50. Rc8 Kg4 51. Rg8+ Kf4 52. Rb5 Rc6 53. c4 Rh6 54. Re8 Rc6 55. Re7 Nc5 56. d4 Nxa4 57. Kd3 Rd6 58. Rd5 Nb2+ 59. Kc3 Nd1+ 60. Kb3 a4+ 61. Kb4 Rxd5 62. cxd5 a3 63. Rd7 a2 64. Kb5 a1=Q 65. Kxb6 Qxd4+ 66. Kb7 *',
   white: 'FixtureMe',
   black: 'FixtureOpponent2',
   myColor: 'w',
@@ -92,7 +92,44 @@ export const FIXTURE_GAME_LOSING: GameInfo = {
   isFixture: true,
 };
 
-export const FIXTURE_GAMES: GameInfo[] = [FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE, FIXTURE_GAME_MIDDLE, FIXTURE_GAME_END];
+/** FIXTURE: I play White in a London game. 5.c3? lets ...Qxb2 (engine line from the lesson positions). Built from a legal move list. */
+export const FIXTURE_GAME_LONDON_QB6: GameInfo = {
+  id: 'fixture-london-qb6',
+  url: 'https://example.invalid/fixture-london-qb6',
+  pgn: selfPlayHdr('FixtureMe', 'FixtureOpponent4') + '1. d4 d5 2. Bf4 c5 3. e3 Nc6 4. Nf3 Qb6 5. c3 Qxb2 6. Nbd2 Nf6 7. Rb1 Qxc3 8. Rb3 Qa5 *',
+  white: 'FixtureMe',
+  black: 'FixtureOpponent4',
+  myColor: 'w',
+  opponent: 'FixtureOpponent4',
+  endTime: 946684800,
+  timeClass: 'rapid',
+  result: 'unfinished',
+  isFixture: true,
+};
+
+/** FIXTURE: I play Black with the ...d6/...c6/...Qc7 shell and walk into 4...Nd7?? against Bc4 + Ng5. */
+export const FIXTURE_GAME_SHELL_F7: GameInfo = {
+  id: 'fixture-shell-f7',
+  url: 'https://example.invalid/fixture-shell-f7',
+  pgn: selfPlayHdr('FixtureOpponent5', 'FixtureMe') + '1. e4 d6 2. Nf3 c6 3. Bc4 Qc7 4. Ng5 Nd7 5. Bxf7+ Kd8 6. Ne6# 1-0',
+  white: 'FixtureOpponent5',
+  black: 'FixtureMe',
+  myColor: 'b',
+  opponent: 'FixtureOpponent5',
+  endTime: 946684800,
+  timeClass: 'rapid',
+  result: 'checkmated',
+  isFixture: true,
+};
+
+export const FIXTURE_GAMES: GameInfo[] = [
+  FIXTURE_GAME_BLACK,
+  FIXTURE_GAME_WHITE,
+  FIXTURE_GAME_MIDDLE,
+  FIXTURE_GAME_END,
+  FIXTURE_GAME_LONDON_QB6,
+  FIXTURE_GAME_SHELL_F7,
+];
 
 /**
  * FIXTURE puzzle in the Lichess database format (FEN is BEFORE the opponent's

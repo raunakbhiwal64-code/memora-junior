@@ -1,0 +1,917 @@
+{
+ "london-foundation": {
+  "overview": {
+   "goal": "Learn one solid White setup: pawns on d4, e3 and c3, the dark-squared bishop outside the pawn chain, knights on f3 and d2, the other bishop on d3, and the king castled.",
+   "applies": "You play White and want one setup that works against many Black replies.",
+   "why": [
+    "One shape means fewer decisions in the opening and more attention left for the middlegame.",
+    "Every move below has a reason you can check on the board: structure, development, a threat, king safety or a plan."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "The goal: a shape, not a list of moves",
+    "text": [
+     "The London is a setup. You are aiming for pawns on d4, e3 and c3, the bishop developed outside the pawn chain, knights on f3 and d2, the other bishop on d3 and the king castled.",
+     "We build it one idea at a time. Every position we talk about is on the board, and you can step back and forth through the moves."
+    ],
+    "animate": 0,
+    "prefix": ""
+   },
+   {
+    "id": "s2",
+    "title": "1. The bishop comes out first",
+    "text": [
+     "The bishop on c1 is the piece a pawn on e3 would shut in. So it goes out to f4 first, outside the d4–e3 pawn chain.",
+     "From f4 it looks along the diagonal toward c7 and b8, and back toward g3 and h2."
+    ],
+    "animate": 3,
+    "prefix": "d4 d5 Bf4",
+    "arrows": [
+     {
+      "from": "f4",
+      "to": "b8",
+      "kind": "idea"
+     }
+    ]
+   },
+   {
+    "id": "s3",
+    "title": "2. Now e3",
+    "text": [
+     "With the bishop already outside, e3 can follow. It supports the d4 pawn and opens a diagonal for the f1 bishop.",
+     "Order matters: if you play e3 first, the c1 bishop is locked behind its own pawns."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Nf6 e3"
+   },
+   {
+    "id": "s4",
+    "title": "3. Develop the knight",
+    "text": [
+     "Nf3 develops a piece, guards d4 and watches e5. In the opening, develop your pieces before you start plans."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3"
+   },
+   {
+    "id": "s5",
+    "title": "4. c3 reinforces d4",
+    "text": [
+     "Black's ...c5 attacks d4. A pawn on c3 adds support behind d4, so the base d4–e3–c3 is solid, and it takes the b4 square away from Black's pieces."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3"
+   },
+   {
+    "id": "s6",
+    "title": "5. The other knight goes to d2",
+    "text": [
+     "The pawn on c3 occupies c3, so the queenside knight goes to d2. From there it supports a later e4 and stays out of the way."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2"
+   },
+   {
+    "id": "s7",
+    "title": "6. Bishop to d3, or not?",
+    "text": [
+     "Bd3 is the usual square when it is safe: it aims at the kingside. When a concrete tactic or an unwanted exchange on d3 is possible, Be2 is the calm alternative.",
+     "Check the board each time. Here is an honest engine note: in this exact position Black's ...Bd6 faces your f4 bishop, and the engine's first choice is Bg3, keeping the bishop. Bd3 is playable but not its first choice. The shape matters more than a fixed move order."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6",
+    "arrows": [
+     {
+      "from": "f1",
+      "to": "d3",
+      "kind": "idea"
+     },
+     {
+      "from": "f1",
+      "to": "e2",
+      "kind": "alt"
+     }
+    ],
+    "engineSeed": "L1.bd3-note"
+   },
+   {
+    "id": "s8",
+    "title": "7. Castle, after checking the lines",
+    "text": [
+     "Before castling, look at what is open near the king's new square. Here nothing aims at g1, so castling is safe.",
+     "That is true of this board only. Check it again every time."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O",
+    "engineSeed": "L1.ref"
+   },
+   {
+    "id": "s9",
+    "title": "What now? Plans, not automatic moves",
+    "text": [
+     "Prepare e4, for example with Re1 or Qc2, but first check which pawn would recapture and which file opens.",
+     "Consider a knight on e5, supported by other pieces.",
+     "After exchanges, use the files that open.",
+     "A correction to an old note: playing e3–e4 does NOT open the diagonal of the f4 bishop. That diagonal runs h2–b8, and the e3 pawn is not on it.",
+     "No structure is unbreakable, and Black's moves always matter. Re-check every move."
+    ],
+    "animate": 0,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "Q.L1.bf4",
+    "prompt": "Black played ...d5. Develop your dark-squared bishop OUTSIDE the pawn chain.",
+    "hint": "Which square keeps the bishop's diagonal open once the e-pawn moves?",
+    "accept": [
+     {
+      "move": "Bf4",
+      "kind": "answer",
+      "why": "The bishop goes out first, outside the d4–e3 chain, before e3 can lock it in."
+     }
+    ],
+    "notes": {
+     "e3": "e3 is playable, but it shuts the c1 bishop behind its own pawn. This exercise is about getting the bishop out first."
+    },
+    "explanation": [
+     "The bishop goes out first, then e3. That order keeps the bishop outside the pawn chain."
+    ]
+   },
+   {
+    "id": "q2",
+    "seedId": "Q.L1.e3",
+    "prompt": "Your bishop is on f4. Support d4 and open a diagonal for the f1 bishop with a pawn move.",
+    "hint": "Which pawn move does both jobs?",
+    "accept": [
+     {
+      "move": "e3",
+      "kind": "answer",
+      "why": "e3 supports d4 and frees the f1 bishop, and the f4 bishop stays outside because e3 is behind it."
+     }
+    ],
+    "notes": {
+     "Nf3": "A sound move, but this exercise is about the pawn structure."
+    },
+    "explanation": [
+     "The pawn on e3 is the back of the chain. The bishop on f4 is outside it."
+    ]
+   },
+   {
+    "id": "q3",
+    "seedId": "Q.L1.c3",
+    "prompt": "Black plays ...c5, attacking d4. Reinforce your centre with a pawn move.",
+    "hint": "Which pawn move adds support behind d4 and takes b4 away?",
+    "accept": [
+     {
+      "move": "c3",
+      "kind": "answer",
+      "why": "c3 adds a second pawn behind d4 and takes the b4 square away."
+     }
+    ],
+    "notes": {
+     "Nbd2": "A sound move, but not a pawn move; this exercise is about reinforcing d4 with a pawn.",
+     "Be2": "A sound move, but not a pawn move; this exercise is about reinforcing d4 with a pawn."
+    },
+    "explanation": [
+     "The base d4–e3–c3 is what the rest of the setup stands on."
+    ]
+   },
+   {
+    "id": "q4",
+    "seedId": "Q.L1.bd3",
+    "prompt": "Black's bishop on d6 faces your f4 bishop. Put your light-squared bishop on its usual active square.",
+    "hint": "Which square aims the bishop at the kingside?",
+    "accept": [
+     {
+      "move": "Bd3",
+      "kind": "answer",
+      "why": "Bd3 is the usual square when it is safe: it aims at the kingside."
+     }
+    ],
+    "notes": {
+     "Bxd6": "A sound exchange, but this exercise is about the usual square for the f1 bishop.",
+     "Nbd2": "A sound move, but the bishop on f1 still needs its square."
+    },
+    "explanation": [
+     "Bd3 when it is safe, Be2 when a tactic or an unwanted exchange makes d3 less attractive."
+    ]
+   },
+   {
+    "id": "q5",
+    "seedId": "Q.L1.castle",
+    "prompt": "The setup is nearly complete. Finish it.",
+    "hint": "What does the king still need?",
+    "accept": [
+     {
+      "move": "O-O",
+      "kind": "answer",
+      "why": "Castling completes the shape; nothing aims at the king's new square on this board."
+     }
+    ],
+    "notes": {
+     "Bg3": "The engine's first choice here, keeping the bishop. Castling is also sound; this exercise is to finish the shape.",
+     "Ne5": "A sound move, but this exercise is about completing the setup first."
+    },
+    "explanation": [
+     "The setup is complete. Plans such as e4 or Ne5 come next, and each one needs a fresh board check."
+    ]
+   }
+  ]
+ },
+ "london-bishop-choices": {
+  "overview": {
+   "goal": "Know when to keep the bishop and when a concrete trade is useful.",
+   "applies": "Black attacks your bishop with ...Nh5, or copies it with ...Bf5.",
+   "why": [
+    "Keeping the bishop is the usual plan, but never 'never trade': a trade is fine when it is concrete and useful.",
+    "The mirror ...Bf5 asks the same question from Black's side."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "...Nh5 hunts the bishop",
+    "text": [
+     "Black's knight attacks the bishop on f4. (Earlier in the game ...Nh5 would simply hang the knight to Qxh5. Once your knight is on f3 it blocks the queen, so here the attack is real.)",
+     "Be5 and Bg5 keep the bishop on a good diagonal. Bg3 allows ...Nxg3 hxg3, a sound trade that gives up the bishop. Ignoring the attack, for example with Nbd2, lets Black take on f4 and costs you the bishop pair."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 Nh5",
+    "engineSeed": "Q.L2.nh5"
+   },
+   {
+    "id": "s1b",
+    "title": "Why not earlier?",
+    "text": [
+     "Right after 3.e3 the move ...Nh5 loses a piece: the queen takes on h5. This is the exact position."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 Nf6 e3 Nh5",
+    "engineSeed": "L2.nh5-early"
+   },
+   {
+    "id": "s2",
+    "title": "Against ...Bf5: challenge with Bd3",
+    "text": [
+     "Black copies your bishop. Bd3 challenges it: if Black exchanges, you decide how to recapture."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 Bf5 e3 e6 Nf3 Nf6 Bd3",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "f5",
+      "kind": "idea"
+     }
+    ]
+   },
+   {
+    "id": "s3",
+    "title": "Recapture on d3: cxd3 or Qxd3",
+    "text": [
+     "Both recaptures are sound here (see the engine check). cxd3 keeps the queen at home and opens the c-file, but leaves you with doubled d-pawns. Qxd3 keeps your pawns healthy and develops the queen, but the queen can become a target for tempo.",
+     "Do not call cxd3 wrong just because an earlier lesson suggested Qxd3: the engine barely separates them."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 Bf5 e3 e6 Nf3 Nf6 Bd3 Bxd3",
+    "arrows": [
+     {
+      "from": "c2",
+      "to": "d3",
+      "kind": "idea"
+     },
+     {
+      "from": "d1",
+      "to": "d3",
+      "kind": "alt"
+     }
+    ],
+    "engineSeed": "L2.recapture"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "Q.L2.nh5",
+    "prompt": "Black's knight attacks your bishop on f4. Keep the bishop.",
+    "hint": "Where does the bishop stay active without allowing a trade?",
+    "accept": [
+     {
+      "move": "Be5",
+      "kind": "answer",
+      "why": "Be5 keeps the bishop on a strong central diagonal."
+     },
+     {
+      "move": "Bg5",
+      "kind": "answer",
+      "why": "Bg5 keeps the bishop on the board, outside the chain, and still active."
+     }
+    ],
+    "notes": {
+     "Bg3": "A sound move, but it allows ...Nxg3 hxg3, giving the bishop up. This exercise is about keeping it.",
+     "c4": "A sound move, but it lets Black take on f4. This exercise is about keeping the bishop.",
+     "Nbd2": "This ignores the attack: after ...Nxf4 exf4 you have lost the bishop pair, and the engine puts it clearly behind the bishop moves."
+    },
+    "explanation": [
+     "Keep the bishop unless a concrete trade is useful. Here Be5 and Bg5 both do it."
+    ]
+   },
+   {
+    "id": "q2",
+    "seedId": "Q.L2.mirror",
+    "prompt": "Black has copied your bishop on f5. Challenge it.",
+    "hint": "Which square lets your light-squared bishop face Black's?",
+    "accept": [
+     {
+      "move": "Bd3",
+      "kind": "answer",
+      "why": "Bd3 challenges the mirrored bishop; Black must decide whether to exchange."
+     }
+    ],
+    "notes": {
+     "c4": "A sound move, but it does not challenge the bishop on f5."
+    },
+    "explanation": [
+     "If Black exchanges on d3, you choose the recapture."
+    ]
+   },
+   {
+    "id": "q3",
+    "seedId": "L2.recapture",
+    "prompt": "Black exchanged on d3. Recapture. Either capture is sound; pick one.",
+    "hint": "Think about what each recapture does to your pawns and your queen.",
+    "accept": [
+     {
+      "move": "cxd3",
+      "kind": "answer",
+      "why": "cxd3 keeps the queen at home and opens the c-file, at the cost of doubled d-pawns."
+     },
+     {
+      "move": "Qxd3",
+      "kind": "answer",
+      "why": "Qxd3 keeps the pawns healthy and develops the queen, though the queen can become a target."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "Both are sound: the engine does not separate them by much, so choose by the structure you want."
+    ]
+   }
+  ]
+ },
+ "london-vs-c5": {
+  "overview": {
+   "goal": "Meet 1.d4 c5 with d5.",
+   "applies": "Black answers 1.d4 with ...c5.",
+   "why": [
+    "The pawn on c5 attacks d4 at once. The checked answer is d5."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "...c5 hits d4 on move one",
+    "text": [
+     "Black attacks d4 straight away. The checked answer is d5: it gains space and closes the centre.",
+     "This leaves the usual London shape: there is no Bf4-and-e3 plan against it. It is the answer to this exact position (1.d4 c5), not a rule for every later ...c5."
+    ],
+    "animate": 1,
+    "prefix": "d4 c5",
+    "engineSeed": "L3.d5"
+   },
+   {
+    "id": "s2",
+    "title": "After 2.d5",
+    "text": [
+     "The pawn on d5 gives you space and fixes the centre. Your pieces develop behind it.",
+     "Not covered here: the tempo lost by an early queen recapture. No checked line is available yet, so none is taught."
+    ],
+    "animate": 1,
+    "prefix": "d4 c5 d5"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "L3.d5",
+    "prompt": "1.d4 c5. Take space in the centre.",
+    "hint": "Which pawn move answers the attack on d4 by gaining space?",
+    "accept": [
+     {
+      "move": "d5",
+      "kind": "answer",
+      "why": "d5 gains space and closes the centre; the engine puts it clearly first here."
+     }
+    ],
+    "notes": {
+     "e3": "A sound move, but it is a London-style move. This exercise is the checked answer d5.",
+     "dxc5": "Takes the pawn, but the engine prefers d5 clearly."
+    },
+    "explanation": [
+     "d5 is the checked reply to this exact position."
+    ]
+   }
+  ]
+ },
+ "london-vs-qb6": {
+  "overview": {
+   "goal": "See the b2 danger before you play c3.",
+   "applies": "Black has played ...c5, ...Nc6 and ...Qb6.",
+   "why": [
+    "The queen on b6 aims at b2. The old habit c3 can leave b2 hanging."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "...Qb6 attacks b2",
+    "text": [
+     "The queen on b6 eyes b2. If you play c3 now, Black can take on b2: the engine line goes 5.c3 Qxb2 6.Nbd2 Nf6 7.Rb1 Qxc3, and White is about two pawns worse off than after 5.Nc3."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6",
+    "engineSeed": "L4.qb6"
+   },
+   {
+    "id": "s2",
+    "title": "5.Nc3: the pawn is offered",
+    "text": [
+     "Nc3 does not defend b2 directly. It develops a piece and eyes d5 and b5, and if Black takes on b2, White keeps the initiative.",
+     "The engine's strongest move here is Nxd5. Nb5 (the older note) also keeps a large advantage."
+    ],
+    "animate": 2,
+    "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6 Nc3 Qxb2",
+    "engineSeed": "L4.qxb2"
+   },
+   {
+    "id": "s3",
+    "title": "6.Nb5: is the queen trapped?",
+    "text": [
+     "The older note said the queen is trapped. It is not: Black has replies, and ...Bf5 is among the engine's top choices. White is clearly better, but 'the queen is always trapped' is wrong, and so is 'every ...Qb6 loses'."
+    ],
+    "animate": 1,
+    "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6 Nc3 Qxb2 Nb5",
+    "engineSeed": "L4.trap"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "L4.qb6",
+    "prompt": "Black's queen hits b2. Pick the move.",
+    "hint": "Which move develops a piece without leaving b2 as a free pawn?",
+    "accept": [
+     {
+      "move": "Nc3",
+      "kind": "answer",
+      "why": "Nc3 develops with the initiative; b2 is a pawn offer, not a blunder."
+     }
+    ],
+    "notes": {
+     "c3": "This allows ...Qxb2. The engine line goes 5.c3 Qxb2 6.Nbd2 Nf6 7.Rb1 Qxc3, and you are about two pawns worse off than after 5.Nc3.",
+     "c4": "The engine prefers Nc3 clearly."
+    },
+    "explanation": [
+     "b2 is the square to watch when a queen lands on b6."
+    ]
+   },
+   {
+    "id": "q2",
+    "seedId": "L4.qxb2",
+    "prompt": "Black took on b2. Continue.",
+    "hint": "Look at which of your knights can jump forward with a threat.",
+    "accept": [
+     {
+      "move": "Nxd5",
+      "kind": "answer",
+      "why": "Nxd5 is the engine's strongest move here."
+     },
+     {
+      "move": "Nb5",
+      "kind": "alternative",
+      "why": "Nb5 keeps a large advantage, but Nxd5 is stronger."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "The queen is not trapped, but White is much better with accurate play."
+    ]
+   }
+  ]
+ },
+ "london-vs-flank-starts": {
+  "overview": {
+   "goal": "Take the centre with e4 when Black starts with a flank move.",
+   "applies": "Black starts 1.d4 g6 or 1.d4 b6.",
+   "why": [
+    "Use your space while Black has not contested the centre."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "...g6: no fight for the centre",
+    "text": [
+     "When Black starts with a flank move, take the centre with e4 instead of playing the usual London shape moves automatically.",
+     "This leaves the usual London shape, and that is fine here. Other moves such as c4 or Nc3 are also sound (see the engine check). Full continuation trees are not covered."
+    ],
+    "animate": 1,
+    "prefix": "d4 g6",
+    "engineSeed": "L5.g6"
+   },
+   {
+    "id": "s2",
+    "title": "...b6: the same idea",
+    "text": [
+     "Against ...b6 the engine's first choice is also e4. The same idea: use the space."
+    ],
+    "animate": 1,
+    "prefix": "d4 b6",
+    "engineSeed": "L5.b6"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "L5.g6",
+    "prompt": "1.d4 g6. Take the centre.",
+    "hint": "Which pawn move claims the centre?",
+    "accept": [
+     {
+      "move": "e4",
+      "kind": "answer",
+      "why": "e4 takes the centre."
+     },
+     {
+      "move": "c4",
+      "kind": "alternative",
+      "why": "c4 also takes space and is sound."
+     },
+     {
+      "move": "Nc3",
+      "kind": "alternative",
+      "why": "Nc3 is sound too and prepares e4."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "Several moves are sound; e4 is the one this lesson teaches."
+    ]
+   },
+   {
+    "id": "q2",
+    "seedId": "L5.b6",
+    "prompt": "1.d4 b6. Take the centre.",
+    "hint": "Which pawn move claims the centre?",
+    "accept": [
+     {
+      "move": "e4",
+      "kind": "answer",
+      "why": "e4 takes the centre; the engine puts it first here."
+     }
+    ],
+    "notes": {
+     "c4": "Slightly behind e4 in the engine's view; this exercise is the centre grab.",
+     "Nc3": "Slightly behind e4 in the engine's view; this exercise is the centre grab."
+    },
+    "explanation": [
+     "e4 is the checked answer here."
+    ]
+   }
+  ]
+ },
+ "black-foundation": {
+  "overview": {
+   "goal": "Understand the historical shell from your own games: ...d6, ...c6 and ...Qc7.",
+   "applies": "You play Black against 1.e4.",
+   "why": [
+    "This is NOT the standard Pirc (...g6, ...Bg7). The standard Pirc is not covered yet.",
+    "The shell is solid and flexible, but its moves are choices, not the engine's only moves."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "The shell starts with ...d6",
+    "text": [
+     "Your games used ...d6, then ...c6 and ...Qc7: a solid pair of pawns that cover central squares, with the queen ready to support ...e5 or ...d5.",
+     "This is the historical shell from your games. It is not the standard Pirc, which this course does not cover yet."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6",
+    "engineSeed": "Q.B1.d6"
+   },
+   {
+    "id": "s2",
+    "title": "...c6: solid, with an honest note",
+    "text": [
+     "...c6 supports a later ...d5 and keeps the pawn centre compact.",
+     "Engine note for this exact position: after 2.Nf3 the engine's first choice is ...Nf6, and ...c6 is a little behind it. Playable, but a choice."
+    ],
+    "animate": 2,
+    "prefix": "e4 d6 Nf3 c6",
+    "engineSeed": "B1.c6"
+   },
+   {
+    "id": "s3",
+    "title": "King safety: calculate f7",
+    "text": [
+     "Before any plan, check what attacks f7. The next lessons use exact boards from your games. This one is Bc4 and Ng5 against f7."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 Bc4 Qc7 Ng5",
+    "links": [
+     {
+      "lessonId": "black-vs-bc4-ng5",
+      "label": "Open the Bc4 + Ng5 lesson"
+     }
+    ]
+   },
+   {
+    "id": "s4",
+    "title": "Centre: when White pushes e5",
+    "text": [
+     "If White pushes e5 early, you can challenge the pawn."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 e5",
+    "links": [
+     {
+      "lessonId": "black-vs-early-e5",
+      "label": "Open the early e5 lesson"
+     }
+    ]
+   },
+   {
+    "id": "s5",
+    "title": "Breaks: conditional, not automatic",
+    "text": [
+     "A break such as ...d5 or ...e5 is conditional: check what it opens, including the lines at your own king, before you play it. When the centre is locked, develop and prepare the break."
+    ],
+    "animate": 0,
+    "fen": "r1b1kbnr/1pqn1ppp/p1pp4/3Pp3/4P3/2N2N2/PPP1BPPP/R1BQ1RK1 b kq - 1 7",
+    "links": [
+     {
+      "lessonId": "black-locked-centre",
+      "label": "Open the locked-centre lesson"
+     }
+    ]
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "Q.B1.d6",
+    "prompt": "1.e4. Start the shell.",
+    "hint": "Which pawn move starts the shell, one square in front of the queen?",
+    "accept": [
+     {
+      "move": "d6",
+      "kind": "answer",
+      "why": "d6 starts the shell; it is within a quarter pawn of the engine's first choice."
+     }
+    ],
+    "notes": {
+     "e5": "The engine's first choice, a sound move, but it is not the shell.",
+     "c6": "A shell move, but the shell starts with d6."
+    },
+    "explanation": [
+     "The shell is a set of choices from your games: sound, solid and not the only way."
+    ]
+   }
+  ]
+ },
+ "black-vs-bc4-ng5": {
+  "overview": {
+   "goal": "Stop and calculate f7 when White has Bc4 and Ng5.",
+   "applies": "White has a bishop on c4 and a knight on g5 aiming at f7.",
+   "why": [
+    "Bc4 and Ng5 both attack f7, and only your king defends it. This is an exact board from your game, not a general rule."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "The bishop aims at f7",
+    "text": [
+     "White's bishop on c4 looks at f7 across the diagonal."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 Bc4",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f7",
+      "kind": "idea"
+     }
+    ]
+   },
+   {
+    "id": "s2",
+    "title": "Two attackers: stop and calculate",
+    "text": [
+     "Now the knight joins in. f7 is attacked twice (bishop and knight) and defended only by the king, so Bxf7+ is a real threat.",
+     "The rule: when Bc4 and Ng5 aim at f7, stop and calculate before any quiet developing move."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 Bc4 Qc7 Ng5",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f7",
+      "kind": "idea"
+     },
+     {
+      "from": "g5",
+      "to": "f7",
+      "kind": "idea"
+     }
+    ]
+   },
+   {
+    "id": "s3",
+    "title": "The trap: ...Nd7?? loses",
+    "text": [
+     "After 4...Nd7 White plays Bxf7+ Kd8 and Ne6 is checkmate (checked)."
+    ],
+    "animate": 3,
+    "prefix": "e4 d6 Nf3 c6 Bc4 Qc7 Ng5 Nd7 Bxf7+ Kd8 Ne6"
+   },
+   {
+    "id": "s4",
+    "title": "The counterstrike: ...d5",
+    "text": [
+     "...d5 attacks the bishop at once and opens lines for your pieces. The engine's line is below.",
+     "This is the answer for THIS board. It is not a rule that ...d5 is always the only move, and it is not Two Knights or Fried Liver theory."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 Bc4 Qc7 Ng5 d5",
+    "engineSeed": "B2.f7"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "B2.f7",
+    "prompt": "Black to move. White has Bc4 and Ng5 against f7. Find the counterstrike.",
+    "hint": "Which pawn move attacks the bishop and opens lines at the same time?",
+    "accept": [
+     {
+      "move": "d5",
+      "kind": "answer",
+      "why": "d5 hits the bishop and challenges the centre; the engine puts it first, far ahead of the quiet moves."
+     }
+    ],
+    "notes": {
+     "Nd7": "This allows 5.Bxf7+ Kd8 6.Ne6#: checkmate (checked).",
+     "e6": "The engine rates it far behind d5 in this exact position."
+    },
+    "explanation": [
+     "Stop and calculate f7. The counterstrike works because of the specifics of this board."
+    ]
+   }
+  ]
+ },
+ "black-vs-early-e5": {
+  "overview": {
+   "goal": "Challenge White's advanced e5 pawn, accepting the sound alternatives.",
+   "applies": "White pushes e5 early.",
+   "why": [
+    "Several replies are sound. Never demand the capture against every e5 push."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "White pushes e5",
+    "text": [
+     "The pawn on e5 attacks d6. Challenging it with ...dxe5 is the engine's first choice here; ...Bg4 and ...Bf5 are close behind (see the engine check).",
+     "Do not turn this into a rule for every e5 push: always check the board."
+    ],
+    "animate": 1,
+    "prefix": "e4 d6 Nf3 c6 e5",
+    "engineSeed": "B3.e5"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "B3.e5",
+    "prompt": "White has pushed e5. Black to move.",
+    "hint": "Which reply challenges the advanced pawn?",
+    "accept": [
+     {
+      "move": "dxe5",
+      "kind": "answer",
+      "why": "dxe5 challenges the pawn directly."
+     },
+     {
+      "move": "Bg4",
+      "kind": "alternative",
+      "why": "Bg4 develops with pressure and is just as sound."
+     },
+     {
+      "move": "Bf5",
+      "kind": "alternative",
+      "why": "Bf5 develops the bishop outside the pawn chain and is also sound."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "Three replies are within a few hundredths of a pawn of each other."
+    ]
+   }
+  ]
+ },
+ "black-locked-centre": {
+  "overview": {
+   "goal": "With a locked centre, develop pieces that prepare a break, and accept several sound moves.",
+   "applies": "The centre pawns are locked.",
+   "why": [
+    "Do not invent a unique answer when several are sound."
+   ]
+  },
+  "steps": [
+   {
+    "id": "s1",
+    "title": "Develop and prepare",
+    "text": [
+     "The centre is locked. Develop pieces that prepare a break instead of rushing it. Ngf6 and Be7 are both fine here (see the engine check): there is no single required move."
+    ],
+    "animate": 0,
+    "fen": "r1b1kbnr/1pqn1ppp/p1pp4/3Pp3/4P3/2N2N2/PPP1BPPP/R1BQ1RK1 b kq - 1 7",
+    "engineSeed": "B4.locked"
+   },
+   {
+    "id": "s2",
+    "title": "A counterexample to rules of thumb",
+    "text": [
+     "After 1.d4 d6 2.d5, ...c6 is not a mistake: the engine finds it close to the best moves. 'Develop first' is not an absolute law."
+    ],
+    "animate": 1,
+    "prefix": "d4 d6 d5",
+    "engineSeed": "B4.counter"
+   }
+  ],
+  "quiz": [
+   {
+    "id": "q1",
+    "seedId": "B4.locked",
+    "prompt": "The centre is locked. Black to move: develop and prepare.",
+    "hint": "Which developing move helps prepare a later break?",
+    "accept": [
+     {
+      "move": "Ngf6",
+      "kind": "answer",
+      "why": "Ngf6 develops and prepares the break."
+     },
+     {
+      "move": "Be7",
+      "kind": "answer",
+      "why": "Be7 develops the bishop and prepares castling."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "Both are sound; the engine puts them within a few hundredths."
+    ]
+   },
+   {
+    "id": "q2",
+    "seedId": "B4.counter",
+    "prompt": "After 1.d4 d6 2.d5, pick a sound move.",
+    "hint": "Several moves are fine here. Which do you prefer?",
+    "accept": [
+     {
+      "move": "Nf6",
+      "kind": "answer",
+      "why": "Nf6 develops."
+     },
+     {
+      "move": "c6",
+      "kind": "alternative",
+      "why": "c6 challenges the pawn, and is not an error."
+     },
+     {
+      "move": "e6",
+      "kind": "alternative",
+      "why": "e6 challenges the pawn."
+     },
+     {
+      "move": "g6",
+      "kind": "alternative",
+      "why": "g6 prepares ...Bg7."
+     }
+    ],
+    "notes": {},
+    "explanation": [
+     "The point: ...c6 is within the engine's sound set."
+    ]
+   }
+  ]
+ }
+}

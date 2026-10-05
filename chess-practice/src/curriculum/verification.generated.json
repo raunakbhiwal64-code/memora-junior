@@ -409,7 +409,7 @@
    "briefClaims": []
   },
   "L5.g6": {
-   "hash": "3b7ac882",
+   "hash": "289e9bbb",
    "fen": "rnbqkbnr/pppppp1p/6p1/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
    "sideToMove": "w",
    "status": "verified",
@@ -462,6 +462,28 @@
       "f4",
       "c5"
      ]
+    },
+    "c4": {
+     "cp": 47,
+     "pv": [
+      "c4",
+      "Bg7",
+      "e4",
+      "d6",
+      "Nc3",
+      "Nf6"
+     ]
+    },
+    "Nc3": {
+     "cp": 36,
+     "pv": [
+      "Nc3",
+      "d5",
+      "e4",
+      "dxe4",
+      "Nxe4",
+      "Nf6"
+     ]
     }
    },
    "claims": [
@@ -469,12 +491,14 @@
      "claim": {
       "type": "withinCp",
       "moves": [
-       "e4"
+       "e4",
+       "c4",
+       "Nc3"
       ],
       "cp": 30
      },
      "pass": true,
-     "measured": "best +0.60; e4 +0.60 (-0)"
+     "measured": "best +0.60; e4 +0.60 (-0), c4 +0.47 (-13), Nc3 +0.36 (-24)"
     }
    ],
    "briefClaims": [
@@ -661,7 +685,7 @@
    ]
   },
   "B3.e5": {
-   "hash": "5b4436e0",
+   "hash": "fcd58aa1",
    "fen": "rnbqkbnr/pp2pppp/2pp4/4P3/8/5N2/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
    "sideToMove": "b",
    "status": "verified",
@@ -725,6 +749,17 @@
       "Bh5",
       "d4"
      ]
+    },
+    "Bf5": {
+     "cp": -4,
+     "pv": [
+      "Bf5",
+      "exd6",
+      "e6",
+      "g3",
+      "Bxd6",
+      "d3"
+     ]
     }
    },
    "claims": [
@@ -733,12 +768,13 @@
       "type": "withinCp",
       "moves": [
        "dxe5",
-       "Bg4"
+       "Bg4",
+       "Bf5"
       ],
       "cp": 30
      },
      "pass": true,
-     "measured": "best +0.06; dxe5 +0.02 (-4), Bg4 -0.07 (-13)"
+     "measured": "best +0.06; dxe5 +0.02 (-4), Bg4 -0.07 (-13), Bf5 -0.04 (-10)"
     }
    ],
    "briefClaims": [
@@ -849,7 +885,7 @@
    ]
   },
   "B4.counter": {
-   "hash": "b7032240",
+   "hash": "9056ea7c",
    "fen": "rnbqkbnr/ppp1pppp/3p4/3P4/8/8/PPP1PPPP/RNBQKBNR b KQkq - 0 2",
    "sideToMove": "b",
    "status": "verified",
@@ -892,6 +928,17 @@
     }
    ],
    "roots": {
+    "Nf6": {
+     "cp": -16,
+     "pv": [
+      "Nf6",
+      "c4",
+      "e6",
+      "Nc3",
+      "g6",
+      "e4"
+     ]
+    },
     "c6": {
      "cp": -20,
      "pv": [
@@ -903,15 +950,26 @@
       "Nc3"
      ]
     },
-    "Nf6": {
-     "cp": -16,
+    "e6": {
+     "cp": -21,
      "pv": [
-      "Nf6",
-      "c4",
       "e6",
+      "c4",
+      "Nf6",
       "Nc3",
       "g6",
       "e4"
+     ]
+    },
+    "g6": {
+     "cp": -18,
+     "pv": [
+      "g6",
+      "c4",
+      "Bg7",
+      "e4",
+      "e6",
+      "Bd3"
      ]
     }
    },
@@ -920,13 +978,15 @@
      "claim": {
       "type": "withinCp",
       "moves": [
+       "Nf6",
        "c6",
-       "Nf6"
+       "e6",
+       "g6"
       ],
       "cp": 30
      },
      "pass": true,
-     "measured": "best -0.11; c6 -0.20 (-9), Nf6 -0.16 (-5)"
+     "measured": "best -0.11; Nf6 -0.16 (-5), c6 -0.20 (-9), e6 -0.21 (-10), g6 -0.18 (-7)"
     }
    ],
    "briefClaims": [
@@ -941,6 +1001,939 @@
      "measured": "c6 -0.20 vs Nf6 -0.16 (diff -4)"
     }
    ]
+  },
+  "Q.L1.bf4": {
+   "hash": "c5c8f265",
+   "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "c4",
+     "cp": 26,
+     "pv": [
+      "c4",
+      "e6",
+      "Nc3",
+      "Be7",
+      "Bf4",
+      "Nf6"
+     ]
+    },
+    {
+     "move": "Nf3",
+     "cp": 25,
+     "pv": [
+      "Nf3",
+      "Nf6",
+      "c4",
+      "c6",
+      "g3",
+      "dxc4"
+     ]
+    },
+    {
+     "move": "Bf4",
+     "cp": 14,
+     "pv": [
+      "Bf4",
+      "e6",
+      "e3",
+      "c5",
+      "Nf3",
+      "Nc6"
+     ]
+    }
+   ],
+   "roots": {
+    "Bf4": {
+     "cp": 11,
+     "pv": [
+      "Bf4",
+      "c5",
+      "e3",
+      "Nc6",
+      "Bb5",
+      "cxd4"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "Bf4"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.26; Bf4 +0.11 (-15)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L1.e3": {
+   "hash": "50319011",
+   "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/3P1B2/8/PPP1PPPP/RN1QKBNR w KQkq - 2 3",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "e3",
+     "cp": 9,
+     "pv": [
+      "e3",
+      "c5",
+      "Nf3",
+      "Nc6",
+      "Bb5",
+      "Qa5+"
+     ]
+    },
+    {
+     "move": "Nf3",
+     "cp": 8,
+     "pv": [
+      "Nf3",
+      "c5",
+      "e3",
+      "Nc6",
+      "Bb5",
+      "Qa5+"
+     ]
+    },
+    {
+     "move": "Nd2",
+     "cp": 3,
+     "pv": [
+      "Nd2",
+      "c5",
+      "e3",
+      "Nc6",
+      "c3",
+      "Bf5"
+     ]
+    }
+   ],
+   "roots": {
+    "e3": {
+     "cp": 15,
+     "pv": [
+      "e3",
+      "e6",
+      "Nf3",
+      "c5",
+      "c4",
+      "cxd4"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "e3"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.15; e3 +0.15 (-0)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L1.c3": {
+   "hash": "19dcac47",
+   "fen": "rnbqkb1r/pp3ppp/4pn2/2pp4/3P1B2/4PN2/PPP2PPP/RN1QKB1R w KQkq - 0 5",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Be2",
+     "cp": 19,
+     "pv": [
+      "Be2",
+      "Qb6",
+      "c4",
+      "cxd4",
+      "exd4",
+      "dxc4"
+     ]
+    },
+    {
+     "move": "Nbd2",
+     "cp": 17,
+     "pv": [
+      "Nbd2",
+      "Nc6",
+      "c3",
+      "Bd6",
+      "Bg3",
+      "c4"
+     ]
+    },
+    {
+     "move": "c3",
+     "cp": 13,
+     "pv": [
+      "c3",
+      "Bd6",
+      "Bg3",
+      "O-O",
+      "Bd3",
+      "b6"
+     ]
+    }
+   ],
+   "roots": {
+    "c3": {
+     "cp": 8,
+     "pv": [
+      "c3",
+      "Bd6",
+      "Bb5+",
+      "Nc6",
+      "Bxc6+",
+      "bxc6"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "c3"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.19; c3 +0.08 (-11)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L1.bd3": {
+   "hash": "d34fe650",
+   "fen": "rnbqk2r/ppp2ppp/3bpn2/3p4/3P1B2/4PN2/PPP2PPP/RN1QKB1R w KQkq - 2 5",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Bxd6",
+     "cp": 14,
+     "pv": [
+      "Bxd6",
+      "Qxd6",
+      "c4",
+      "O-O",
+      "Nc3",
+      "dxc4"
+     ]
+    },
+    {
+     "move": "Bg3",
+     "cp": 8,
+     "pv": [
+      "Bg3",
+      "c5",
+      "Bb5+",
+      "Nc6",
+      "Nbd2",
+      "O-O"
+     ]
+    },
+    {
+     "move": "Bd3",
+     "cp": 7,
+     "pv": [
+      "Bd3",
+      "Bxf4",
+      "exf4",
+      "Qd6",
+      "Qd2",
+      "b6"
+     ]
+    }
+   ],
+   "roots": {
+    "Bd3": {
+     "cp": 15,
+     "pv": [
+      "Bd3",
+      "O-O",
+      "O-O",
+      "b6",
+      "Bg5",
+      "Bb7"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "Bd3"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.15; Bd3 +0.15 (-0)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L1.castle": {
+   "hash": "d73cac89",
+   "fen": "r1bq1rk1/pp3ppp/2nbpn2/2pp4/3P1B2/2PBPN2/PP1N1PPP/R2QK2R w KQ - 5 8",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Bg3",
+     "cp": 14,
+     "pv": [
+      "Bg3",
+      "g6",
+      "O-O",
+      "Bxg3",
+      "hxg3",
+      "Qb6"
+     ]
+    },
+    {
+     "move": "Ne5",
+     "cp": 13,
+     "pv": [
+      "Ne5",
+      "Qc7",
+      "Ndf3",
+      "cxd4",
+      "cxd4",
+      "Qa5+"
+     ]
+    },
+    {
+     "move": "O-O",
+     "cp": -5,
+     "pv": [
+      "O-O",
+      "Bxf4",
+      "exf4",
+      "cxd4",
+      "Nxd4",
+      "Nxd4"
+     ]
+    }
+   ],
+   "roots": {
+    "O-O": {
+     "cp": -8,
+     "pv": [
+      "O-O",
+      "Bxf4",
+      "exf4",
+      "cxd4",
+      "Nxd4",
+      "Nxd4"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "O-O"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.14; O-O -0.08 (-22)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "L1.bd3-note": {
+   "hash": "156d3103",
+   "fen": "r1bqk2r/pp3ppp/2nbpn2/2pp4/3P1B2/2P1PN2/PP1N1PPP/R2QKB1R w KQkq - 3 7",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Bg3",
+     "cp": 15,
+     "pv": [
+      "Bg3",
+      "O-O",
+      "Bd3",
+      "g6",
+      "O-O",
+      "Bxg3"
+     ]
+    },
+    {
+     "move": "dxc5",
+     "cp": 0,
+     "pv": [
+      "dxc5",
+      "Bxc5",
+      "Bd3",
+      "O-O",
+      "O-O",
+      "Nh5"
+     ]
+    },
+    {
+     "move": "Bxd6",
+     "cp": -2,
+     "pv": [
+      "Bxd6",
+      "Qxd6",
+      "Bd3",
+      "O-O",
+      "dxc5",
+      "Qxc5"
+     ]
+    }
+   ],
+   "roots": {
+    "Bg3": {
+     "cp": 16,
+     "pv": [
+      "Bg3",
+      "O-O",
+      "Bd3",
+      "g6",
+      "Ne5",
+      "cxd4"
+     ]
+    },
+    "Bd3": {
+     "cp": -37,
+     "pv": [
+      "Bd3",
+      "Bxf4",
+      "exf4",
+      "Qb6",
+      "dxc5",
+      "Qxb2"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "best",
+      "move": "Bg3"
+     },
+     "pass": true,
+     "measured": "top: Bg3 +0.15, dxc5 +0.00, Bxd6 -0.02"
+    },
+    {
+     "claim": {
+      "type": "worseThanBestBy",
+      "move": "Bd3",
+      "atLeastCp": 30
+     },
+     "pass": true,
+     "measured": "Bd3 -0.37, best +0.15 (gap 52)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L2.nh5": {
+   "hash": "10c8a509",
+   "fen": "rnbqkb1r/ppp2ppp/4p3/3p3n/3P1B2/4PN2/PPP2PPP/RN1QKB1R w KQkq - 2 5",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Be5",
+     "cp": 43,
+     "pv": [
+      "Be5",
+      "Nf6",
+      "c4",
+      "Nbd7",
+      "Nc3",
+      "Ne4"
+     ]
+    },
+    {
+     "move": "Bg5",
+     "cp": 28,
+     "pv": [
+      "Bg5",
+      "Be7",
+      "Bxe7",
+      "Qxe7",
+      "c4",
+      "Nf6"
+     ]
+    },
+    {
+     "move": "c4",
+     "cp": 2,
+     "pv": [
+      "c4",
+      "Nxf4",
+      "exf4",
+      "Be7",
+      "Nc3",
+      "O-O"
+     ]
+    }
+   ],
+   "roots": {
+    "Be5": {
+     "cp": 45,
+     "pv": [
+      "Be5",
+      "Nf6",
+      "c4",
+      "Nbd7",
+      "Nc3",
+      "dxc4"
+     ]
+    },
+    "Bg5": {
+     "cp": 28,
+     "pv": [
+      "Bg5",
+      "Be7",
+      "Bxe7",
+      "Qxe7",
+      "c4",
+      "O-O"
+     ]
+    },
+    "Nbd2": {
+     "cp": -3,
+     "pv": [
+      "Nbd2",
+      "Nxf4",
+      "exf4",
+      "c5",
+      "Bb5+",
+      "Bd7"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "Be5",
+       "Bg5"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.45; Be5 +0.45 (-0), Bg5 +0.28 (-17)"
+    },
+    {
+     "claim": {
+      "type": "worseThanBestBy",
+      "move": "Nbd2",
+      "atLeastCp": 30
+     },
+     "pass": true,
+     "measured": "Nbd2 -0.03, best +0.43 (gap 46)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.L2.mirror": {
+   "hash": "90d591b5",
+   "fen": "rn1qkb1r/ppp2ppp/4pn2/3p1b2/3P1B2/4PN2/PPP2PPP/RN1QKB1R w KQkq - 2 5",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "c4",
+     "cp": 19,
+     "pv": [
+      "c4",
+      "Bxb1",
+      "Qxb1",
+      "Bb4+",
+      "Kd1",
+      "Bd6"
+     ]
+    },
+    {
+     "move": "Bd3",
+     "cp": 14,
+     "pv": [
+      "Bd3",
+      "Bxd3",
+      "cxd3",
+      "Bd6",
+      "Qb3",
+      "Qc8"
+     ]
+    },
+    {
+     "move": "Be2",
+     "cp": 11,
+     "pv": [
+      "Be2",
+      "c5",
+      "c4",
+      "Nc6",
+      "Nc3",
+      "dxc4"
+     ]
+    }
+   ],
+   "roots": {
+    "Bd3": {
+     "cp": 11,
+     "pv": [
+      "Bd3",
+      "Bxd3",
+      "Qxd3",
+      "Bd6",
+      "Qb5+",
+      "Nbd7"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "Bd3"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best +0.19; Bd3 +0.11 (-8)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "L4.qxb2": {
+   "hash": "00cf1edf",
+   "fen": "r1b1kbnr/pp2pppp/2n5/2pp4/3P1B2/2N1PN2/PqP2PPP/R2QKB1R w KQkq - 0 6",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Nxd5",
+     "cp": 500,
+     "pv": [
+      "Nxd5",
+      "g5",
+      "Nxg5",
+      "cxd4",
+      "Bb5",
+      "Bh6"
+     ]
+    },
+    {
+     "move": "Nb5",
+     "cp": 299,
+     "pv": [
+      "Nb5",
+      "c4",
+      "Rb1",
+      "Qxa2",
+      "Nc7+",
+      "Kd8"
+     ]
+    },
+    {
+     "move": "Kd2",
+     "cp": -47,
+     "pv": [
+      "Kd2",
+      "cxd4",
+      "exd4",
+      "Nf6",
+      "Qb1",
+      "Qa3"
+     ]
+    }
+   ],
+   "roots": {
+    "Nxd5": {
+     "cp": 506,
+     "pv": [
+      "Nxd5",
+      "Bf5",
+      "Rb1",
+      "Qxa2",
+      "Nc7+",
+      "Kd8"
+     ]
+    },
+    "Nb5": {
+     "cp": 316,
+     "pv": [
+      "Nb5",
+      "c4",
+      "Rb1",
+      "Qxa2",
+      "Nc7+",
+      "Kd8"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "best",
+      "move": "Nxd5"
+     },
+     "pass": true,
+     "measured": "top: Nxd5 +5.00, Nb5 +2.99, Kd2 -0.47"
+    },
+    {
+     "claim": {
+      "type": "scoreAtLeast",
+      "move": "Nb5",
+      "cp": 250
+     },
+     "pass": true,
+     "measured": "Nb5 +3.16 (needs at least 2.50)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "B1.c6": {
+   "hash": "56dfffe5",
+   "fen": "rnbqkbnr/ppp1pppp/3p4/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+   "sideToMove": "b",
+   "status": "verified",
+   "top": [
+    {
+     "move": "c5",
+     "cp": -26,
+     "pv": [
+      "c5",
+      "d4",
+      "cxd4",
+      "Nxd4",
+      "Nf6",
+      "Nc3"
+     ]
+    },
+    {
+     "move": "Nf6",
+     "cp": -26,
+     "pv": [
+      "Nf6",
+      "Nc3",
+      "c5",
+      "d4",
+      "cxd4",
+      "Nxd4"
+     ]
+    },
+    {
+     "move": "e5",
+     "cp": -58,
+     "pv": [
+      "e5",
+      "d4",
+      "Nf6",
+      "Nc3",
+      "Nbd7",
+      "Be3"
+     ]
+    }
+   ],
+   "roots": {
+    "c6": {
+     "cp": -62,
+     "pv": [
+      "c6",
+      "d4",
+      "Nf6",
+      "Nc3",
+      "g6",
+      "a4"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "c6"
+      ],
+      "cp": 40
+     },
+     "pass": true,
+     "measured": "best -0.26; c6 -0.62 (-36)"
+    },
+    {
+     "claim": {
+      "type": "worseThanBestBy",
+      "move": "c6",
+      "atLeastCp": 20
+     },
+     "pass": true,
+     "measured": "c6 -0.62, best -0.26 (gap 36)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "Q.B1.d6": {
+   "hash": "e5ac32f7",
+   "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+   "sideToMove": "b",
+   "status": "verified",
+   "top": [
+    {
+     "move": "e5",
+     "cp": -32,
+     "pv": [
+      "e5",
+      "Nf3",
+      "Nc6",
+      "d4",
+      "exd4",
+      "Nxd4"
+     ]
+    },
+    {
+     "move": "e6",
+     "cp": -32,
+     "pv": [
+      "e6",
+      "d4",
+      "d5",
+      "e5",
+      "c5",
+      "c3"
+     ]
+    },
+    {
+     "move": "c6",
+     "cp": -38,
+     "pv": [
+      "c6",
+      "Nf3",
+      "d5",
+      "Nc3",
+      "dxe4",
+      "Nxe4"
+     ]
+    }
+   ],
+   "roots": {
+    "d6": {
+     "cp": -44,
+     "pv": [
+      "d6",
+      "d4",
+      "Nf6",
+      "Nc3",
+      "e5",
+      "Nf3"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "withinCp",
+      "moves": [
+       "d6"
+      ],
+      "cp": 30
+     },
+     "pass": true,
+     "measured": "best -0.32; d6 -0.44 (-12)"
+    }
+   ],
+   "briefClaims": []
+  },
+  "L2.nh5-early": {
+   "hash": "fe2277e3",
+   "fen": "rnbqkb1r/ppp1pppp/8/3p3n/3P1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 1 4",
+   "sideToMove": "w",
+   "status": "verified",
+   "top": [
+    {
+     "move": "Qxh5",
+     "cp": 628,
+     "pv": [
+      "Qxh5",
+      "c5",
+      "Nc3",
+      "e6",
+      "Qd1",
+      "Qb6"
+     ]
+    },
+    {
+     "move": "Bb5+",
+     "cp": 64,
+     "pv": [
+      "Bb5+",
+      "c6",
+      "Qxh5",
+      "cxb5",
+      "e4",
+      "e6"
+     ]
+    },
+    {
+     "move": "Be5",
+     "cp": 51,
+     "pv": [
+      "Be5",
+      "Nf6",
+      "c4",
+      "e6",
+      "Nc3",
+      "Nbd7"
+     ]
+    }
+   ],
+   "roots": {
+    "Qxh5": {
+     "cp": 655,
+     "pv": [
+      "Qxh5",
+      "c5",
+      "Nc3",
+      "Nc6",
+      "Qxd5",
+      "Bd7"
+     ]
+    }
+   },
+   "claims": [
+    {
+     "claim": {
+      "type": "best",
+      "move": "Qxh5"
+     },
+     "pass": true,
+     "measured": "top: Qxh5 +6.28, Bb5+ +0.64, Be5 +0.51"
+    },
+    {
+     "claim": {
+      "type": "scoreAtLeast",
+      "move": "Qxh5",
+      "cp": 400
+     },
+     "pass": true,
+     "measured": "Qxh5 +6.55 (needs at least 4.00)"
+    }
+   ],
+   "briefClaims": []
   }
  }
 }
