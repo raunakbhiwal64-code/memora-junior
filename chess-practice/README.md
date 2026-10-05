@@ -71,7 +71,7 @@ The fixtures (`src/fixtures.ts`) are hand-made, clearly marked, and not real gam
 | Rules, PGN | chess.js |
 | Engine | Stockfish 19 "lite" single-threaded WebAssembly, in a Web Worker (needs no special server headers) |
 | Search budget | depth 12 for every move (same before and after); the best candidates are re-checked at depth 16 |
-| Mistake rule | engine estimate says you lost at least 1 pawn of advantage, or allowed / missed a forced mate; positions that were already lost or are still decisively won are ignored |
+| Mistake rule | the engine estimates a single move lost at least 1 pawn, or allowed / missed a forced mate, or tipped you from "not worse" to "more than 1.5 pawns worse" (drop of 0.5+). Moves made when you were **already** more than 1.5 pawns worse are skipped (damage control, not the cause), and the earliest teachable mistake of each game is ranked first |
 | Explanations | simple templates over board facts (captures, undefended pieces, checks, forks, mates); if no reason can be found it says "explanation limited" |
 | Storage | browser `localStorage` only (cached analysis, username) |
 

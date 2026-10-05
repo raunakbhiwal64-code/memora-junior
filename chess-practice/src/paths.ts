@@ -49,6 +49,7 @@ export function renderPaths(paths: PhasePath[], opts: { fixture: boolean; thresh
       <h2>Your learning paths</h2>
       ${opts.fixture ? '<div class="fixture">TEST FIXTURE: these positions come from generated test games, not yours.</div>' : ''}
       <p class="note">Every position is a real move from your games that the engine estimates lost at least ${esc(opts.threshold)} of advantage. Open any path in any order. Your original move and the answer stay hidden until you try. "Practised" means you tried it and read the explanation, not that you have mastered it. "Revisit" means you finished it without finding a good move yet.</p>
+      <p class="note">Positions where you were already clearly worse (more than 1.5 pawns behind) are skipped: those moves were damage control, and the real lesson is the earlier move that got you there. The first such move in each game is taught first.</p>
       <p class="note">${esc(PHASE_RULE)}</p>
     </div>
     <div class="paths">${cards}</div>`;

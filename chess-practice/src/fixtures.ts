@@ -73,6 +73,25 @@ export const FIXTURE_GAME_END: GameInfo = {
   isFixture: true,
 };
 
+/**
+ * FIXTURE: I play White. Same self-play game, but White is already about 1.9 pawns down at move 17
+ * and then plays a much bigger inserted blunder (17.a4, about 3.8 pawns). The earlier mistakes are
+ * the cause; the late blunder is damage control and must NOT be chosen as a lesson.
+ */
+export const FIXTURE_GAME_LOSING: GameInfo = {
+  id: 'fixture-losing',
+  url: 'https://example.invalid/fixture-losing',
+  pgn: selfPlayHdr('FixtureMe', 'FixtureOpponent3') + '1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Nf6 5. Nc3 Bb4 6. Nxc6 dxc6 7. Qxd8+ Kxd8 8. Bd2 a6 9. Bxa6 Rxa6 10. h3 Bxh3 11. Rxh3 Kc8 12. a3 Re8 13. Na2 Rxe4+ 14. Kd1 Bxd2 15. Kxd2 Rd4+ 16. Rd3 Rg4 17. a4 Raxa4 18. g3 h5 19. Kd1 h4 20. gxh4 *',
+  white: 'FixtureMe',
+  black: 'FixtureOpponent3',
+  myColor: 'w',
+  opponent: 'FixtureOpponent3',
+  endTime: 946684800,
+  timeClass: 'rapid',
+  result: 'unfinished',
+  isFixture: true,
+};
+
 export const FIXTURE_GAMES: GameInfo[] = [FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE, FIXTURE_GAME_MIDDLE, FIXTURE_GAME_END];
 
 /**
