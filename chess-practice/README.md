@@ -1,6 +1,6 @@
 # Chess Practice
 
-Learn from positions in **your own** Chess.com games. A small, static web app: no server,
+An app for adult learners: learn from positions in **your own** Chess.com games. A small, static web app: no server,
 no database, no accounts, no paid services. Everything runs in your browser.
 
 **The loop:** load your recent games → the engine finds up to 3 important mistakes →
@@ -86,17 +86,20 @@ with the link can see the default username and use the app; analysis results sta
 
 ## Publish on GitHub Pages (optional)
 
-The build is fully static and uses relative paths, so the same files work at `localhost` and at
-`https://<username>.github.io/<repo>/`. Steps (free plan):
+This app lives in the `chess-practice/` folder of the `memora-junior` repository, as a separate piece from the
+Memora Junior app. It is for adult learners. The build is fully static with relative paths, so the same files work at
+`localhost` and under a Pages address such as `https://<username>.github.io/memora-junior/chess-practice/`.
 
-1. Create a **public** repository on github.com (GitHub Pages on a private repo needs a paid plan).
-2. In the repo: Settings > Pages > Source: **GitHub Actions**.
-3. Push this folder to the repo's `main` branch. `.github/workflows/pages.yml` runs the tests, builds and deploys.
-4. Your app is at `https://<username>.github.io/<repo>/`.
+The workflow `.github/workflows/pages.yml` (at the repo root) is **manual only**: nothing is published until you run it.
+It publishes the Memora Junior app at `/` (unchanged) and this app at `/chess-practice/`.
 
-No secrets, tokens or passwords are needed or stored. **A public page is visible to anyone with the link**:
-it shows the default Chess.com username (`Rbhiwal`, editable in `src/main.ts`) and anyone can use the app, but
-games and analysis are fetched and stored only in each visitor's own browser.
+1. The repository must be **public** (GitHub Pages on a private repo needs a paid plan).
+2. Settings > Pages > Source: **GitHub Actions**.
+3. Actions > "Publish to GitHub Pages" > **Run workflow** (on `main`).
+
+No secrets, tokens or passwords are used. **A public page is visible to anyone with the link**: it shows the default
+Chess.com username (`Rbhiwal`, editable in `src/main.ts`) and anyone can use the app, but games and analysis are fetched
+and stored only in each visitor's own browser.
 
 ## Licence and credits
 

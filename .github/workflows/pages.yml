@@ -1,0 +1,63 @@
+# Manual-only publish of both pieces of this repo to GitHub Pages:
+#   /                 the Memora Junior app (plain static files, unchanged)
+#   /chess-practice/  the Chess Practice app (built with Vite)
+# Nothing runs automatically. To use it: Settings > Pages > Source = "GitHub Actions",
+# then Actions > "Publish to GitHub Pages" > Run workflow.
+# Pages on a private repo needs a paid plan; a public page can be seen by anyone with the link.
+name: Publish to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: chess-practice/package-lock.json
+      - name: Install and test Chess Practice
+        working-directory: chess-practice
+        run: |
+          npm ci
+          npm test
+      # Use the committed puzzle subset if there is one, otherwise cut it from the official CC0 database.
+      - name: Build puzzle subset
+        if: ${{ hashFiles('chess-practice/public/puzzles.json') == '' }}
+        working-directory: chess-practice
+        run: npm run make-puzzles
+      - name: Build Chess Practice
+        working-directory: chess-practice
+        run: npm run build
+      - name: Assemble site
+        run: |
+          mkdir -p _site/chess-practice
+          cp index.html _site/
+          cp -r app _site/app
+          cp -r chess-practice/dist/. _site/chess-practice/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
