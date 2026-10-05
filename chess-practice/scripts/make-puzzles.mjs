@@ -10,6 +10,7 @@ import { createReadStream, writeFileSync, mkdirSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import zlib from 'node:zlib';
 import { createInterface } from 'node:readline';
+import { pathToFileURL } from 'node:url';
 
 const URL_DB = 'https://database.lichess.org/lichess_db_puzzle.csv.zst';
 const OUT = new URL('../public/puzzles.json', import.meta.url);
@@ -91,7 +92,7 @@ async function main() {
   console.log(`Wrote ${puzzles.length} puzzles to public/puzzles.json (${counts}). Rows scanned: ${rows}.`);
 }
 
-if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file://').href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((e) => {
     console.error('Could not build the puzzle file:', e.message);
     process.exit(1);
