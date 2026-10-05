@@ -1,0 +1,14 @@
+<!doctype html><html><body style="margin:0;font-family:sans-serif">
+<div id="out"></div>
+<script type="module">
+import { pieceSvg } from '/src/pieces.ts';
+const out = document.getElementById('out');
+const kinds = ['k','q','r','b','n','p'];
+let html = '';
+for (const [bg, label] of [['#f6edd2','cream'],['#4f9f98','teal']]) {
+  for (const c of ['w','b']) {
+    html += `<div style="display:flex;background:${bg}">` + kinds.map(k => `<div style="width:110px;height:110px">${pieceSvg(c,k).replace('<svg ','<svg width="110" height="110" ')}</div>`).join('') + `</div>`;
+  }
+}
+out.innerHTML = html;
+</script></body></html>

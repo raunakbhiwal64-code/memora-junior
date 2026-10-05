@@ -33,6 +33,7 @@ Open **http://localhost:5173/** in Chrome, Edge or Firefox.
 4. Press **Get a puzzle**. This needs the small puzzle file (next section).
 
 No internet? Use **Use the test fixture games** to try the whole loop.
+On the board, click or tap a piece and then a highlighted square, or drag the piece. Use **Hint** for a nudge that never names the answer; the explanation and the arrows (red dashed = your move, green solid = the engine's pick) appear only after you have tried.
 Prefer not to use the API? Paste a PGN instead.
 
 ## Build the puzzle file (once)

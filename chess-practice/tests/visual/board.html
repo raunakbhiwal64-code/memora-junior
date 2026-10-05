@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/src/style.css"></head>
+<body><div id="app" style="max-width:520px">
+<div class="board-frame"><div id="board"></div></div><p id="log"></p>
+</div>
+<script type="module">
+import { Board } from '/src/board.ts';
+const q = new URLSearchParams(location.search);
+const board = new Board(document.getElementById('board'));
+window.board = board;
+const log = (t) => (document.getElementById('log').textContent = t);
+board.onMove = (f, t, p) => { log(`move ${f}${t}${p ?? ''}`); };
+board.onIllegal = (f, t) => log(`illegal ${f}${t}`);
+const arrows = q.get('arrows') ? [{ from: 'g1', to: 'f3', color: '#2b8a3e' }, { from: 'e2', to: 'e4', color: '#d9480f', dashed: true }] : [];
+board.set({ fen: q.get('fen') || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', orientation: q.get('o') || 'w', interactive: true, arrows, lastMove: q.get('last') ? { from: 'e2', to: 'e4' } : undefined });
+</script></body></html>

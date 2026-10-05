@@ -1,10 +1,10 @@
 import './style.css';
 import { Chess } from 'chess.js';
-import { Board } from './board';
+import { Board, type Arrow } from './board';
 import { cacheClear } from './cache';
 import { ApiError, fetchRecentGames } from './chesscom';
 import { createBrowserEngine, type Engine } from './engine';
-import { explainMoment } from './explain';
+import { explainMoment, hintFor } from './explain';
 import { FIXTURE_GAMES, FIXTURE_PUZZLE } from './fixtures';
 import { DEFAULTS, findMoments } from './moments';
 import { PgnError, colorOf, lineToSan, moveFromUci, parseGame } from './pgn';
@@ -18,6 +18,9 @@ import type { GameInfo, Moment } from './types';
 const app = document.getElementById('app')!;
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const USER_KEY = 'chess-practice:username';
+const PLAYED_COLOR = '#d9480f';
+const BEST_COLOR = '#2b8a3e';
+const PHASE_LABEL: Record<string, string> = { opening: 'Opening', middle: 'Middle game', end: 'End game' };
 const PUZZLE_URL = new URL('puzzles.json', document.baseURI).href;
 
 let username = (() => {
@@ -217,24 +220,42 @@ function viewPractice(index: number) {
   let busy = false;
   let revealed = false;
   let attempted = false;
-  app.innerHTML = shell(`<section>
-    <h2>Position ${index + 1} of ${moments.length}: vs ${esc(m.opponent)}, move ${m.moveNumber}</h2>
-    ${m.isFixture ? '<div class="fixture">TEST FIXTURE position (not from your games).</div>' : ''}
-    <p class="status" id="turn"></p>
-    <div id="boardwrap"><div id="board"></div></div>
-    <p id="msg"></p>
-    <button class="btn" id="reset">Reset / try again</button>
-    <button class="btn" id="reveal" disabled>Show explanation</button>
-    <button class="btn" id="back">Back to paths</button>
-    <div id="explain"></div>
-  </section>`);
+  app.innerHTML = shell(`<div class="lesson">
+    <div class="lesson-board">
+      <div class="board-frame"><div id="board"></div></div>
+      <div class="board-actions">
+        <button class="btn big" id="reset">↺ Reset board</button>
+        <button class="btn big" id="hint">Hint</button>
+      </div>
+    </div>
+    <section class="lesson-side">
+      <p class="crumb">${esc(PHASE_LABEL[m.phase])} · position ${index + 1} of ${moments.length}</p>
+      <h2>Move ${m.moveNumber} vs ${esc(m.opponent)}</h2>
+      ${m.isFixture ? '<div class="fixture">TEST FIXTURE position (not from your games).</div>' : ''}
+      <p class="task" id="turn"></p>
+      <p class="hint" id="hinttext" hidden></p>
+      <p id="msg" class="feedback" aria-live="polite"></p>
+      <p><button class="btn primary big" id="reveal" disabled>Show explanation</button>
+      <button class="btn" id="back">Back to paths</button></p>
+      <div id="explain"></div>
+    </section>
+  </div>`);
   const board = new Board(app.querySelector('#board')!);
   const msg = app.querySelector<HTMLElement>('#msg')!;
   const turn = app.querySelector<HTMLElement>('#turn')!;
   const revealBtn = app.querySelector<HTMLButtonElement>('#reveal')!;
+  const hintText = app.querySelector<HTMLElement>('#hinttext')!;
+  app.querySelector('#hint')!.addEventListener('click', () => {
+    hintText.textContent = hintFor(m);
+    hintText.hidden = false;
+  });
 
   const refresh = () => {
     board.set({ fen: session.chess.fen(), orientation: m.myColor, lastMove: session.lastMove, interactive: !busy && !session.finished && !revealed });
+    if (revealed) {
+      turn.textContent = 'Explanation below. The arrows show your move in the game and the engine\'s pick.';
+      return;
+    }
     turn.textContent = `You play ${m.myColor === 'w' ? 'White' : 'Black'}. ${session.turnText} to move.${
       session.movesPlayed === 0 ? " The opponent's last move is highlighted. Find a good move." : ` (Your move ${Math.min(session.movesPlayed + 1, MY_MOVES)} of ${MY_MOVES}.)`
     }`;
@@ -271,6 +292,7 @@ function viewPractice(index: number) {
     revealed = false;
     msg.textContent = '';
     app.querySelector('#explain')!.innerHTML = '';
+    board.clearSelection();
     refresh();
   });
   app.querySelector('#back')!.addEventListener('click', viewMoments);
@@ -303,6 +325,8 @@ function showExplanation(m: Moment, board: Board, index: number) {
     ${ex.whyFailed.length ? `<h2>Why ${esc(m.playedSan)} failed</h2><ul class="facts">${ex.whyFailed.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>` : ''}
     ${ex.whyBetter.length ? `<h2>What ${esc(m.bestSan)} does</h2><ul class="facts">${ex.whyBetter.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>` : ''}
     ${ex.limited ? '<p class="note"><b>Explanation limited:</b> I could not find a simple concrete reason from the board, so study the lines below.</p>' : ''}
+    <p class="legend"><span class="swatch played" aria-hidden="true"></span> Dashed red arrow: your move in the game, <b>${esc(m.playedSan)}</b>.
+      <span class="swatch best" aria-hidden="true"></span> Solid green arrow: the engine's pick, <b>${esc(m.bestSan)}</b>.</p>
     <p>Watch the lines on the board:
       <button class="btn" id="vbest">Better line: ${esc(bestSan.join(' '))}</button>
       <button class="btn" id="vplayed">After your move: ${esc([m.playedSan, ...refSan].join(' '))}</button></p>
@@ -310,7 +334,10 @@ function showExplanation(m: Moment, board: Board, index: number) {
     <h2>One similar puzzle</h2>
     <button class="btn primary" id="puzzle">Get a puzzle</button>
     <button class="btn" id="paths">Back to paths</button>`;
+  const playedArrow: Arrow = { from: m.playedUci.slice(0, 2), to: m.playedUci.slice(2, 4), color: PLAYED_COLOR, dashed: true };
+  const bestArrow: Arrow = { from: m.bestUci.slice(0, 2), to: m.bestUci.slice(2, 4), color: BEST_COLOR };
   let line: string[] = [];
+  let lineColor = BEST_COLOR;
   let i = 0;
   const show = () => {
     const c = new Chess(m.fen);
@@ -319,18 +346,23 @@ function showExplanation(m: Moment, board: Board, index: number) {
       const r = moveFromUci(c, line[k]);
       last = { from: r.from, to: r.to };
     }
-    board.set({ fen: c.fen(), orientation: m.myColor, lastMove: last, interactive: false });
+    // the next move of the line being watched is previewed with an arrow
+    const next = line[i];
+    const arrows: Arrow[] = next ? [{ from: next.slice(0, 2), to: next.slice(2, 4), color: lineColor, dashed: lineColor === PLAYED_COLOR }] : [];
+    board.set({ fen: c.fen(), orientation: m.myColor, lastMove: last, interactive: false, arrows });
     box.querySelector('#vpos')!.textContent = `step ${i} of ${line.length}`;
     (box.querySelector('#vprev') as HTMLButtonElement).disabled = i === 0;
     (box.querySelector('#vnext') as HTMLButtonElement).disabled = i >= line.length;
   };
   box.querySelector('#vbest')!.addEventListener('click', () => {
     line = m.bestLine;
+    lineColor = BEST_COLOR;
     i = 0;
     show();
   });
   box.querySelector('#vplayed')!.addEventListener('click', () => {
     line = [m.playedUci, ...m.refutation];
+    lineColor = PLAYED_COLOR;
     i = 0;
     show();
   });
@@ -343,8 +375,10 @@ function showExplanation(m: Moment, board: Board, index: number) {
     show();
   });
   box.querySelector('#paths')!.addEventListener('click', viewMoments);
+  // first show the critical position with both arrows, so the answer is revealed only now
+  board.set({ fen: m.fen, orientation: m.myColor, lastMove: m.lastMove, interactive: false, arrows: [playedArrow, bestArrow] });
   box.querySelector('#puzzle')!.addEventListener('click', () => viewPuzzle(m, ex.theme, index));
-  box.scrollIntoView({ behavior: 'smooth' });
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ---------------------------------------------------------------- puzzle ----
@@ -370,17 +404,20 @@ async function viewPuzzle(m: Moment, theme: string | undefined, index: number) {
   }
   const session = new PuzzleSession(pick.puzzle);
   const p = pick.puzzle;
-  app.innerHTML = shell(`<section>
-    <h2>Puzzle</h2>
-    ${p.isFixture ? '<div class="fixture">TEST FIXTURE puzzle: hand-made, not from the Lichess database.</div>' : ''}
-    <p><b>${esc(pick.label)}</b></p>
-    <p class="note">Rating ${p.rating}. Themes: ${esc(p.themes.join(', '))}.${
-      p.isFixture ? '' : ` Puzzle <a href="https://lichess.org/training/${esc(p.id)}" target="_blank" rel="noopener">${esc(p.id)}</a> from the Lichess puzzle database (CC0).`
-    }</p>
-    <p class="status" id="turn">${session.learner === 'w' ? 'White' : 'Black'} to move. The opponent's setup move is highlighted. Find the best continuation.</p>
-    <div id="board"></div><p id="msg"></p>
-    <button class="btn" id="solution">Show solution</button>
-    <button class="btn" id="back">Back</button></section>`);
+  app.innerHTML = shell(`<div class="lesson">
+    <div class="lesson-board"><div class="board-frame"><div id="board"></div></div></div>
+    <section class="lesson-side">
+      <p class="crumb">Puzzle</p>
+      <h2>${esc(pick.label)}</h2>
+      ${p.isFixture ? '<div class="fixture">TEST FIXTURE puzzle: hand-made, not from the Lichess database.</div>' : ''}
+      <p class="note">Rating ${p.rating}. Themes: ${esc(p.themes.join(', '))}.${
+        p.isFixture ? '' : ` Puzzle <a href="https://lichess.org/training/${esc(p.id)}" target="_blank" rel="noopener">${esc(p.id)}</a> from the Lichess puzzle database (CC0).`
+      }</p>
+      <p class="task" id="turn">${session.learner === 'w' ? 'White' : 'Black'} to move. The opponent's setup move is highlighted. Find the best continuation.</p>
+      <p id="msg" class="feedback" aria-live="polite"></p>
+      <p><button class="btn" id="solution">Show solution</button>
+      <button class="btn" id="back">Back to paths</button></p>
+    </section></div>`);
   const board = new Board(app.querySelector('#board')!);
   const msg = app.querySelector<HTMLElement>('#msg')!;
   const refresh = (interactive = true) =>
@@ -390,7 +427,10 @@ async function viewPuzzle(m: Moment, theme: string | undefined, index: number) {
     const r = session.try(from + to + (promotion ?? ''));
     if (r.result === 'illegal') msg.innerHTML = '<span class="bad">That move is not legal.</span>';
     else if (r.result === 'wrong') msg.innerHTML = '<span class="bad">Not the move this puzzle wants. Try again.</span>';
-    else if (r.result === 'solved') msg.innerHTML = '<span class="good">Solved! Well done.</span>';
+    else if (r.result === 'solved') {
+      msg.innerHTML = '<span class="good">Solved! Well done.</span>';
+      app.querySelector('#turn')!.textContent = 'Puzzle complete.';
+    }
     else msg.innerHTML = '<span class="good">Correct.</span> Keep going.';
     refresh();
   };

@@ -195,3 +195,19 @@ export function explainMoment(m: Moment): Explanation {
         : `${m.playedSan} loses about ${(m.loss / 100).toFixed(1)} pawns of advantage (engine estimate).`;
   return { headline, whyFailed, whyBetter, limited, theme: limited ? undefined : theme };
 }
+
+/**
+ * An optional hint shown BEFORE the attempt. It only states board facts about the position
+ * (what is under attack) or a general checklist. It never names a move or says what the answer is.
+ */
+export function hintFor(m: Moment): string {
+  const c = new Chess(m.fen);
+  const mine = m.myColor;
+  if (c.inCheck()) return 'Your king is in check. List every way to deal with it before you pick one.';
+  const threatened = threatenedPieces(m.fen, mine);
+  if (threatened.length) {
+    const t = threatened[0];
+    return `Your ${NAME[t.type]} on ${t.square} can be captured. Ask yourself what your opponent's last move is aiming at.`;
+  }
+  return "Before you move, list your opponent's checks, captures and threats, then your own. Which of them matters most?";
+}
