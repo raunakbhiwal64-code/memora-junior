@@ -53,6 +53,36 @@ it has enough puzzles (it only downloads the first part of the file) and writes 
 Run it once, then (re)start `npm run dev`. If the download is blocked, download the file
 yourself and run `node scripts/make-puzzles.mjs --file path\to\lichess_db_puzzle.csv.zst`.
 
+## Curriculum data and verification (stage 0b shell)
+
+The opening course is plain data in `src/curriculum/`: `lessons.json` (IDs, colour, prerequisites, concept IDs, sources,
+honest labels) and `seeds.json` (exact positions built from legal move lists, each with checkable claims). **No lesson
+content or scored quiz is built yet**; every lesson is marked `pending`, and the standard Pirc is marked `not-grounded`.
+
+```
+npm run verify-curriculum        # re-checks every seed with the installed Stockfish (depth 18, MultiPV 3, ~45 s)
+```
+
+This writes `src/curriculum/verification.generated.json` (engine name, depth, measured values, pass/fail, and where the
+older Stockfish 14.1 notes agree or differ). A seed counts as **verified** only if the report was produced for exactly
+its current definition; change a seed and it falls back to **pending** until you re-run the command. Every search
+starts from a fresh engine state, so two runs give identical reports. Invalid seeds are withheld, never shown.
+
+## Saved data, backup and offline use
+
+Imported games, progress and engine results stay in this browser (`localStorage`, prefix `chess-practice:`, schema v1).
+"Use my saved games" works with the internet blocked when the app runs from your own computer (`npm run dev`).
+"Download backup" writes everything to a JSON file; "Restore backup" only **adds** what is missing. "Clear saved
+analysis" removes only recomputable engine results; progress and saved games are kept.
+To use a hosted copy offline later, a service worker would be needed; that is not built yet.
+
+To save a month of your public Chess.com games for checking real positions (no password; files stay in the
+git-ignored `data/` folder):
+
+```
+npm run fetch-archive -- --user rbhiwal --month 2026-09
+```
+
 ## Tests
 
 ```

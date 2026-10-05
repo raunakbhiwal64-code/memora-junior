@@ -1,7 +1,6 @@
 import './style.css';
 import { Chess } from 'chess.js';
 import { Board, type Arrow } from './board';
-import { cacheClear } from './cache';
 import { ApiError, fetchRecentGames } from './chesscom';
 import { createBrowserEngine, type Engine } from './engine';
 import { explainMoment, hintFor } from './explain';
@@ -10,9 +9,11 @@ import { DEFAULTS, findMoments } from './moments';
 import { PgnError, colorOf, lineToSan, moveFromUci, parseGame } from './pgn';
 import { MY_MOVES, PracticeSession } from './practice';
 import { PuzzleSession, loadPuzzleFile, pickPuzzle, type PuzzlePick } from './puzzle';
+import { loadSavedGames, saveGames } from './games';
 import { renderPaths } from './paths';
 import { buildPaths, lessonKey, localStore, noteAttempt, notePractised } from './progress';
 import { formatScore } from './score';
+import { clearAnalysisCache, ensureSchema, exportBackup, restoreBackup } from './storage';
 import type { GameInfo, Moment } from './types';
 
 const app = document.getElementById('app')!;
@@ -48,6 +49,7 @@ const shell = (inner: string) =>
 
 // ---------------------------------------------------------------- import ----
 function viewImport() {
+  const saved = loadSavedGames();
   const rows = games
     .map(
       (g, i) =>
@@ -77,10 +79,23 @@ function viewImport() {
     ${pgnError ? `<div class="err">${esc(pgnError)}</div>` : ''}
   </section>
   <section>
-    <h2>Try it without internet</h2>
+    <h2>Saved on this computer</h2>
+    ${
+      saved
+        ? `<p>Last import: ${saved.games.length} game${saved.games.length === 1 ? '' : 's'} for <b>${esc(saved.username)}</b>, saved ${esc(new Date(saved.savedAt).toLocaleString())}.</p>
+    <p><button class="btn primary" id="usesaved">Use my saved games (works offline)</button></p>`
+        : '<p class="note">No saved games yet. After you load games they are kept in this browser, so the app works offline later.</p>'
+    }
+    <p><button class="btn" id="backup">Download backup</button>
+    <label class="btn">Restore backup <input type="file" id="restore" accept="application/json,.json" hidden></label>
+    <button class="btn" id="clear">Clear saved analysis</button></p>
+    <p id="datamsg" class="note" aria-live="polite"></p>
+    <p class="note">A backup holds your progress, saved games and analysis. Restoring only adds what is missing; it never overwrites or deletes. "Clear saved analysis" removes only the engine results (they are recomputed); your progress and saved games stay.</p>
+  </section>
+  <section>
+    <h2>Try it with test data</h2>
     <div class="fixture">TEST FIXTURE: four generated test games (an opening, middle-game and end-game mistake as White, and one as Black). They are not your games and not real Chess.com data.</div>
     <button class="btn" id="fixture">Use the test fixture games</button>
-    <button class="btn" id="clear">Clear saved results</button>
   </section>`);
   const user = app.querySelector<HTMLInputElement>('#user')!;
   user.addEventListener('input', () => {
@@ -104,6 +119,7 @@ function viewImport() {
         if (el) el.textContent = m;
       });
       importStatus = `Found ${games.length} game${games.length === 1 ? '' : 's'}.`;
+      saveGames(username, games);
     } catch (e) {
       importStatus = '';
       importError = { msg: e instanceof ApiError ? e.message : 'Something went wrong while loading games.', retry: true };
@@ -153,10 +169,37 @@ function viewImport() {
     importStatus = 'Test fixture loaded (not your games).';
     viewImport();
   });
-  app.querySelector('#clear')!.addEventListener('click', () => {
-    cacheClear();
-    importStatus = 'Saved results cleared.';
+  const dataMsg = (t: string) => {
+    const el = app.querySelector('#datamsg');
+    if (el) el.textContent = t;
+  };
+  app.querySelector('#usesaved')?.addEventListener('click', () => {
+    if (!saved) return;
+    username = saved.username || username;
+    games = saved.games;
+    moments = [];
+    importError = null;
+    importStatus = `Using ${games.length} saved game${games.length === 1 ? '' : 's'} (no internet needed).`;
     viewImport();
+  });
+  app.querySelector('#backup')!.addEventListener('click', () => {
+    const blob = new Blob([exportBackup()], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `chess-practice-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    dataMsg('Backup downloaded.');
+  });
+  app.querySelector<HTMLInputElement>('#restore')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const r = restoreBackup(await file.text());
+    dataMsg(r.ok ? `Restored: ${r.added} added, ${r.keptExisting} already present and kept.` : r.error ?? 'Could not restore.');
+  });
+  app.querySelector('#clear')!.addEventListener('click', () => {
+    const n = clearAnalysisCache();
+    dataMsg(`Cleared ${n} saved analysis result${n === 1 ? '' : 's'}. Progress and saved games were kept.`);
   });
 }
 
@@ -441,4 +484,5 @@ async function viewPuzzle(m: Moment, theme: string | undefined, index: number) {
   refresh();
 }
 
+ensureSchema();
 viewImport();

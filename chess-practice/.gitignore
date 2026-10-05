@@ -5,3 +5,6 @@ dist/
 # raw Lichess download used only by make-puzzles (large)
 *.csv
 *.csv.zst
+
+# personal local data (fetched archives)
+data/

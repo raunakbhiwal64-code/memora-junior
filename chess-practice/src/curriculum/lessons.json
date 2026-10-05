@@ -1,0 +1,334 @@
+[
+ {
+  "id": "london-foundation",
+  "order": 1,
+  "color": "w",
+  "kind": "foundation",
+  "title": "London foundation: bishop outside the pawn chain",
+  "goal": "Build the d4 / e3 / c3 setup with the bishop developed first, then castle with a plan.",
+  "appliesWhen": "You play White and want one solid setup.",
+  "prerequisites": [],
+  "concepts": [
+   "london.bishop-outside-chain",
+   "london.structure-d4-e3-c3",
+   "london.bd3-or-be2",
+   "london.nbd2",
+   "london.check-lines-before-castling",
+   "london.plan-e4-ne5-open-files"
+  ],
+  "seedIds": [
+   "L1.ref"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 27 London lesson",
+    "date": "2026-09-27"
+   }
+  ],
+  "honesty": "A reference setup, not a forced line. e3-e4 does not open the f4 bishop's diagonal."
+ },
+ {
+  "id": "london-bishop-choices",
+  "order": 2,
+  "color": "w",
+  "kind": "response",
+  "title": "Bishop choices and the mirror",
+  "goal": "Know when to keep the bishop and when a trade helps.",
+  "appliesWhen": "Black attacks the bishop (...Nh5, ...Bf5).",
+  "prerequisites": [
+   "london-foundation"
+  ],
+  "concepts": [
+   "london.bishop-hunt-nh5",
+   "london.h3-g3-retreat",
+   "london.bd3-vs-bf5",
+   "london.recapture-choice"
+  ],
+  "seedIds": [
+   "L2.recapture"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Bishop discussion",
+    "date": "2026-09-27"
+   }
+  ],
+  "honesty": "Never teach 'never trade'. cxd3 and Qxd3 are both sound."
+ },
+ {
+  "id": "london-vs-c5",
+  "order": 3,
+  "color": "w",
+  "kind": "response",
+  "title": "Early ...c5: take the centre",
+  "goal": "Meet 1.d4 c5 with d5.",
+  "appliesWhen": "Black plays ...c5 on move 1.",
+  "prerequisites": [
+   "london-foundation"
+  ],
+  "concepts": [
+   "london.early-c5-d5",
+   "london.tempo-loss-queen-recapture"
+  ],
+  "seedIds": [
+   "L3.d5"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 30 response sheet",
+    "date": "2026-09-30"
+   }
+  ],
+  "honesty": "Leaves the usual London shape. Exact seed only, not a rule for every ...c5."
+ },
+ {
+  "id": "london-vs-qb6",
+  "order": 4,
+  "color": "w",
+  "kind": "response",
+  "title": "Against ...Qb6: the b2 / c3 danger",
+  "goal": "Spot the b2 pressure before playing c3.",
+  "appliesWhen": "Black plays ...c5, ...Nc6 and ...Qb6.",
+  "prerequisites": [
+   "london-vs-c5"
+  ],
+  "concepts": [
+   "london.qb6-b2-danger",
+   "london.nc3-instead-of-c3"
+  ],
+  "seedIds": [
+   "L4.qb6",
+   "L4.trap"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "game",
+    "note": "Snabbel game",
+    "gameId": "184468491044",
+    "url": "https://www.chess.com/game/live/184468491044"
+   }
+  ],
+  "honesty": "The queen is not always trapped and not every ...Qb6 loses."
+ },
+ {
+  "id": "london-vs-flank-starts",
+  "order": 5,
+  "color": "w",
+  "kind": "response",
+  "title": "Early ...g6 or ...b6: take the centre",
+  "goal": "Use e4 instead of automatic London shape moves.",
+  "appliesWhen": "Black starts with a flank move.",
+  "prerequisites": [
+   "london-foundation"
+  ],
+  "concepts": [
+   "london.flank-start-e4"
+  ],
+  "seedIds": [
+   "L5.g6",
+   "L5.b6"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 30 response sheet",
+    "date": "2026-09-30"
+   }
+  ],
+  "honesty": "Leaves the usual London shape. Full continuation trees were not supplied and are not invented."
+ },
+ {
+  "id": "london-vigilance",
+  "order": 6,
+  "color": "w",
+  "kind": "response",
+  "title": "Classical London vigilance",
+  "goal": "Scan ...Nd5/e3 tactics, central breaks and queen/rook alignment.",
+  "appliesWhen": "Middlegame in a London structure.",
+  "prerequisites": [
+   "london-foundation"
+  ],
+  "concepts": [
+   "london.scan-nd5-e3",
+   "london.central-breaks"
+  ],
+  "seedIds": [],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 27 London lesson",
+    "date": "2026-09-27"
+   }
+  ],
+  "notGrounded": "Tactical boards are not checked yet. Do not call every knight capture on e3 a fork."
+ },
+ {
+  "id": "black-foundation",
+  "order": 7,
+  "color": "b",
+  "kind": "foundation",
+  "title": "Black foundation (historical shell)",
+  "goal": "Develop, control the centre and keep the king safe with ...d6, ...c6 and ...Qc7.",
+  "appliesWhen": "You play Black against 1.e4.",
+  "prerequisites": [],
+  "concepts": [
+   "black.centre-control",
+   "black.development",
+   "black.king-safety",
+   "black.conditional-breaks"
+  ],
+  "seedIds": [],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Earlier game reviews and the London/Pirc decision",
+    "date": "2026-09-30"
+   }
+  ],
+  "honesty": "This is the historical ...d6/...c6/...Qc7 shell, NOT the standard ...g6/...Bg7 Pirc."
+ },
+ {
+  "id": "black-vs-bc4-ng5",
+  "order": 8,
+  "color": "b",
+  "kind": "response",
+  "title": "Bc4 + Ng5: calculate f7",
+  "goal": "Stop and calculate f7 and the counterstrike.",
+  "appliesWhen": "White has Bc4 and Ng5 against your setup.",
+  "prerequisites": [
+   "black-foundation"
+  ],
+  "concepts": [
+   "black.f7-vigilance",
+   "black.counterstrike-centre"
+  ],
+  "seedIds": [
+   "B2.f7"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "game",
+    "note": "kasrto1v1 vs Rbhiwal",
+    "gameId": "184461095806",
+    "url": "https://www.chess.com/game/live/184461095806"
+   }
+  ],
+  "honesty": "Exact board only. Not Two Knights or Fried Liver theory."
+ },
+ {
+  "id": "black-vs-early-e5",
+  "order": 9,
+  "color": "b",
+  "kind": "response",
+  "title": "Early e5: challenge the advanced pawn",
+  "goal": "Challenge the pawn; several replies are sound.",
+  "appliesWhen": "White plays e5 early.",
+  "prerequisites": [
+   "black-foundation"
+  ],
+  "concepts": [
+   "black.challenge-advanced-pawn"
+  ],
+  "seedIds": [
+   "B3.e5"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "game",
+    "note": "Early e5 game",
+    "gameId": "184393992214",
+    "url": "https://www.chess.com/game/live/184393992214"
+   }
+  ]
+ },
+ {
+  "id": "black-locked-centre",
+  "order": 10,
+  "color": "b",
+  "kind": "response",
+  "title": "Locked centres and development",
+  "goal": "Develop and prepare a break; accept sound alternatives.",
+  "appliesWhen": "The centre is locked.",
+  "prerequisites": [
+   "black-foundation"
+  ],
+  "concepts": [
+   "black.develop-prepare-break"
+  ],
+  "seedIds": [
+   "B4.locked",
+   "B4.counter"
+  ],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "game",
+    "note": "ZYRO-0711 and BigMikey1000 games",
+    "gameId": "184544821162",
+    "url": "https://www.chess.com/game/live/184544821162"
+   }
+  ],
+  "honesty": "Neither 'develop first' nor ...c6 is an absolute law."
+ },
+ {
+  "id": "black-vs-london-flank",
+  "order": 11,
+  "color": "b",
+  "kind": "response",
+  "title": "Opponent's London and flank starts",
+  "goal": "Do not leave e5 or a bishop loose; check king safety before flank breaks.",
+  "appliesWhen": "White plays a London or flank start.",
+  "prerequisites": [
+   "black-foundation"
+  ],
+  "concepts": [
+   "black.no-loose-pieces",
+   "black.lines-at-king-before-break"
+  ],
+  "seedIds": [],
+  "contentStatus": "pending",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Prior coaching concepts",
+    "date": "2026-09-30"
+   }
+  ],
+  "notGrounded": "Full lines are not grounded here. Recover exact games and show the boards for review before any scored quiz."
+ },
+ {
+  "id": "black-standard-pirc",
+  "order": 12,
+  "color": "b",
+  "kind": "foundation",
+  "title": "Standard Pirc (...g6 / ...Bg7)",
+  "goal": "Not available.",
+  "appliesWhen": "Not applicable yet.",
+  "prerequisites": [
+   "black-foundation"
+  ],
+  "concepts": [],
+  "seedIds": [],
+  "contentStatus": "not-grounded",
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "None recovered",
+    "date": "2026-10-05"
+   }
+  ],
+  "notGrounded": "No standard Pirc course or variation tree is grounded. Flagged pending, not invented."
+ }
+]

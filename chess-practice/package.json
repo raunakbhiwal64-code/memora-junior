@@ -8,7 +8,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "make-puzzles": "node scripts/make-puzzles.mjs"
+    "make-puzzles": "node scripts/make-puzzles.mjs",
+    "verify-curriculum": "node scripts/verify-curriculum.mjs",
+    "fetch-archive": "node scripts/fetch-archive.mjs"
   },
   "dependencies": {
     "chess.js": "^1.4.0",

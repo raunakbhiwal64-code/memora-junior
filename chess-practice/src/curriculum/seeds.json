@@ -1,0 +1,351 @@
+[
+ {
+  "id": "L1.ref",
+  "lessonId": "london-foundation",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O",
+  "declared": "illustrative",
+  "title": "Reference London setup after 8.O-O (Black to move)",
+  "claims": [
+   {
+    "type": "evalBetween",
+    "minCp": -50,
+    "maxCp": 50
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 27 London lesson",
+    "date": "2026-09-27"
+   }
+  ],
+  "note": "A reference setup, not a forced line and not an actual game."
+ },
+ {
+  "id": "L2.recapture",
+  "lessonId": "london-bishop-choices",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 Bf5 e3 e6 Nf3 Nf6 Bd3 Bxd3",
+  "declared": "illustrative",
+  "title": "Recapture after ...Bxd3: cxd3 or Qxd3",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "cxd3",
+     "Qxd3"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "cxd3"
+   }
+  ],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "Bishop choices and the mirror",
+    "date": "2026-09-27"
+   }
+  ],
+  "note": "Both recaptures are sound; Qxd3 is a taught option, not always best."
+ },
+ {
+  "id": "L3.d5",
+  "lessonId": "london-vs-c5",
+  "color": "w",
+  "prefix": "d4 c5",
+  "declared": "illustrative",
+  "title": "1.d4 c5: take the centre with d5",
+  "claims": [
+   {
+    "type": "best",
+    "move": "d5"
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "d5"
+   }
+  ],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 30 response sheet",
+    "date": "2026-09-30"
+   }
+  ],
+  "note": "Exact seed only. Not a rule for every later ...c5."
+ },
+ {
+  "id": "L4.qb6",
+  "lessonId": "london-vs-qb6",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6",
+  "briefFen": "r1b1kbnr/pp2pppp/1qn5/2pp4/3P1B2/4PN2/PPP2PPP/RN1QKB1R w KQkq - 3 5",
+  "declared": "illustrative",
+  "title": "Before 5.c3: the b2 / c3 danger against ...Qb6",
+  "claims": [
+   {
+    "type": "best",
+    "move": "Nc3"
+   },
+   {
+    "type": "worseThanBestBy",
+    "move": "c3",
+    "atLeastCp": 150
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "Nc3"
+   }
+  ],
+  "source": [
+   {
+    "kind": "game",
+    "note": "Snabbel game",
+    "gameId": "184468491044",
+    "url": "https://www.chess.com/game/live/184468491044"
+   }
+  ],
+  "note": "Nc3 does not directly defend b2; it leaves b2 as a pawn offer with compensation."
+ },
+ {
+  "id": "L4.trap",
+  "lessonId": "london-vs-qb6",
+  "color": "w",
+  "prefix": "d4 d5 Bf4 c5 e3 Nc6 Nf3 Qb6 Nc3 Qxb2 Nb5",
+  "declared": "illustrative",
+  "title": "After 5.Nc3 Qxb2 6.Nb5: the queen is not simply trapped",
+  "claims": [
+   {
+    "type": "inTop",
+    "move": "Bf5",
+    "n": 3
+   },
+   {
+    "type": "evalBetween",
+    "minCp": 200,
+    "maxCp": 500
+   }
+  ],
+  "briefClaims": [],
+  "source": [
+   {
+    "kind": "game",
+    "note": "Snabbel game (prior trap claim)",
+    "gameId": "184468491044",
+    "url": "https://www.chess.com/game/live/184468491044"
+   }
+  ],
+  "note": "White is clearly better, but Black has replies including ...Bf5. Do not teach the queen as always trapped."
+ },
+ {
+  "id": "L5.g6",
+  "lessonId": "london-vs-flank-starts",
+  "color": "w",
+  "prefix": "d4 g6",
+  "declared": "illustrative",
+  "title": "1.d4 g6: take the centre with e4",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "e4"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "e4"
+   }
+  ],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 30 response sheet",
+    "date": "2026-09-30"
+   }
+  ],
+  "note": "Leaves the usual London shape. No continuation tree supplied."
+ },
+ {
+  "id": "L5.b6",
+  "lessonId": "london-vs-flank-starts",
+  "color": "w",
+  "prefix": "d4 b6",
+  "declared": "illustrative",
+  "title": "1.d4 b6: take the centre with e4",
+  "claims": [
+   {
+    "type": "best",
+    "move": "e4"
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "e4"
+   }
+  ],
+  "source": [
+   {
+    "kind": "coaching",
+    "note": "September 30 response sheet",
+    "date": "2026-09-30"
+   }
+  ],
+  "note": "Leaves the usual London shape. No continuation tree supplied."
+ },
+ {
+  "id": "B2.f7",
+  "lessonId": "black-vs-bc4-ng5",
+  "color": "b",
+  "prefix": "e4 d6 Nf3 c6 Bc4 Qc7 Ng5",
+  "briefFen": "rnb1kbnr/ppq1pppp/2pp4/6N1/2B1P3/8/PPPP1PPP/RNBQK2R b KQkq - 3 4",
+  "declared": "illustrative",
+  "title": "Bc4 + Ng5: stop and calculate f7",
+  "claims": [
+   {
+    "type": "best",
+    "move": "d5"
+   },
+   {
+    "type": "allowsMate",
+    "move": "Nd7",
+    "atMost": 2
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "d5"
+   }
+  ],
+  "source": [
+   {
+    "kind": "game",
+    "note": "kasrto1v1 vs Rbhiwal",
+    "gameId": "184461095806",
+    "url": "https://www.chess.com/game/live/184461095806"
+   }
+  ],
+  "note": "Checks this exact board only. Not a rule that ...d5 is always the only move."
+ },
+ {
+  "id": "B3.e5",
+  "lessonId": "black-vs-early-e5",
+  "color": "b",
+  "prefix": "e4 d6 Nf3 c6 e5",
+  "briefFen": "rnbqkbnr/pp2pppp/2pp4/4P3/8/5N2/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+  "declared": "illustrative",
+  "title": "Early e5: challenge the advanced pawn",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "dxe5",
+     "Bg4"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "best",
+    "move": "dxe5"
+   }
+  ],
+  "source": [
+   {
+    "kind": "game",
+    "note": "Early e5 game",
+    "gameId": "184393992214",
+    "url": "https://www.chess.com/game/live/184393992214"
+   }
+  ],
+  "note": "Several replies are sound. Never demand the capture against every e5 push."
+ },
+ {
+  "id": "B4.locked",
+  "lessonId": "black-locked-centre",
+  "color": "b",
+  "fen": "r1b1kbnr/1pqn1ppp/p1pp4/3Pp3/4P3/2N2N2/PPP1BPPP/R1BQ1RK1 b kq - 1 7",
+  "declared": "illustrative",
+  "title": "Locked centre after 7.Nc3: develop and prepare a break",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Ngf6",
+     "Be7"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "Ngf6",
+     "Be7"
+    ],
+    "cp": 5
+   }
+  ],
+  "source": [
+   {
+    "kind": "game",
+    "note": "ZYRO-0711 game (FEN taken from the brief; game PGN not yet recovered)",
+    "gameId": "184544821162",
+    "url": "https://www.chess.com/game/live/184544821162"
+   }
+  ],
+  "note": "Both developing moves are accepted; no unique answer is invented."
+ },
+ {
+  "id": "B4.counter",
+  "lessonId": "black-locked-centre",
+  "color": "b",
+  "prefix": "d4 d6 d5",
+  "declared": "illustrative",
+  "title": "Counterexample: 1.d4 d6 2.d5, ...c6 is not an error",
+  "claims": [
+   {
+    "type": "withinCp",
+    "moves": [
+     "c6",
+     "Nf6"
+    ],
+    "cp": 30
+   }
+  ],
+  "briefClaims": [
+   {
+    "type": "betterThan",
+    "move": "c6",
+    "than": "Nf6",
+    "byCp": 5
+   }
+  ],
+  "source": [
+   {
+    "kind": "game",
+    "note": "BigMikey1000 game",
+    "gameId": "184449735450",
+    "url": "https://www.chess.com/game/live/184449735450"
+   }
+  ],
+  "note": "Do not teach ...c6 as an error, nor 'develop first' as an absolute law."
+ }
+]

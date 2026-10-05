@@ -1,4 +1,6 @@
 /** Tiny localStorage cache. Every call is safe if storage is blocked or full. */
+import { clearAnalysisCache } from './storage';
+
 const PREFIX = 'chess-practice:v1:';
 
 export function cacheGet<T>(key: string): T | undefined {
@@ -18,12 +20,7 @@ export function cacheSet(key: string, value: unknown): void {
   }
 }
 
+/** Removes only the re-computable analysis cache (see storage.ts). Progress and saved games are kept. */
 export function cacheClear(): void {
-  try {
-    Object.keys(localStorage)
-      .filter((k) => k.startsWith(PREFIX))
-      .forEach((k) => localStorage.removeItem(k));
-  } catch {
-    /* ignore */
-  }
+  clearAnalysisCache();
 }
