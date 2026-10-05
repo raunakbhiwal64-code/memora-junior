@@ -1,6 +1,7 @@
 import { Chess } from 'chess.js';
 import { cacheGet, cacheSet } from './cache';
 import type { EngineLike } from './engine';
+import { phaseOf, PHASES } from './phase';
 import { legalPrefix, lineToSan, parseGame, uci } from './pgn';
 import { classifyLoss, isMeaningful, toMine, type LossResult } from './score';
 import type { Color, GameInfo, Moment, Score } from './types';
@@ -9,11 +10,13 @@ export interface AnalysisOptions {
   depth: number;
   recheckDepth: number;
   thresholdCp: number;
+  /** Most positions kept PER PHASE (opening / middle game / end game). */
   maxMoments: number;
+  /** Candidates re-checked at the stronger depth PER PHASE. */
   finalists: number;
 }
 
-export const DEFAULTS: AnalysisOptions = { depth: 12, recheckDepth: 16, thresholdCp: 100, maxMoments: 3, finalists: 6 };
+export const DEFAULTS: AnalysisOptions = { depth: 12, recheckDepth: 16, thresholdCp: 100, maxMoments: 3, finalists: 4 };
 
 interface Candidate extends Moment {
   rank: number;
@@ -108,6 +111,7 @@ function buildMoment(
     loss: r.result.loss,
     kind: r.result.kind as Moment['kind'],
     lastMove: prev ? { from: prev.from, to: prev.to } : undefined,
+    phase: phaseOf(fen),
     isFixture: game.isFixture,
     rank: r.result.loss,
   };
@@ -164,16 +168,28 @@ export async function findMoments(
     const found = await scanGame(g, engine, opts, () => onProgress(++done, total, label), signal);
     all.push(...found);
   }
-  const top = [...all].sort((a, b) => b.rank - a.rank).slice(0, opts.finalists);
-  const rechecked: Candidate[] = [];
-  for (const [i, c] of top.entries()) {
-    if (signal?.aborted) throw new DOMException('Cancelled', 'AbortError');
-    onProgress(total, total, `Double-checking candidate ${i + 1} of ${top.length} at a deeper search`);
-    const g = games.find((x) => x.id === c.gameId)!;
-    const r = await recheck(c, g, engine, opts);
-    if (r) rechecked.push(r);
+  // Each phase gets its own shortlist, so a path is only ever filled with real mistakes from that phase.
+  const shortlists = PHASES.map(({ id }) =>
+    all
+      .filter((c) => phaseOf(c.fen) === id)
+      .sort((x, y) => y.rank - x.rank)
+      .slice(0, opts.finalists),
+  );
+  const totalChecks = shortlists.reduce((n, l) => n + l.length, 0);
+  let checked = 0;
+  const picked: Candidate[] = [];
+  for (const list of shortlists) {
+    const rechecked: Candidate[] = [];
+    for (const c of list) {
+      if (signal?.aborted) throw new DOMException('Cancelled', 'AbortError');
+      onProgress(total, total, `Double-checking candidate ${++checked} of ${totalChecks} at a deeper search`);
+      const g = games.find((x) => x.id === c.gameId)!;
+      const r = await recheck(c, g, engine, opts);
+      if (r) rechecked.push(r);
+    }
+    picked.push(...pickDistinct(rechecked, opts.maxMoments));
   }
-  return pickDistinct(rechecked, opts.maxMoments).map(({ rank: _r, ...m }) => m);
+  return picked.map(({ rank: _r, ...m }) => ({ ...m, phase: phaseOf(m.fen) }));
 }
 
 export type { Score };

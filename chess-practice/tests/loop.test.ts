@@ -1,7 +1,8 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { explainMoment } from '../src/explain';
-import { FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE, FIXTURE_PUZZLE } from '../src/fixtures';
+import { FIXTURE_GAMES, FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE, FIXTURE_PUZZLE } from '../src/fixtures';
 import { findMoments } from '../src/moments';
+import { phaseOf } from '../src/phase';
 import { PracticeSession } from '../src/practice';
 import { PuzzleSession } from '../src/puzzle';
 import { createNodeEngine } from './nodeEngine';
@@ -64,6 +65,17 @@ describe('whole loop on fixtures (real engine)', () => {
       expect(a.engineReply).toBeDefined();
     }
   }, 120000);
+
+  it('puts each real mistake on the right path (opening / middle game / end game)', async () => {
+    const ms = await findMoments(FIXTURE_GAMES, engine);
+    const by = (p: string) => ms.filter((m) => m.phase === p).map((m) => m.playedSan).sort();
+    // The engine may also flag genuine extra mistakes from the generated games (e.g. 9.Bxa6), so check membership.
+    expect(by('opening')).toEqual(expect.arrayContaining(['Nf6', 'Nxg5']));
+    expect(by('middle')).toContain('Na2');
+    expect(by('end')).toContain('Ne3');
+    expect(by('opening').length).toBeLessThanOrEqual(3);
+    for (const m of ms) expect(m.phase).toBe(phaseOf(m.fen));
+  }, 180000);
 
   it('puzzle fixture follows the setup-move rule', () => {
     const s = new PuzzleSession(FIXTURE_PUZZLE);

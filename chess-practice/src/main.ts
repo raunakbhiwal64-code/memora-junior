@@ -5,11 +5,13 @@ import { cacheClear } from './cache';
 import { ApiError, fetchRecentGames } from './chesscom';
 import { createBrowserEngine, type Engine } from './engine';
 import { explainMoment } from './explain';
-import { FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE, FIXTURE_PUZZLE } from './fixtures';
+import { FIXTURE_GAMES, FIXTURE_PUZZLE } from './fixtures';
 import { DEFAULTS, findMoments } from './moments';
 import { PgnError, colorOf, lineToSan, moveFromUci, parseGame } from './pgn';
 import { MY_MOVES, PracticeSession } from './practice';
 import { PuzzleSession, loadPuzzleFile, pickPuzzle, type PuzzlePick } from './puzzle';
+import { renderPaths } from './paths';
+import { buildPaths, lessonKey, localStore, noteAttempt, notePractised } from './progress';
 import { formatScore } from './score';
 import type { GameInfo, Moment } from './types';
 
@@ -73,7 +75,7 @@ function viewImport() {
   </section>
   <section>
     <h2>Try it without internet</h2>
-    <div class="fixture">TEST FIXTURE: two hand-made games (one as Black, one as White). They are not your games and not real Chess.com data.</div>
+    <div class="fixture">TEST FIXTURE: four generated test games (an opening, middle-game and end-game mistake as White, and one as Black). They are not your games and not real Chess.com data.</div>
     <button class="btn" id="fixture">Use the test fixture games</button>
     <button class="btn" id="clear">Clear saved results</button>
   </section>`);
@@ -143,7 +145,7 @@ function viewImport() {
     viewImport();
   });
   app.querySelector('#fixture')!.addEventListener('click', () => {
-    games = [FIXTURE_GAME_BLACK, FIXTURE_GAME_WHITE];
+    games = FIXTURE_GAMES;
     importError = null;
     importStatus = 'Test fixture loaded (not your games).';
     viewImport();
@@ -192,27 +194,18 @@ async function viewAnalysis() {
   }
 }
 
-// --------------------------------------------------------------- moments ----
+// ------------------------------------------------------------ learning paths ----
 function viewMoments() {
   const fixture = moments.some((m) => m.isFixture);
-  const cards = moments
-    .map(
-      (m, i) => `<tr><td>${i + 1}</td><td>vs ${esc(m.opponent)}</td><td>${m.myColor === 'w' ? 'White' : 'Black'}</td><td>move ${m.moveNumber}</td>
-      <td><button class="btn primary" data-i="${i}">Practise</button></td></tr>`,
-    )
-    .join('');
-  app.innerHTML = shell(`<section><h2>Your teachable moments</h2>
-    ${fixture ? '<div class="fixture">TEST FIXTURE: these come from hand-made games, not yours.</div>' : ''}
-    ${
-      moments.length
-        ? `<p>Found ${moments.length} position${moments.length === 1 ? '' : 's'} where the engine estimates you lost a meaningful amount of advantage${
-            moments.length < DEFAULTS.maxMoments ? ` (fewer than ${DEFAULTS.maxMoments} qualified, so that is all there is; none are invented)` : ''
-          }. Your original move and the answer are hidden until you try.</p><table>${cards}</table>`
-        : `<p>No move lost a meaningful amount of advantage (at least ${DEFAULTS.thresholdCp / 100} pawn by engine estimate) in these games. Nothing is invented: try more games.</p>`
-    }
-    <button class="btn" id="back">Back</button></section>`);
+  app.innerHTML = shell(`<section class="home">
+    ${renderPaths(buildPaths(moments), { fixture, threshold: `${DEFAULTS.thresholdCp / 100} pawn` })}
+    ${moments.length === 0 ? '<p>None of these games had a move that lost a meaningful amount of advantage. Nothing is invented: try more games.</p>' : ''}
+    <p><button class="btn" id="back">Back to games</button></p></section>`);
   app.querySelectorAll<HTMLButtonElement>('button[data-i]').forEach((b) =>
     b.addEventListener('click', () => viewPractice(Number(b.dataset.i))),
+  );
+  app.querySelectorAll<HTMLButtonElement>('button[data-resume]').forEach((b) =>
+    b.addEventListener('click', () => b.dataset.resume !== '' && viewPractice(Number(b.dataset.resume))),
   );
   app.querySelector('#back')!.addEventListener('click', viewImport);
 }
@@ -232,7 +225,7 @@ function viewPractice(index: number) {
     <p id="msg"></p>
     <button class="btn" id="reset">Reset / try again</button>
     <button class="btn" id="reveal" disabled>Show explanation</button>
-    <button class="btn" id="back">Back to list</button>
+    <button class="btn" id="back">Back to paths</button>
     <div id="explain"></div>
   </section>`);
   const board = new Board(app.querySelector('#board')!);
@@ -258,6 +251,7 @@ function viewPractice(index: number) {
     try {
       const a = await session.play(from, to, promotion);
       attempted = true;
+      noteAttempt(localStore, lessonKey(m), a.good);
       revealBtn.disabled = false;
       msg.innerHTML = `<span class="${a.good ? 'good' : 'bad'}">${esc(a.san)}: ${esc(a.verdict)}.</span>${
         a.sameAsGame ? ' This is the same move you played in the game.' : ''
@@ -283,6 +277,7 @@ function viewPractice(index: number) {
   revealBtn.addEventListener('click', () => {
     if (!attempted) return;
     revealed = true;
+    notePractised(localStore, lessonKey(m));
     refresh();
     showExplanation(m, board, index);
   });
@@ -314,7 +309,7 @@ function showExplanation(m: Moment, board: Board, index: number) {
     <p><button class="btn" id="vprev" disabled>◀</button> <span id="vpos" class="note"></span> <button class="btn" id="vnext" disabled>▶</button></p>
     <h2>One similar puzzle</h2>
     <button class="btn primary" id="puzzle">Get a puzzle</button>
-    ${index + 1 < moments.length ? '<button class="btn" id="nextm">Next position</button>' : ''}`;
+    <button class="btn" id="paths">Back to paths</button>`;
   let line: string[] = [];
   let i = 0;
   const show = () => {
@@ -347,7 +342,7 @@ function showExplanation(m: Moment, board: Board, index: number) {
     i = Math.min(line.length, i + 1);
     show();
   });
-  box.querySelector('#nextm')?.addEventListener('click', () => viewPractice(index + 1));
+  box.querySelector('#paths')!.addEventListener('click', viewMoments);
   box.querySelector('#puzzle')!.addEventListener('click', () => viewPuzzle(m, ex.theme, index));
   box.scrollIntoView({ behavior: 'smooth' });
 }

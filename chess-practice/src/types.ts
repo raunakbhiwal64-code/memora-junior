@@ -1,3 +1,5 @@
+import type { Phase } from './phase';
+
 export type Color = 'w' | 'b';
 
 /** Score exactly as UCI reports it: from the point of view of the side to move. */
@@ -58,6 +60,8 @@ export interface Moment {
   kind: MomentKind;
   /** Opponent's move that led into the critical position, if any. */
   lastMove?: { from: string; to: string };
+  /** Opening / middle game / end game, from the position (see phase.ts). */
+  phase: Phase;
   isFixture?: boolean;
 }
 

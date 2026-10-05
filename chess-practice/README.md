@@ -29,7 +29,7 @@ Open **http://localhost:5173/** in Chrome, Edge or Firefox.
    No password is ever needed; only Chess.com's public read-only API is used.
 2. Press **Find my mistakes**. The engine runs inside the page; a few minutes for five games
    is normal. Results are cached in your browser, so repeating is fast.
-3. Press **Practise** on a position, try a move, then **Show explanation**.
+3. Pick a learning path (**Opening**, **Middle game** or **End game**; all are open at any time) and press its button or one of its lessons, try a move, then **Show explanation**. Each path only contains real mistakes from your games in that phase; an empty path says so. Progress ("2 of 3 positions practised") is saved in this browser only.
 4. Press **Get a puzzle**. This needs the small puzzle file (next section).
 
 No internet? Use **Use the test fixture games** to try the whole loop.

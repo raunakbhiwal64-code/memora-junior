@@ -16,7 +16,7 @@ const fake: EngineLike = {
 const moment = (fen: string, myColor: 'w' | 'b'): Moment => ({
   gameId: 't', gameUrl: '', opponent: 'x', myColor, ply: 0, moveNumber: 1, fen,
   playedUci: 'a2a3', playedSan: 'a3', bestUci: 'e2e4', bestSan: 'e4', bestLine: [], refutation: [],
-  before: { cp: 0 }, after: { cp: 0 }, loss: 0, kind: 'cp',
+  before: { cp: 0 }, after: { cp: 0 }, loss: 0, kind: 'cp', phase: 'opening',
 });
 
 describe('legal moves in practice', () => {
