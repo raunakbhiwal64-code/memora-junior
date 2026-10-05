@@ -84,6 +84,20 @@ Games are fetched straight from Chess.com into your browser. Nothing is sent to 
 ours (there is none). If you later publish this app on GitHub Pages, the page is public: anyone
 with the link can see the default username and use the app; analysis results stay in each visitor's own browser.
 
+## Publish on GitHub Pages (optional)
+
+The build is fully static and uses relative paths, so the same files work at `localhost` and at
+`https://<username>.github.io/<repo>/`. Steps (free plan):
+
+1. Create a **public** repository on github.com (GitHub Pages on a private repo needs a paid plan).
+2. In the repo: Settings > Pages > Source: **GitHub Actions**.
+3. Push this folder to the repo's `main` branch. `.github/workflows/pages.yml` runs the tests, builds and deploys.
+4. Your app is at `https://<username>.github.io/<repo>/`.
+
+No secrets, tokens or passwords are needed or stored. **A public page is visible to anyone with the link**:
+it shows the default Chess.com username (`Rbhiwal`, editable in `src/main.ts`) and anyone can use the app, but
+games and analysis are fetched and stored only in each visitor's own browser.
+
 ## Licence and credits
 
 GPL-3.0-or-later (see `LICENSE`) because it bundles Stockfish (GPLv3). Dependencies and data

@@ -1,0 +1,49 @@
+# Publishes the app to GitHub Pages. Needs: repo is PUBLIC (free plan) and
+# Settings > Pages > Build and deployment > Source = "GitHub Actions".
+# No secrets or tokens are used; the built-in GITHUB_TOKEN is enough.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # Use the committed puzzle subset if there is one, otherwise cut it from the official CC0 database.
+      - name: Build puzzle subset
+        if: ${{ hashFiles('public/puzzles.json') == '' }}
+        run: npm run make-puzzles
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
