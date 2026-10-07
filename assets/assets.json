@@ -1,0 +1,232 @@
+[
+  {
+    "id": "B01_idle",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, arms relaxed at his sides, gentle closed-mouth smile."
+  },
+  {
+    "id": "B02_idle_talk",
+    "series": "B",
+    "type": "edit",
+    "parent": "B01",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: his mouth is open in a soft, friendly talking shape, as if mid-word."
+  },
+  {
+    "id": "B03_idle_blink",
+    "series": "B",
+    "type": "edit",
+    "parent": "B01",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: his eyes are gently closed in a natural blink."
+  },
+  {
+    "id": "B04_wave_a",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, his right paw raised at shoulder height in a friendly wave, paw tilted slightly outward, happy open-mouth smile."
+  },
+  {
+    "id": "B05_wave_b",
+    "series": "B",
+    "type": "edit",
+    "parent": "B04",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: the waving paw is tilted slightly inward instead of outward."
+  },
+  {
+    "id": "B06_point",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, body facing camera, head turned slightly toward screen-left, left arm extended out to screen-left pointing with his paw at something beside him, closed-mouth smile."
+  },
+  {
+    "id": "B07_point_talk",
+    "series": "B",
+    "type": "edit",
+    "parent": "B06",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: his mouth is open in a soft, friendly talking shape, as if mid-word."
+  },
+  {
+    "id": "B08_present",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, both paws open with palms up, gesturing toward screen-left at waist height as if presenting something, closed-mouth smile."
+  },
+  {
+    "id": "B09_present_talk",
+    "series": "B",
+    "type": "edit",
+    "parent": "B08",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: his mouth is open in a soft, friendly talking shape, as if mid-word."
+  },
+  {
+    "id": "B10_clap",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, both paws pressed together in front of his chest mid-clap, big delighted open-mouth smile, eyes happily squinted."
+  },
+  {
+    "id": "B11_cone",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, holding a single empty waffle cone in his left paw at chest height, arm extended slightly forward and toward screen-left, cone opening pointing straight up. The cone is completely empty: no ice cream, no scoops, nothing inside or on top. Big proud smile."
+  },
+  {
+    "id": "B12_cone_talk",
+    "series": "B",
+    "type": "edit",
+    "parent": "B11",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: his mouth is open in a soft, friendly talking shape, as if mid-word. The cone stays completely empty."
+  },
+  {
+    "id": "B13_proud",
+    "series": "B",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": true,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Buddy, a small golden-brown fluffy bear cub: round fuzzy ears, a small tuft of fur on top of his head, big round warm brown eyes, thin naturally-colored eyebrows (not thick, not dark), a small pink nose, a green bow tie, soft matte fluffy fur (not shiny, not plastic, not a plush toy), no blush circles on his cheeks. Match the attached reference image exactly: same proportions, same face shape, same fur color, same eyes. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. Buddy standing, facing camera, one paw raised in a cheerful thumbs-up, the other on his hip, big confident smile."
+  },
+  {
+    "id": "P01_apple_red",
+    "series": "P",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. A single shiny red apple with a short brown stem and one small green leaf, three-quarter view from slightly above."
+  },
+  {
+    "id": "P02_apple_green",
+    "series": "P",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. A single green apple with a short brown stem and one small green leaf, three-quarter view from slightly above, same size and style as a typical red apple."
+  },
+  {
+    "id": "P03_duck_yellow",
+    "series": "P",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. A single cute stylized yellow duckling shown in side view facing screen-right, body posed as if floating on water but with no water shown, small orange beak, big friendly eye."
+  },
+  {
+    "id": "P04_duck_blue",
+    "series": "P",
+    "type": "edit",
+    "parent": "P03",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: the duckling's feathers are soft sky blue instead of yellow."
+  },
+  {
+    "id": "P05_lilypad",
+    "series": "P",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. A single round green lily pad seen from a low angle, with one small pink flower on it."
+  },
+  {
+    "id": "P06_scoop_vanilla",
+    "series": "P",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Single subject only, fully visible with a small even margin on all sides, centered in a square 1:1 image, camera at the subject's eye level. Plain flat solid light grey background, no floor, no ground shadow, no reflections, no extra objects, no text, no letters, no numbers, no logos, no border. A single round scoop of vanilla ice cream, front view, smooth rounded top and a slightly ruffled flat base so it could sit on a cone or on another scoop, no cone."
+  },
+  {
+    "id": "P07_scoop_chocolate",
+    "series": "P",
+    "type": "edit",
+    "parent": "P06",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: the ice cream is rich chocolate brown instead of vanilla."
+  },
+  {
+    "id": "P08_scoop_strawberry",
+    "series": "P",
+    "type": "edit",
+    "parent": "P06",
+    "aspect_ratio": "1:1",
+    "remove_background": true,
+    "use_reference": false,
+    "prompt": "Edit the attached image. Change only the following, and keep everything else identical, including pose, body, fur, bow tie, lighting, framing, scale and background: the ice cream is soft pink strawberry instead of vanilla."
+  },
+  {
+    "id": "G01_playground",
+    "series": "G",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "16:9",
+    "remove_background": false,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Wide 16:9 scene, camera low at a small bear cub's eye level, soft depth of field on far elements. The scene is completely empty of characters, people and animals. No text, no letters, no numbers, no signs, no logos. A sunny children's playground on a summer day. In the left-centre foreground, a simple wooden table with a flat, clearly visible, completely empty tabletop whose top surface sits a little below the vertical middle of the frame. The right third of the frame is open soft green grass with nothing on it, where a character will later stand. Playground equipment and trees softly blurred in the background."
+  },
+  {
+    "id": "G02_pond",
+    "series": "G",
+    "type": "base",
+    "parent": null,
+    "aspect_ratio": "16:9",
+    "remove_background": false,
+    "use_reference": false,
+    "prompt": "Warm Pixar-style 3D render, soft warm daylight from the upper left, saturated but gentle color palette, soft matte materials, children's educational animation style, clean and uncluttered. Wide 16:9 scene, camera low at a small bear cub's eye level, soft depth of field on far elements. The scene is completely empty of characters, people and animals. No text, no letters, no numbers, no signs, no logos. The grassy edge of a calm, small pond in a sunny park on a summer day. The right third of the frame is an open soft green grass bank with nothing on it, where a character will later stand. Calm clear water fills the left two-thirds of the lower half of the frame, kept completely open in the middle with no lily pads, rocks or objects there. A few lily pads only near the far left edge and the far shoreline. Playground equipment and trees softly blurred in the far background."
+  }
+]
